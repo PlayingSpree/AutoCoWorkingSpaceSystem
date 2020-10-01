@@ -40,9 +40,9 @@ def user_image_upload(instance, filename):
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(max_length=255, unique=True)
-    phone = models.CharField(null=True, blank=True, max_length=24)
-    image = models.ImageField(null=True, upload_to=user_image_upload)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(blank=True, max_length=16)
+    image = models.ImageField(null=True, blank=True, upload_to=user_image_upload)
     REQUIRED_FIELDS = []
     USERNAME_FIELD = 'email'
 
