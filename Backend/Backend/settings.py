@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Project apps
     'authapp.apps.AuthappConfig',
+    'meetingroom.apps.MeetingroomConfig',
     # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
