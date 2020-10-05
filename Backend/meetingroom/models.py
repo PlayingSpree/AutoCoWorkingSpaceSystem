@@ -5,14 +5,14 @@ from django.db import models
 from authapp.models import User
 
 
-def session_file_name(instance, filename):
-    return '/'.join(['uploads/post/', str(instance.id), 'cover{0}'.format(os.path.splitext(filename)[1])])
+def meetingroom_file_name(instance, filename):
+    return '/'.join(['uploads/meetingroom/', str(instance.id), 'picture{0}'.format(os.path.splitext(filename)[1])])
 
 
 class MeetingRoom(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
-    cover = models.ImageField(null=True, blank=True, upload_to=session_file_name)
+    picture = models.ImageField(null=True, blank=True, upload_to=meetingroom_file_name)
     active = models.BooleanField(default=False)
     price = models.FloatField()
 
@@ -22,10 +22,10 @@ class MeetingRoom(models.Model):
     # Model Save override to set id as filename
     def save(self, *args, **kwargs):
         if self.id is None:
-            cover = self.cover
-            self.cover = None
+            picture = self.picture
+            self.picture = None
             super(MeetingRoom, self).save(*args, **kwargs)
-            self.cover = cover
+            self.picture = picture
             if 'force_insert' in kwargs:
                 kwargs.pop('force_insert')
 
@@ -46,3 +46,7 @@ class MeetingRoomBooking(models.Model):
                                                                            'CANCELED' if self.is_canceled else '',
                                                                            self.date_start, self.date_end, self.user,
                                                                            self.room)
+
+    @staticmethod
+    def is_available(date_start, date_end):
+        return not MeetingRoomBooking.objects.filter(date_end__gt=date_start, date_start__lt=date_end).exists()
