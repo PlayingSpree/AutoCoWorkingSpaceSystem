@@ -2,20 +2,26 @@ from datetime import datetime
 
 from django.test import TestCase
 from django.utils.timezone import make_aware
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
 
-from meetingroom.models import MeetingRoomBooking
+from authapp.models import User
+from meetingroom.models import MeetingRoomBooking, MeetingRoom
+from meetingroom.tests.base_api_test import BaseApiTest
 
 
 class TestModel(TestCase):
 
     def setUp(self):
+        self.room = [MeetingRoom.objects.create(name="Active", active=True, price=100.0),
+                     MeetingRoom.objects.create(name="Active", active=True, price=100.0)]
         booking_date = [[datetime(2030, 6, 15, 10, 0), datetime(2030, 6, 15, 10, 30)],
                         [datetime(2030, 6, 15, 10, 30), datetime(2030, 6, 15, 11, 0)],
                         [datetime(2030, 6, 15, 12, 0), datetime(2030, 6, 15, 13, 0)]]
         for l in booking_date:
             l[0] = make_aware(l[0])
             l[1] = make_aware(l[1])
-            MeetingRoomBooking.objects.create(date_start=l[0], date_end=l[1])
+            MeetingRoomBooking.objects.create(date_start=l[0], date_end=l[1], room=self.room[0])
         return super().setUp()
 
     def test_is_available_method(self):
@@ -26,7 +32,10 @@ class TestModel(TestCase):
         for l in testing_date_false:
             l[0] = make_aware(l[0])
             l[1] = make_aware(l[1])
-            self.assertTrue(not MeetingRoomBooking.is_available(l[0], l[1]), "{} / {}".format(l[0], l[1]))
+            self.assertTrue(not MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
+                            "Should not work (Overlap time): {} / {} at {}".format(l[0], l[1], self.room[0]))
+            self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1], self.room[1]),
+                            "Should work (Different room): {} / {} at {}".format(l[0], l[1], self.room[1]))
 
         testing_date_true = [[datetime(2030, 6, 15, 9, 0), datetime(2030, 6, 15, 10, 0)],
                              [datetime(2030, 6, 15, 11, 0), datetime(2030, 6, 15, 12, 0)],
@@ -36,72 +45,71 @@ class TestModel(TestCase):
         for l in testing_date_true:
             l[0] = make_aware(l[0])
             l[1] = make_aware(l[1])
-            self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1]), "{} / {}".format(l[0], l[1]))
+            self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
+                            "Should work (Non-overlap time): {} / {} at {}".format(l[0], l[1], self.room[0]))
 
-# class TestAuth(APITestCase):
-#
-#     def setUp(self):
-#         self.register_url = reverse('rest_register')
-#         self.login_url = reverse('rest_login')
-#         self.logout_url = reverse('rest_logout')
-#
-#         self.user_data = {
-#             'email': 'user@user.com',
-#             'password': 'user1234',
-#             'password1': 'user1234',
-#             'password2': 'user1234',
-#         }
-#         return super().setUp()
-#
-#     def test_user_cannot_register_with_no_data(self):
-#         res = self.client.post(self.register_url)
-#         self.assertEqual(res.status_code, 400)
-#
-#     def test_user_cannot_register_with_invalid_email(self):
-#         res = self.client.post(self.register_url, {
-#             'email': 'user',
-#             'password1': 'user1234',
-#             'password2': 'user1234',
-#         })
-#         self.assertEqual(res.status_code, 400)
-#
-#     def test_user_cannot_register_with_mismatch_password(self):
-#         res = self.client.post(self.register_url, {
-#             'email': 'user',
-#             'password1': 'user1234',
-#             'password2': 'user5678',
-#         })
-#         self.assertEqual(res.status_code, 400)
-#
-#     def test_user_can_register_correctly(self):
-#         res = self.client.post(
-#             self.register_url, self.user_data)
-#         self.assertIsNotNone(res.data['key'])
-#         self.assertEqual(res.status_code, 201)
-#
-#     def test_user_cannot_login_with_invalid_password(self):
-#         self.client.post(
-#             self.register_url, self.user_data)
-#         res = self.client.post(self.login_url, {
-#             'email': self.user_data['email'],
-#             'password': 'invalidpass',
-#         })
-#         self.assertEqual(res.status_code, 400)
-#
-#     def test_user_can_login(self):
-#         self.client.post(self.register_url, self.user_data)
-#         res = self.client.post(self.login_url, self.user_data)
-#         self.assertEqual(res.status_code, 200)
-#
-#         user = User.objects.get(email=self.user_data['email'])
-#         self.assertIsNotNone(user.auth_token)
-#
-#     def test_user_can_logout(self):
-#         self.test_user_can_login()
-#
-#         res = self.client.post(self.logout_url)
-#         self.assertEqual(res.status_code, 200)
-#
-#         user = User.objects.get(email=self.user_data['email'])
-#         with self.assertRaises((AttributeError, ObjectDoesNotExist)):
-#             user.auth_token
+        for b in MeetingRoomBooking.objects.all():
+            b.is_canceled = True
+            b.save()
+
+        for l in testing_date_false:
+            self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
+                            "Should work (Canceled booking): {} / {} at {}".format(l[0], l[1], self.room[0]))
+
+
+class TestApi(APITestCase, BaseApiTest):
+
+    def setUp(self):
+        self.url = reverse('meetingroombooking-list')
+
+        self.request = {
+            "date_start": make_aware(datetime(2030, 6, 15, 9, 0)),
+            "date_end": make_aware(datetime(2030, 6, 15, 10, 0)),
+            "user": 1,
+            "room": 1,
+            "is_canceled": False
+        }
+        self.required = ['date_start', 'date_end', 'user', 'room']
+        self.non_valid = [['user', 3],
+                          ['room', 2],
+                          ['room', 3],
+                          ['date_start', make_aware(datetime(2020, 6, 15, 9, 0))],
+                          ['date_end', make_aware(datetime(2020, 6, 15, 10, 0))]]
+
+        self.room = [MeetingRoom.objects.create(name="Active", active=True, price=100.0),
+                     MeetingRoom.objects.create(name="Inactive", price=10.0)]
+
+        self.user = User.objects.create_user(email='user@user.com', password='user1234')
+        self.admin = User.objects.create_superuser(email='admin@admin.com', password='admin1234')
+
+        MeetingRoomBooking.objects.create(date_start=make_aware(datetime(2030, 4, 15, 9, 0)),
+                                          date_end=make_aware(datetime(2030, 4, 15, 10, 0)),
+                                          user=self.user,
+                                          room=self.room[0])
+        MeetingRoomBooking.objects.create(date_start=make_aware(datetime(2030, 5, 15, 9, 0)),
+                                          date_end=make_aware(datetime(2030, 5, 15, 10, 0)),
+                                          user=self.admin,
+                                          room=self.room[0])
+        return super().setUp()
+
+    def test_auth_anon(self):
+        self.auth_test(self.url, 403, 403, 403, 403, 403)
+
+    def test_auth_user(self):
+        self.client.force_authenticate(user=self.user)
+        self.auth_test(self.url, 200, 200, 400, 400, 204)
+
+    def test_auth_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        self.auth_test(self.url, 200, 200, 400, 400, 204)
+
+    def test_list_anon(self):
+        res = self.client.get(self.url)
+        print(self.request)
+        self.assertEqual(len(res.data), 1)
+
+    def test_list_admin(self):
+        self.client.force_authenticate(user=self.admin)
+
+        res = self.client.get(self.url)
+        self.assertEqual(len(res.data), 2)

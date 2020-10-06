@@ -22,7 +22,7 @@ class TestApi(APITestCase, BaseApiTest):
                           ['price', -19.99]]
 
         MeetingRoom.objects.create(name="Active", active=True, price=100.0)
-        MeetingRoom.objects.create(name="Inactive", price=0.0)
+        MeetingRoom.objects.create(name="Inactive", price=10.0)
 
         self.user = User.objects.create_user(email='user@user.com', password='user1234')
         self.admin = User.objects.create_superuser(email='admin@admin.com', password='admin1234')
@@ -32,11 +32,11 @@ class TestApi(APITestCase, BaseApiTest):
         self.auth_test(self.url, 200, 200, 403, 403, 403)
 
     def test_auth_user(self):
-        self.client.force_login(user=self.user)
+        self.client.force_authenticate(user=self.user)
         self.auth_test(self.url, 200, 200, 403, 403, 403)
 
     def test_auth_admin(self):
-        self.client.force_login(user=self.admin)
+        self.client.force_authenticate(user=self.admin)
         self.auth_test(self.url, 200, 200, 400, 400, 204)
 
     def test_list_anon(self):
@@ -45,7 +45,7 @@ class TestApi(APITestCase, BaseApiTest):
         self.assertEqual(len(res.data), 1)
 
     def test_list_admin(self):
-        self.client.force_login(user=self.admin)
+        self.client.force_authenticate(user=self.admin)
 
         res = self.client.get(self.url)
         self.assertEqual(len(res.data), 2)

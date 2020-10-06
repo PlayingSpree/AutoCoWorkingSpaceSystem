@@ -42,11 +42,12 @@ class MeetingRoomBooking(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '[MeetingRoomBooking id:{} {}] {} to {} at {} by {}'.format(self.id,
-                                                                           'CANCELED' if self.is_canceled else '',
-                                                                           self.date_start, self.date_end, self.user,
-                                                                           self.room)
+        return '[MeetingRoomBooking id:{}{}] {} to {} by {} at {}'.format(self.id,
+                                                                          ' CANCELED' if self.is_canceled else '',
+                                                                          self.date_start, self.date_end, self.user,
+                                                                          self.room)
 
     @staticmethod
-    def is_available(date_start, date_end):
-        return not MeetingRoomBooking.objects.filter(date_end__gt=date_start, date_start__lt=date_end).exists()
+    def is_available(date_start, date_end, room):
+        return not MeetingRoomBooking.objects.filter(date_end__gt=date_start, date_start__lt=date_end,
+                                                     room=room, is_canceled=False).exists()
