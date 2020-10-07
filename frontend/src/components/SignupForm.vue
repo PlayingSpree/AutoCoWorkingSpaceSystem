@@ -1,33 +1,41 @@
 <template>
   <div>
     <h1>Register</h1>
+
     <div class="sign-up-form">
       <div class="container">
         <div class="sign-up-form__row">
           <div class="h-100 d-flex justify-content-center align-items-center">
             <div class="col-md-8 rounded px-5 py-4 shadow bg-white text-left">
-              <form id="signup-form" v-on:submit.prevent="submit">
+              <Form @submit="onSubmit">
                 <div class="row">
                   <div class="col-12 form-group">
                     <label class="col-form-label col-form-label-lg"
                       >Email <span class="text-danger">*</span></label
                     >
-                    <input
+                    <Field
+                      name="email"
+                      as="input"
                       type="email"
-                      v-model.trim="email"
+                      :rules="validateEmail"
                       class="form-control form-control-lg"
                     />
+                    <ErrorMessage name="email" />
                   </div>
 
                   <div class="col-12 form-group">
                     <label class="col-form-label col-form-label-lg"
                       >Password <span class="text-danger">*</span></label
                     >
-                    <input
+                    <Field
+                      name="password"
+                      as="input"
                       type="password"
-                      v-model.trim="password"
+                      :rules="validatePassword"
+                      v-on:keyup="tpassword"
                       class="form-control form-control-lg"
                     />
+                    <ErrorMessage name="password" />
                   </div>
 
                   <div class="col-12 form-group">
@@ -35,18 +43,22 @@
                       >Confirm Password
                       <span class="text-danger">*</span></label
                     >
-                    <input
+                    <Field
+                      name="confirmpassword"
+                      as="input"
                       type="password"
-                      v-model.trim="confirmPassword"
+                      :rules="validateConfirmPassword"
+                      v-on:keyup="confimPassword"
                       class="form-control form-control-lg"
                     />
+                    <ErrorMessage name="confirmpassword" />
                   </div>
 
                   <div class="col-12 form-group text-center">
                     <button class="btn submit-btn btn-lg col-4">Sign Up</button>
                   </div>
                 </div>
-              </form>
+              </Form>
             </div>
           </div>
         </div>
@@ -55,40 +67,78 @@
   </div>
 </template>
 <script>
-import {
-  required,
-  email,
-  minLength,
-  maxLength,
-} from "vuelidate/lib/validators";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 export default {
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
   name: "SignupForm",
-  data: function () {
+
+  data() {
     return {
-      email: "",
       password: "",
-      confirmPassword: "",
     };
   },
 
-  validations: {
-    fullname: { required },
-    email: { required, email },
-    country: { required },
-    password: { required, minLength: minLength(8), maxLength: maxLength(20) },
-  },
-
   methods: {
-    validationStatus: function (validation) {
-      return typeof validation != "undefined" ? validation.$error : false;
+    onSubmit(values) {
+      if (this.password == values.confirmpassword) {
+        alert(JSON.stringify(values, null, 2));
+      }
     },
 
-    submit: function () {
-      this.$v.$touch();
-      if (this.$v.$pendding || this.$v.$error) return;
+    confimPassword: function(e) {
+      this.confirmpassword = e.target.value;
+    },
 
-      alert("Data Submit");
+    tpassword: function(e) {
+      this.password = e.target.value;
+    },
+
+    validateEmail(value) {
+      // if the field is empty
+      if (!value) {
+        return "This field is required";
+      }
+
+      // if the field is not a valid email
+      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+        return "This field must be a valid email";
+      }
+
+      // All is good
+      return true;
+    },
+
+    validatePassword(value) {
+      var regularExpression = /^(?=.*[0-9])(?=.*[A-Z]).{8,20}$/;
+      // if the field is empty
+      if (!value) {
+        return "This field is required";
+      }
+
+      // if the field is not a valid password by RE.
+      if (!regularExpression.test(value)) {
+        return "Password must be at least 8 characters, minimum of 1 numeric, and 1 upper case letter.";
+      }
+      // All is good
+      return true;
+    },
+
+    validateConfirmPassword(value) {
+      // if the field is empty
+      if (!value) {
+        return "This field is required";
+      }
+
+      if (this.password != value) {
+        return "Your password and confirmation password do not match.";
+      }
+      // All is good
+      return true;
     },
   },
 };
