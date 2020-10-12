@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <!-- <UserProfile /> -->
-    <SignupForm />
+    <SigninForm />
   </div>
 </template>
 
 <script>
 // import UserProfile from "./components/UserProfile";
-import SignupForm from "./components/SignupForm";
+import SigninForm from "./components/SigninForm";
 
 export default {
   name: "App",
-  components: { SignupForm },
+  components: { SigninForm },
 };
 </script>
 
