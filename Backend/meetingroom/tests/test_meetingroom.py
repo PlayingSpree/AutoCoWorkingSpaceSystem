@@ -41,7 +41,6 @@ class TestApi(APITestCase, BaseApiTest):
 
     def test_list_anon(self):
         res = self.client.get(self.url)
-        print(self.request)
         self.assertEqual(len(res.data), 1)
 
     def test_list_admin(self):
