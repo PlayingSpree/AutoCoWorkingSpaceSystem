@@ -24,7 +24,8 @@ SECRET_KEY = 'ig9rlb7d8t#uz5y2m%dly^16w=xmh0!6v@z%z55or03&hviry='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# DEV: 10.0.2.2 for android emulator
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
