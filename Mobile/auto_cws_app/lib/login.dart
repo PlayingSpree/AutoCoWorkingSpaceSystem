@@ -66,10 +66,15 @@ class _LoginFormState extends State<LoginForm> {
     ));
   }
 
+  void _loginComplete(String token) {
+    appConfig.AppData.authToken = token;
+    Navigator.pushReplacementNamed(context, '/main');
+  }
+
   Future<void> _tokenCheck() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('loginToken');
+      final token = prefs.getString('authToken');
       if (token == null) {
         throw ('Cannot read token.');
       }
@@ -79,11 +84,12 @@ class _LoginFormState extends State<LoginForm> {
             HttpHeaders.authorizationHeader: 'Token ' + token
           }).timeout(const Duration(seconds: 6));
       if (response.statusCode == 200) {
+        await Future.delayed(Duration(seconds: 1));
         _loginComplete(token);
       } else if (response.statusCode == 403) {
         if (response.body == '{"detail":"Invalid token."}') {
           _showSnackBar('Token ผิดพลาด กรุณา Login ใหม่อีกครั้ง');
-          prefs.remove('loginToken');
+          prefs.remove('authToken');
         } else {
           throw Exception(
               '\nRequest Error Code: ${response.statusCode}\n ${response.body}');
@@ -100,13 +106,9 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
-  void _loginComplete(String token) {
-    appConfig.AppData.loginToken = token;
-    Navigator.pushReplacementNamed(context, '/home');
-  }
-
   Future<void> _login() async {
     _invalidEmail = false;
+    FocusScope.of(context).unfocus();
     if (_formKey.currentState.validate()) {
       setState(() {
         _waitLogin = true;
@@ -126,7 +128,7 @@ class _LoginFormState extends State<LoginForm> {
         if (response.statusCode == 200) {
           var token = jsonDecode(response.body)['key'];
           final prefs = await SharedPreferences.getInstance();
-          prefs.setString('loginToken', token);
+          prefs.setString('authToken', token);
           _loginComplete(token);
         } else if (response.statusCode == 400) {
           if (response.body ==
@@ -163,7 +165,9 @@ class _LoginFormState extends State<LoginForm> {
       return Container(
         margin: const EdgeInsets.all(12.0),
         padding: const EdgeInsets.all(12.0),
-        color: Colors.white,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Form(
             key: _formKey,
             child: Column(children: <Widget>[
