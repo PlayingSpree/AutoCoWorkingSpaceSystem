@@ -1,6 +1,8 @@
 import os
+from datetime import timedelta
 
 from django.db import models
+from django.utils import timezone
 
 from authapp.models import User
 
@@ -51,3 +53,8 @@ class MeetingRoomBooking(models.Model):
     def is_available(date_start, date_end, room):
         return not MeetingRoomBooking.objects.filter(date_end__gt=date_start, date_start__lt=date_end,
                                                      room=room, is_canceled=False).exists()
+
+    @staticmethod
+    def is_user_in_reserved_time(user, room, date=timezone.now(), min_early=0):
+        return MeetingRoomBooking.objects.filter(date_start__lte=date + timedelta(minutes=min_early),
+                                                 date_end__gte=date, room=room, is_canceled=False, user=user).exists()

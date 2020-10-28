@@ -13,6 +13,9 @@ from meetingroom.tests.base_api_test import BaseApiTest
 class TestModel(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create_user(email='user@user.com', password='user1234')
+        self.admin = User.objects.create_superuser(email='admin@admin.com', password='admin1234')
+
         self.room = [MeetingRoom.objects.create(name="Active", active=True, price=100.0),
                      MeetingRoom.objects.create(name="Active", active=True, price=100.0)]
         booking_date = [[datetime(2030, 6, 15, 10, 0), datetime(2030, 6, 15, 10, 30)],
@@ -21,10 +24,14 @@ class TestModel(TestCase):
         for l in booking_date:
             l[0] = make_aware(l[0])
             l[1] = make_aware(l[1])
-            MeetingRoomBooking.objects.create(date_start=l[0], date_end=l[1], room=self.room[0])
+            MeetingRoomBooking.objects.create(date_start=l[0], date_end=l[1], room=self.room[0], user=self.user)
         return super().setUp()
 
     def test_is_available_method(self):
+        for b in MeetingRoomBooking.objects.all():
+            b.is_canceled = False
+            b.save()
+
         testing_date_false = [[datetime(2030, 6, 15, 10, 0), datetime(2030, 6, 15, 10, 30)],
                               [datetime(2030, 6, 15, 11, 0), datetime(2030, 6, 15, 12, 30)],
                               [datetime(2030, 6, 15, 12, 30), datetime(2030, 6, 15, 13, 30)],
@@ -32,10 +39,10 @@ class TestModel(TestCase):
         for l in testing_date_false:
             l[0] = make_aware(l[0])
             l[1] = make_aware(l[1])
-            self.assertTrue(not MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
-                            "Should not work (Overlap time): {} / {} at {}".format(l[0], l[1], self.room[0]))
+            self.assertFalse(MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
+                             "Should be false (Overlap time): {} / {} at {}".format(l[0], l[1], self.room[0]))
             self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1], self.room[1]),
-                            "Should work (Different room): {} / {} at {}".format(l[0], l[1], self.room[1]))
+                            "Should be true (Different room): {} / {} at {}".format(l[0], l[1], self.room[1]))
 
         testing_date_true = [[datetime(2030, 6, 15, 9, 0), datetime(2030, 6, 15, 10, 0)],
                              [datetime(2030, 6, 15, 11, 0), datetime(2030, 6, 15, 12, 0)],
@@ -46,15 +53,60 @@ class TestModel(TestCase):
             l[0] = make_aware(l[0])
             l[1] = make_aware(l[1])
             self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
-                            "Should work (Non-overlap time): {} / {} at {}".format(l[0], l[1], self.room[0]))
+                            "Should be true (Non-overlap time): {} / {} at {}".format(l[0], l[1], self.room[0]))
 
         for b in MeetingRoomBooking.objects.all():
             b.is_canceled = True
             b.save()
 
-        for l in testing_date_false:
-            self.assertTrue(MeetingRoomBooking.is_available(l[0], l[1], self.room[0]),
-                            "Should work (Canceled booking): {} / {} at {}".format(l[0], l[1], self.room[0]))
+        self.assertTrue(
+            MeetingRoomBooking.is_available(testing_date_false[0][0], testing_date_false[0][1], self.room[0]),
+            "Should be true (Canceled booking): {} / {} at {}".format(l[0], l[1], self.room[0]))
+
+    def test_is_user_in_reserved_time_method(self):
+        for b in MeetingRoomBooking.objects.all():
+            b.is_canceled = False
+            b.save()
+
+        testing_date_true = [datetime(2030, 6, 15, 10, 0),
+                             datetime(2030, 6, 15, 11, 0),
+                             datetime(2030, 6, 15, 12, 30)]
+        for i in range(0, len(testing_date_true)):
+            time = make_aware(testing_date_true[i])
+            self.assertTrue(MeetingRoomBooking.is_user_in_reserved_time(self.user, self.room[0], time),
+                            "Should be true (Overlap time): User {} time {} in {}".format(self.user, self.room[0],
+                                                                                          time))
+
+        testing_date_false = [datetime(2030, 6, 15, 9, 0),
+                              datetime(2030, 6, 15, 11, 30),
+                              datetime(2030, 6, 15, 16, 0),
+                              datetime(2030, 6, 16, 10, 0)]
+        for i in range(0, len(testing_date_false)):
+            time = make_aware(testing_date_false[i])
+            self.assertFalse(MeetingRoomBooking.is_user_in_reserved_time(self.user, self.room[0], time),
+                             "Should be false (Non-overlap time): User {} time {} in {}".format(self.user, self.room[0],
+                                                                                                time))
+
+        self.assertTrue(
+            MeetingRoomBooking.is_user_in_reserved_time(self.user, self.room[0], make_aware(testing_date_false[0]), 60),
+            "Should be true (Early time set): User {} time {} in {}".format(self.user, self.room[0],
+                                                                            make_aware(testing_date_false[0])))
+        self.assertFalse(
+            MeetingRoomBooking.is_user_in_reserved_time(self.user, self.room[1], make_aware(testing_date_true[0])),
+            "Should be false (Different room): User {} time {} in {}".format(self.user, self.room[1],
+                                                                             make_aware(testing_date_true[0])))
+        self.assertFalse(
+            MeetingRoomBooking.is_user_in_reserved_time(self.admin, self.room[0], make_aware(testing_date_true[0])),
+            "Should be false (Different user): User {} time {} in {}".format(self.admin, self.room[0],
+                                                                             make_aware(testing_date_true[0])))
+        for b in MeetingRoomBooking.objects.all():
+            b.is_canceled = True
+            b.save()
+
+        self.assertFalse(
+            MeetingRoomBooking.is_user_in_reserved_time(self.user, self.room[0], make_aware(testing_date_true[0])),
+            "Should be false (Canceled booking): User {} time {} in {}".format(self.user, self.room[0],
+                                                                               make_aware(testing_date_true[0])))
 
 
 class TestApi(APITestCase, BaseApiTest):
