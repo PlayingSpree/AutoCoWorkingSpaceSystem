@@ -16,7 +16,7 @@ class Thing:
         for key in data:
             if key not in self.data.keys():
                 return False
-            if not validator(next(x for x in self.data_info if x['key'] == key), data[key]):
+            if not validator(self.data_info[key], data[key]):
                 return False
         self.data.update(data)
         return True
