@@ -72,7 +72,7 @@ def emb_face(model, face_pixels):
     face_pixels = (face_pixels - mean) / std
     samples = expand_dims(face_pixels, axis=0)
     ypred = model.predict(samples)
-    return ypred
+    return ypred[0]
 
 
 #%%
