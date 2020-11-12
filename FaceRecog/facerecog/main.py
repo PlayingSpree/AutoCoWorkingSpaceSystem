@@ -1,8 +1,8 @@
 #%%
 import numpy as np
-import matplotlib.pyplot as plt
 import cv2
 import time
+import RPi.GPIO as GPIO
 
 from os import listdir
 from sklearn.svm import SVC
@@ -12,7 +12,6 @@ from skimage.transform import resize
 from PIL import Image
 from tensorflow.keras.models import load_model
 from numpy import load, asarray, expand_dims
-
 
 #%%
 model_path = 'models/facenet_keras.h5'
@@ -62,7 +61,6 @@ vc = cv2.VideoCapture(0)
 i = 0
 before_pred = None
 door_lock = True
-
 while True:
     is_capturing, frame = vc.read()
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -95,16 +93,21 @@ while True:
     before_pred = pred
     pred = None
     print(i)
-    if i == 30:
+    if i == 2:
         i = 0
-        door_lock = False
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(24, GPIO.OUT)
         print('Unlocked!')
         time.sleep(5)
-        print('Loced!')
-
-    door_lock = True
-    cv2.imshow('Video', frame)
+        print('Locked!')
+        GPIO.cleanup()
+    
+    cv2.namedWindow('Resized Window', cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('Resized Window', 160, 160)
+    cv2.imshow('Resized Window', frame)
+    
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        GPIO.cleanup()
         break
 
 vc.release()
