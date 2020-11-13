@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     # Swagger
     'drf_yasg',
+    # Cleanup (should be placed last)
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -135,6 +137,8 @@ STATIC_URL = '/static/'
 # Project Custom Override
 
 AUTH_USER_MODEL = 'authapp.User'
+
+MEDIA_URL = '/media/'  # Temp for file serving
 
 # Auth
 

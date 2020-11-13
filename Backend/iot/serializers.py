@@ -2,7 +2,7 @@ import ipaddress
 
 from rest_framework import serializers
 
-from iot.models import MeetingRoomIoT
+from iot.models import MeetingRoomIoT, UserImage
 
 
 class MeetingRoomIoTSerializer(serializers.ModelSerializer):
@@ -37,3 +37,9 @@ class MeetingRoomIoTUpdateSerializer(serializers.Serializer):
     class Meta:
         fields = ['iot_id', 'data']
         extra_kwargs = {'room': {'required': True}}
+
+
+class UserImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserImage
+        fields = ['user', 'image1', 'image2', 'image3', 'image4', 'image5']
