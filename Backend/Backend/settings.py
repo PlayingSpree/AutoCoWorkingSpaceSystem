@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     # Project apps
     'authapp.apps.AuthappConfig',
     'meetingroom.apps.MeetingroomConfig',
-    'iot_room.apps.IotRoomConfig',
+    'iot.apps.IotConfig',
     # Default apps
     'django.contrib.admin',
     'django.contrib.auth',

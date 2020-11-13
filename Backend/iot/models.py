@@ -9,4 +9,5 @@ class MeetingRoomIoT(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    ip = models.CharField(max_length=21)
+    iot_ip = models.CharField(max_length=21)
+    door_ip = models.CharField(max_length=21)

@@ -3,8 +3,8 @@ from rest_framework.generics import RetrieveDestroyAPIView, get_object_or_404
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from iot_room.models import MeetingRoomIoT
-from iot_room.serializers import MeetingRoomIoTSerializer
+from iot.models import MeetingRoomIoT
+from iot.serializers import MeetingRoomIoTSerializer
 
 
 class MeetingRoomIoTViewSet(viewsets.GenericViewSet, RetrieveDestroyAPIView):
