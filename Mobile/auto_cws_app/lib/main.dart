@@ -80,7 +80,7 @@ class _MainPageState extends State<MainPage> {
             label: 'Remote',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
+            icon: Icon(Icons.schedule),
             label: 'Reservation',
           ),
           BottomNavigationBarItem(
