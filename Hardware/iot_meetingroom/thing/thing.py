@@ -32,10 +32,13 @@ class Thing:
 
 def validator(data_info, value):
     try:
-        if data_info.type == 'integer':
-            value = int(value)
-        elif data_info.type == 'float':
-            value = float(value)
-        return data_info.min <= value <= data_info.max
-    except:
+        if data_info['type'] == 'integer':
+            if not type(value) is int:
+                value = int(value)
+        elif data_info['type'] == 'float':
+            if not type(value) is float:
+                value = float(value)
+        return data_info['min'] <= value <= data_info['max']
+    except Exception as e:
+        print(e)
         return False
