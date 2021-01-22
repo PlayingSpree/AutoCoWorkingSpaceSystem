@@ -1,24 +1,21 @@
-#%%
-import numpy as np
-import matplotlib.pyplot as plt
-import cv2
-
-from PIL import Image
-from tensorflow.keras.models import load_model
 from os import listdir
 from os.path import isdir, isfile
+
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
+from mtcnn.mtcnn import MTCNN
 from numpy import asarray
+from numpy import expand_dims
 from numpy import load
 from numpy import savez_compressed
-from numpy import expand_dims
-from mtcnn.mtcnn import MTCNN
+from tensorflow.keras.models import load_model
 
-#%%
 model_path = 'models/facenet_keras.h5'
 model = load_model(model_path)
 
 
-#%%
 def extract_face(filename, require_size=(160, 160)):
     img = Image.open(filename)
     img = img.convert('RGB')
@@ -37,7 +34,6 @@ def extract_face(filename, require_size=(160, 160)):
     return face_array
 
 
-#%%
 def load_face(model, directory):
     faces = []
     for file in listdir(directory):
@@ -75,12 +71,7 @@ def emb_face(model, face_pixels):
     return ypred[0]
 
 
-#%%
-data_path = 'data/raw/'
-compress_face(model, data_path)
+def run(data_path):
+    compress_face(model, data_path)
 
-
-
-
-
-
+run('uploads/user/1/face')
