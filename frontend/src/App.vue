@@ -2,16 +2,19 @@
   <div id="app">
     <!-- <UserProfile /> -->
     <SigninForm />
+    <SignupForm />
+    
   </div>
 </template>
 
 <script>
 // import UserProfile from "./components/UserProfile";
 import SigninForm from "./components/SigninForm";
+import SignupForm from "./components/SignupForm";
 
 export default {
   name: "App",
-  components: { SigninForm },
+  components: { SigninForm, SignupForm },
 };
 </script>
 
