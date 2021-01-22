@@ -10,9 +10,10 @@
               <Form @submit="onSubmit">
                 <div class="row">
                   <div class="col-12 form-group">
-                    <label class="col-form-label col-form-label-lg"
-                      >Email <span class="text-danger">*</span></label
-                    >
+                    <label class="col-form-label col-form-label-lg">
+                      Email
+                      <span class="text-danger">*</span>
+                    </label>
                     <Field
                       name="email"
                       as="input"
@@ -24,9 +25,10 @@
                   </div>
 
                   <div class="col-12 form-group">
-                    <label class="col-form-label col-form-label-lg"
-                      >Password <span class="text-danger">*</span></label
-                    >
+                    <label class="col-form-label col-form-label-lg">
+                      Password
+                      <span class="text-danger">*</span>
+                    </label>
                     <Field
                       name="password"
                       as="input"
@@ -57,7 +59,7 @@ export default {
   components: {
     Form,
     Field,
-    ErrorMessage,
+    ErrorMessage
   },
   name: "SigninForm",
 
@@ -66,11 +68,11 @@ export default {
       alert(JSON.stringify(values, null, 2));
     },
 
-    confimPassword: function (e) {
+    confimPassword: function(e) {
       this.confirmpassword = e.target.value;
     },
 
-    tpassword: function (e) {
+    tpassword: function(e) {
       this.password = e.target.value;
     },
 
@@ -102,8 +104,8 @@ export default {
       }
       // All is good
       return true;
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
