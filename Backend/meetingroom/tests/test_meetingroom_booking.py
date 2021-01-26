@@ -126,7 +126,8 @@ class TestApi(APITestCase, BaseApiTest):
                           ['room', 2],
                           ['room', 3],
                           ['date_start', make_aware(datetime(2020, 6, 15, 9, 0))],
-                          ['date_end', make_aware(datetime(2020, 6, 15, 10, 0))]]
+                          ['date_end', make_aware(datetime(2020, 6, 15, 10, 0))],
+                          ['date_end', make_aware(datetime(2030, 6, 15, 9, 0))]]
 
         self.room = [MeetingRoom.objects.create(name="Active", active=True, price=100.0),
                      MeetingRoom.objects.create(name="Inactive", price=10.0)]
@@ -155,9 +156,10 @@ class TestApi(APITestCase, BaseApiTest):
         self.client.force_authenticate(user=self.admin)
         self.auth_test(self.url, 200, 200, 400, 400, 204)
 
-    def test_list_anon(self):
+    def test_list_user(self):
+        self.client.force_authenticate(user=self.user)
+
         res = self.client.get(self.url)
-        print(self.request)
         self.assertEqual(len(res.data), 1)
 
     def test_list_admin(self):
