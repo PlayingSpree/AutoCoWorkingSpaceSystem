@@ -19,7 +19,7 @@
               label="Password"
               name="Password"
               prepend-icon="mdi-lock"
-              :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="showPassword = !showPassword"
               :type="showPassword ? 'text' : 'password'"
               color="blue accent-2"
