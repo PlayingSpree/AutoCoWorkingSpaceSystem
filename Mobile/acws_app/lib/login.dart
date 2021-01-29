@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'app_config.dart' as appConfig;
+import 'widget_register.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -40,6 +42,7 @@ class _LoginFormState extends State<LoginForm> {
   final FocusNode _focusNodePassword = FocusNode();
   final _emailText = TextEditingController();
   final _passwordText = TextEditingController();
+  bool _registerForm = false;
   bool _obscureText = true;
   bool _waitLogin = false;
   bool _waitCheckToken = true;
@@ -163,96 +166,114 @@ class _LoginFormState extends State<LoginForm> {
           valueColor: new AlwaysStoppedAnimation<Color>(Colors.white));
     } else {
       return Container(
-        margin: const EdgeInsets.all(12.0),
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Form(
-            key: _formKey,
-            child: Column(children: <Widget>[
-              TextFormField(
-                controller: _emailText,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.email),
-                  labelText: 'E-mail',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(12.0),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'กรุนาใส่ E-mail';
-                  }
-                  if (_invalidEmail ||
-                      !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
-                          .hasMatch(value)) {
-                    return 'กรุนาาตรวจสอบ E-mail อีกครั้ง';
-                  }
-                  return null;
-                },
-                textInputAction: TextInputAction.next,
-                onEditingComplete: () {
-                  _focusNodePassword.requestFocus();
-                },
-              ),
-              SizedBox(height: 12),
-              TextFormField(
-                controller: _passwordText,
-                obscureText: _obscureText,
-                focusNode: _focusNodePassword,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.lock),
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(12.0),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
+          margin: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: AnimatedCrossFade(
+            duration: const Duration(milliseconds: 200),
+            firstCurve: Curves.easeIn,
+            secondCurve: Curves.easeIn,
+            crossFadeState: _registerForm
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
+            firstChild: Form(
+              key: _formKey,
+              child: Column(children: <Widget>[
+                TextFormField(
+                  controller: _emailText,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.email),
+                    labelText: 'E-mail',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(12.0),
                   ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'กรุนาใส่ E-mail';
+                    }
+                    if (_invalidEmail ||
+                        !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                            .hasMatch(value)) {
+                      return 'กรุนาาตรวจสอบ E-mail อีกครั้ง';
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () {
+                    _focusNodePassword.requestFocus();
+                  },
                 ),
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'กรุนาใส่รหัสผ่าน';
-                  }
-                  return null;
-                },
-                onEditingComplete: _login,
-              ),
-              SizedBox(height: 12),
-              SizedBox(
-                width: 150,
-                height: 50,
-                child: ElevatedButton(
-                    onPressed: _waitLogin ? null : _login,
-                    child: Visibility(
-                      child: Text('Login',
+                SizedBox(height: 12),
+                TextFormField(
+                  controller: _passwordText,
+                  obscureText: _obscureText,
+                  focusNode: _focusNodePassword,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.lock),
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(12.0),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'กรุนาใส่รหัสผ่าน';
+                    }
+                    return null;
+                  },
+                  onEditingComplete: _login,
+                ),
+                SizedBox(height: 12),
+                SizedBox(
+                  width: 150,
+                  height: 50,
+                  child: ElevatedButton(
+                      onPressed: _waitLogin ? null : _login,
+                      child: Visibility(
+                        child: Text('Login',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            )),
+                        replacement: CircularProgressIndicator(),
+                        visible: !_waitLogin,
+                      )),
+                ),
+                SizedBox(height: 12),
+                SizedBox(
+                  width: 150,
+                  height: 50,
+                  child: OutlinedButton(
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        setState(() {
+                          _registerForm = !_registerForm;
+                        });
+                      },
+                      child: Text('Sign Up',
                           style: TextStyle(
                             fontSize: 20.0,
-                          )),
-                      replacement: CircularProgressIndicator(),
-                      visible: !_waitLogin,
-                    )),
-              ),
-              SizedBox(height: 12),
-              SizedBox(
-                width: 150,
-                height: 50,
-                child: OutlinedButton(
-                    onPressed: () {},
-                    child: Text('Sign Up',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        ))),
-              )
-            ])),
-      );
+                          ))),
+                )
+              ]),
+            ),
+            secondChild: RegisterForm(() {
+              setState(() {
+                _registerForm = !_registerForm;
+              });
+            }),
+          ));
     }
   }
 }
