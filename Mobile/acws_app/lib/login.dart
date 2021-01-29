@@ -90,7 +90,7 @@ class _LoginFormState extends State<LoginForm> {
         await Future.delayed(Duration(seconds: 1));
         _loginComplete(token);
       } else if (response.statusCode == 403) {
-        if (response.body == '{"detail":"Invalid token."}') {
+        if (response.body.contains('"detail":"Invalid token."')) {
           _showSnackBar('Token ผิดพลาด กรุณา Login ใหม่อีกครั้ง');
           prefs.remove('authToken');
         } else {
@@ -134,11 +134,11 @@ class _LoginFormState extends State<LoginForm> {
           prefs.setString('authToken', token);
           _loginComplete(token);
         } else if (response.statusCode == 400) {
-          if (response.body ==
-              '{"non_field_errors":["Unable to log in with provided credentials."]}') {
+          if (response.body.contains(
+              'Unable to log in with provided credentials.')) {
             _showSnackBar('E-mail และรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
-          } else if (response.body ==
-              '{"email":["Enter a valid email address."]}') {
+          } else if (response.body
+              .contains('Enter a valid email address.')) {
             _invalidEmail = true;
             _formKey.currentState.validate();
           } else {
@@ -237,7 +237,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 SizedBox(height: 12),
                 SizedBox(
-                  width: 150,
+                  width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
                       onPressed: _waitLogin ? null : _login,
@@ -252,15 +252,17 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 SizedBox(height: 12),
                 SizedBox(
-                  width: 150,
-                  height: 50,
+                  width: double.infinity,
+                  height: 40,
                   child: OutlinedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          _registerForm = !_registerForm;
-                        });
-                      },
+                      onPressed: _waitLogin
+                          ? null
+                          : () {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                _registerForm = !_registerForm;
+                              });
+                            },
                       child: Text('Sign Up',
                           style: TextStyle(
                             fontSize: 20.0,
