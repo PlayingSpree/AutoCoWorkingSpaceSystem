@@ -49,8 +49,10 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
     # Swagger
     'drf_yasg',
     # Cleanup (should be placed last)
@@ -149,6 +151,27 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'authapp.serializers.UserDetailsSerializer'}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "facebook": {
+        "APP": {
+            "client_id": "167836811509014",
+            "secret": "1870d289fffd9e7ae2cb59b68983b8cb",
+            "key": ""
+        },
+    },
+    'google': {
+        "APP": {
+            "client_id": "1024200647633-9178idr0ec5uiaekln328olq2g6ueu23.apps.googleusercontent.com",
+            "secret": "FvpPhOql552pSeG2sDnzOaH8",
+            "key": ""
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+    }
+}
 
 # Rest Framework
 

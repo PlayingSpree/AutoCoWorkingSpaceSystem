@@ -23,14 +23,13 @@ from rest_framework import permissions
 from django.conf.urls.static import static
 from django.conf import settings
 
+from authapp.views import FacebookLogin, GoogleLogin
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Snippets API",
         default_version='v1',
         description="Test description",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -44,6 +43,8 @@ urlpatterns = [
 
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+    path('auth/google/', GoogleLogin.as_view(), name='google_login'),
 
     path('meetingroom/', include('meetingroom.urls')),
     path('iot/', include('iot.urls')),
