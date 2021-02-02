@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'app_config.dart' as appConfig;
 import 'widget_register.dart';
@@ -208,6 +209,57 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
+  Future<void> _loginGoogle() async {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _waitLogin = true;
+    });
+
+    GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'profile',
+      ],
+    );
+    if(await googleSignIn.signInSilently() != null){
+      googleSignIn.signOut();
+    }
+    try {
+      GoogleSignInAccount acc = await googleSignIn.signIn();
+      String token = (await acc.authentication).accessToken;
+      print(token);
+
+      if (acc != null) {
+        try {
+          var response = await http
+              .post(appConfig.serverUrl + '/auth/google/',
+                  headers: <String, String>{
+                    'Content-Type': 'application/json; charset=UTF-8',
+                  },
+                  body: jsonEncode(<String, String>{
+                    'access_token': token,
+                  }))
+              .timeout(const Duration(seconds: 6));
+          await _checkLoginResponse(response);
+        } catch (e) {
+          print(e);
+          _showSnackBar('เครือค่ายมีปัญหา กรุณาลองใหม่ภายหลัง');
+        } finally {
+          setState(() {
+            _waitLogin = false;
+          });
+        }
+      }
+    } catch (error) {
+      _showSnackBar('Login Error: ' + error.toString());
+      print(error);
+    } finally {
+      setState(() {
+        _waitLogin = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_waitCheckToken) {
@@ -349,7 +401,7 @@ class _LoginFormState extends State<LoginForm> {
                   width: double.infinity,
                   height: 40,
                   child: OutlinedButton(
-                      onPressed: _waitLogin ? null : _loginFacebook,
+                      onPressed: _waitLogin ? null : _loginGoogle,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
