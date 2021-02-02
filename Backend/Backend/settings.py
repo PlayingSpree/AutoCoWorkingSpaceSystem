@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'allauth.socialaccount.providers.facebook',
     # Swagger
     'drf_yasg',
     # Cleanup (should be placed last)
