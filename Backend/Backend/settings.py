@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     # Swagger
     'drf_yasg',
@@ -150,6 +150,16 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'authapp.serializers.UserDetailsSerializer'}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "facebook": {
+        "APP": {
+            "client_id": "167836811509014",
+            "secret": "1870d289fffd9e7ae2cb59b68983b8cb",
+            "key": ""
+        },
+    }
+}
 
 # Rest Framework
 
