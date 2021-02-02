@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_config.dart' as appConfig;
 import 'widget_register.dart';
+import 'icons/social_icons.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -128,26 +130,7 @@ class _LoginFormState extends State<LoginForm> {
                   'password': _passwordText.text
                 }))
             .timeout(const Duration(seconds: 6));
-        if (response.statusCode == 200) {
-          var token = jsonDecode(response.body)['key'];
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setString('authToken', token);
-          _loginComplete(token);
-        } else if (response.statusCode == 400) {
-          if (response.body.contains(
-              'Unable to log in with provided credentials.')) {
-            _showSnackBar('E-mail และรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
-          } else if (response.body
-              .contains('Enter a valid email address.')) {
-            _invalidEmail = true;
-            _formKey.currentState.validate();
-          } else {
-            throw Exception(response.body);
-          }
-        } else {
-          throw Exception(
-              'Request Error Code : ${response.statusCode}/n ${response.body}');
-        }
+        await _checkLoginResponse(response);
       } catch (e) {
         print(e);
         _showSnackBar('เครือค่ายมีปัญหา กรุณาลองใหม่ภายหลัง');
@@ -157,6 +140,72 @@ class _LoginFormState extends State<LoginForm> {
         });
       }
     }
+  }
+
+  Future _checkLoginResponse(http.Response response) async {
+    if (response.statusCode == 200) {
+      var token = jsonDecode(response.body)['key'];
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('authToken', token);
+      _loginComplete(token);
+    } else if (response.statusCode == 400) {
+      if (response.body
+          .contains('Unable to log in with provided credentials.')) {
+        _showSnackBar('E-mail และรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
+      } else if (response.body.contains('Enter a valid email address.')) {
+        _invalidEmail = true;
+        _formKey.currentState.validate();
+      } else {
+        throw Exception(response.body);
+      }
+    } else {
+      throw Exception(
+          'Request Error Code : ${response.statusCode}/n ${response.body}');
+    }
+  }
+
+  Future<void> _loginFacebook() async {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _waitLogin = true;
+    });
+
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        try {
+          var response = await http
+              .post(appConfig.serverUrl + '/auth/facebook/',
+                  headers: <String, String>{
+                    'Content-Type': 'application/json; charset=UTF-8',
+                  },
+                  body: jsonEncode(<String, String>{
+                    'access_token': result.accessToken.token,
+                  }))
+              .timeout(const Duration(seconds: 6));
+          await _checkLoginResponse(response);
+        } catch (e) {
+          print(e);
+          _showSnackBar('เครือค่ายมีปัญหา กรุณาลองใหม่ภายหลัง');
+        } finally {
+          setState(() {
+            _waitLogin = false;
+          });
+        }
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        _showSnackBar('ยกเลิกการ Login โดยผู้ใช้งาน');
+        break;
+      case FacebookLoginStatus.error:
+        _showSnackBar('Login Error: ' + result.errorMessage);
+        print(result.errorMessage);
+        break;
+    }
+    setState(() {
+      _waitLogin = false;
+    });
   }
 
   @override
@@ -244,7 +293,7 @@ class _LoginFormState extends State<LoginForm> {
                       child: Visibility(
                         child: Text('Login',
                             style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 24.0,
                             )),
                         replacement: CircularProgressIndicator(),
                         visible: !_waitLogin,
@@ -265,8 +314,57 @@ class _LoginFormState extends State<LoginForm> {
                             },
                       child: Text('Sign Up',
                           style: TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 16.0,
                           ))),
+                ),
+                SizedBox(height: 12),
+                Text('OR',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    )),
+                SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: OutlinedButton(
+                      onPressed: _waitLogin ? null : _loginFacebook,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(SocialIcons.facebook,
+                              size: 24, color: Color(0xFF1778F2)),
+                          Text('Login with Facebook',
+                              style: TextStyle(
+                                color: Color(0xFF1778F2),
+                                fontSize: 16.0,
+                              )),
+                          SizedBox(
+                            width: 0,
+                          )
+                        ],
+                      )),
+                ),
+                SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: OutlinedButton(
+                      onPressed: _waitLogin ? null : _loginFacebook,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(SocialIcons.google,
+                              size: 24, color: Color(0xFFDB4437)),
+                          Text('Login with Google',
+                              style: TextStyle(
+                                color: Color(0xFFDB4437),
+                                fontSize: 16.0,
+                              )),
+                          SizedBox(
+                            width: 0,
+                          )
+                        ],
+                      )),
                 )
               ]),
             ),
