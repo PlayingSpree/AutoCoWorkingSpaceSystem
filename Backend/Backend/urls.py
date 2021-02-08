@@ -46,6 +46,7 @@ urlpatterns = [
     path('auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
     path('auth/google/', GoogleLogin.as_view(), name='google_login'),
 
+    path('coworkingspace/', include('coworkingspace.urls')),
     path('meetingroom/', include('meetingroom.urls')),
     path('iot/', include('iot.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # TEMP for file serving

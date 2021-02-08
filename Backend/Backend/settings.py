@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     # Project apps
     'authapp.apps.AuthappConfig',
+    'coworkingspace.apps.CoworkingspaceConfig',
     'meetingroom.apps.MeetingroomConfig',
     'iot.apps.IotConfig',
     # Default apps
