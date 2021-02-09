@@ -13,10 +13,10 @@ def meetingroom_file_name(instance, filename):
 
 class MeetingRoom(models.Model):
     name = models.CharField(max_length=64)
-    description = models.TextField(blank=True)
+    detail = models.TextField(blank=True)
     picture = models.ImageField(null=True, blank=True, upload_to=meetingroom_file_name)
-    active = models.BooleanField(default=False)
-    price = models.FloatField()
+    is_active = models.BooleanField(default=False)
+    price = models.IntegerField()
 
     def __str__(self):
         return '[MeetingRoom id:{}] {}'.format(self.id, self.name)

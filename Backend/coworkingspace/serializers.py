@@ -1,13 +1,13 @@
 from django.utils import timezone
 from rest_framework import serializers
 
-from meetingroom.models import MeetingRoom, MeetingRoomBooking
+from coworkingspace.models import CoworkingSpacePackage, CoworkingSpaceSubscription
 
 
-class MeetingRoomSerializer(serializers.ModelSerializer):
+class CoworkingSpacePackageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MeetingRoom
-        fields = ['id', 'name', 'detail', 'picture', 'is_active', 'price']
+        model = CoworkingSpacePackage
+        fields = ['id', 'name', 'detail', 'is_active', 'price']
         read_only_fields = ['id']
 
     def validate_price(self, value):
@@ -16,13 +16,13 @@ class MeetingRoomSerializer(serializers.ModelSerializer):
         return value
 
 
-class MeetingRoomBookingSerializer(serializers.ModelSerializer):
+class CoworkingSpaceSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MeetingRoomBooking
-        fields = ['id', 'date_start', 'date_end', 'user', 'room', 'is_canceled', 'date_created', 'date_modified']
+        model = CoworkingSpaceSubscription
+        fields = ['id', 'date_start', 'date_end', 'user', 'package', 'is_canceled', 'date_created', 'date_modified']
         read_only_fields = ['id', 'date_created', 'date_modified']
         extra_kwargs = {'user': {'required': True},
-                        'room': {'required': True}}
+                        'package': {'required': True}}
 
     def validate_date_start(self, value):
         if value <= timezone.now():
@@ -34,9 +34,9 @@ class MeetingRoomBookingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("date_end ({}) is in the past".format(value))
         return value
 
-    def validate_room(self, value):
+    def validate_package(self, value):
         if not value.active:
-            raise serializers.ValidationError("room ({}) is not active".format(value))
+            raise serializers.ValidationError("package ({}) is not active".format(value))
         return value
 
     def validate(self, data):
