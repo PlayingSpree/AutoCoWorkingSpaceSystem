@@ -12,6 +12,8 @@
       <dashboard-main />
       <dashboard-pay-method />
       <dashboard-user-overview />
+      <dashboard-report />
+      <dashboard-access />
     </v-container>
   </div>
 </template>
@@ -21,6 +23,8 @@ import DashboardMain from "../components/DashboardMain.vue";
 import DashboardDownload from "../components/DashboardDownload.vue";
 import DashboardPayMethod from "../components/DashboardPayMethod.vue";
 import DashboardUserOverview from "../components/DashboardUserOverview.vue";
+import DashboardReport from "../components/DashboardReport.vue";
+import DashboardAccess from "../components/DashboardAccess.vue";
 
 export default {
   name: "dashboard",
@@ -28,7 +32,9 @@ export default {
     DashboardMain,
     DashboardDownload,
     DashboardPayMethod,
-    DashboardUserOverview
+    DashboardUserOverview,
+    DashboardReport,
+    DashboardAccess
   }
 };
 </script>

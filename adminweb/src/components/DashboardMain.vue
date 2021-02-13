@@ -1,41 +1,46 @@
 <template>
   <v-card class="mt-5">
-    <v-card-title style="font-size:20px">
-      ตัวชี้วัดหลัก
-    </v-card-title>
     <v-container fluid>
-      <v-row>
-        <v-col class="ma-1" cols="3">
-          <v-card>
-            <v-card-title style="font-size:1em">
-              ยอดขายทั้งหมด
-            </v-card-title>
-            <v-card-text> ฿ {{ allIncome() }} </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col class="ma-1" cols="3">
-          <v-card>
-            <v-card-title style="font-size:1em">
-              ยอดขายแพ็คเกจ
-            </v-card-title>
-            <v-card-text> ฿ {{ packageIncome() }} </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col class="ma-1" cols="3">
-          <v-card>
-            <v-card-title style="font-size:1em">
-              ยอดจองห้องประชุม
-            </v-card-title>
-            <v-card-text> ฿ {{ meetingIncome() }} </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <line-chart
-          :data="chartData"
-          :colors="['#fa9056', '#92c970']"
-        ></line-chart>
-      </v-row>
+      <v-card-title style="font-size:20px">
+        ตัวชี้วัดหลัก
+      </v-card-title>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="4">
+            <v-card outlined>
+              <v-card-title style="font-size:1em">
+                ยอดขายทั้งหมด
+              </v-card-title>
+              <v-card-text> ฿ {{ allIncome() }} </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="4">
+            <v-card outlined style="border-color:#fa9056">
+              <v-card-title style="font-size:1em">
+                ยอดขายแพ็คเกจ
+              </v-card-title>
+              <v-card-text> ฿ {{ packageIncome() }} </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="4">
+            <v-card outlined style="border-color:#92c970">
+              <v-card-title style="font-size:1em">
+                ยอดจองห้องประชุม
+              </v-card-title>
+              <v-card-text> ฿ {{ meetingIncome() }} </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12"
+            ><v-card outlined>
+              <line-chart
+                :data="chartData"
+                :colors="['#fa9056', '#92c970']"
+              ></line-chart> </v-card
+          ></v-col>
+        </v-row>
+      </v-container>
     </v-container>
   </v-card>
 </template>

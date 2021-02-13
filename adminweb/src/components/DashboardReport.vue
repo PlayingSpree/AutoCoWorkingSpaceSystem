@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12"
           ><v-card-title style="font-size:20px">
-            ช่องทางการชำระเงิน
+            การรายงานปัญหา
           </v-card-title></v-col
         ></v-row
       >
@@ -16,22 +16,22 @@
                 <v-row class="align-center">
                   <v-col
                     ><pie-chart
-                      :colors="['#689F38', '#1851b2']"
+                      :colors="['#C62828', '#FFA726']"
                       :data="pieData"
                       :legend="false"
                     ></pie-chart
                   ></v-col>
                   <v-col>
                     <p>
-                      <v-icon style="color: #1851b2" small>mdi-circle</v-icon>
+                      <v-icon style="color: #FFA726" small>mdi-circle</v-icon>
                       ชำระผ่านพร้อมเพย์
                     </p>
-                    <p>{{ promptPercent() }} %</p>
+                    <p>{{ elecPercent() }} %</p>
                     <p>
-                      <v-icon style="color: #689F38" small>mdi-circle</v-icon>
+                      <v-icon style="color: #C62828" small>mdi-circle</v-icon>
                       ชำระผ่านบัตรเครดิต
                     </p>
-                    <p>{{ creditPercent() }} %</p>
+                    <p>{{ appPercent() }} %</p>
                   </v-col>
                 </v-row>
               </v-card>
@@ -47,28 +47,28 @@
                     <v-col cols="12">
                       <v-card outlined height="100%">
                         <v-card-title style="font-size:1em">
-                          รายการชำระทั้งหมด
+                          การรายงานปัญหาทั้งหมด
                         </v-card-title>
-                        <v-card-text> ฿ {{ allPay() }} </v-card-text>
+                        <v-card-text> {{ allReport() }} </v-card-text>
                       </v-card>
                     </v-col>
                   </v-row>
 
                   <v-row>
                     <v-col cols="6" height="100%">
-                      <v-card outlined style="border-color:#689F38">
+                      <v-card outlined style="border-color:#C62828">
                         <v-card-title style="font-size:1em">
-                          บัตรเครดิต
+                          ปัญหาจากแอพพลิเคชั่น
                         </v-card-title>
-                        <v-card-text> ฿ {{ pieData[0][1] }} </v-card-text>
+                        <v-card-text> {{ pieData[0][1] }} </v-card-text>
                       </v-card>
                     </v-col>
                     <v-col cols="6" height="100%">
-                      <v-card outlined style="border-color:#1851b2">
+                      <v-card outlined style="border-color:#FFA726">
                         <v-card-title style="font-size:1em">
-                          พร้อมเพย์
+                          ปัญหาจากอุปกรณ์
                         </v-card-title>
-                        <v-card-text> ฿ {{ pieData[1][1] }} </v-card-text>
+                        <v-card-text> {{ pieData[1][1] }} </v-card-text>
                       </v-card>
                     </v-col>
                   </v-row>
@@ -87,25 +87,25 @@ export default {
   data: function() {
     return {
       pieData: [
-        ["ชำระผ่านบัตรเครดิต", 770],
-        ["ชำระผ่านพร้อมเพย์", 230]
+        ["แอพพลิเคชั่น", 4],
+        ["อุปกรณ์", 1]
       ]
     };
   },
 
   methods: {
-    creditPercent: function() {
+    appPercent: function() {
       return (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *
         100
       ).toFixed(2);
     },
 
-    promptPercent: function() {
-      return (100 - this.creditPercent()).toFixed(2);
+    elecPercent: function() {
+      return (100 - this.appPercent()).toFixed(2);
     },
 
-    allPay: function() {
+    allReport: function() {
       return this.pieData[0][1] + this.pieData[1][1];
     }
   }
