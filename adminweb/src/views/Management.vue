@@ -1,10 +1,22 @@
 <template>
-  <v-container grid-list-xs id="manage"> </v-container>
+  <v-container id="manage">
+    <v-row>
+      <v-col cols="12">
+        <management-room />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
+import ManagementRoom from "../components/ManagementRoom.vue";
+
 export default {
-  name: "manage"
+  name: "manage",
+
+  components: {
+    ManagementRoom
+  }
 };
 </script>
 

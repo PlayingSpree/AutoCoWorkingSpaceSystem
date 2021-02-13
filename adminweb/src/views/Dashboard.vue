@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    <v-container grid-list-xs>
+    <v-container>
       <v-row>
         <v-col cols="12">
           <h3>
@@ -10,8 +10,8 @@
       </v-row>
       <dashboard-download />
       <dashboard-main />
-      <dashboard-pay-method/>
-      <dashboard-user-overview/>
+      <dashboard-pay-method />
+      <dashboard-user-overview />
     </v-container>
   </div>
 </template>
@@ -19,8 +19,8 @@
 <script>
 import DashboardMain from "../components/DashboardMain.vue";
 import DashboardDownload from "../components/DashboardDownload.vue";
-import DashboardPayMethod from "../components/DashboardPayMethod.vue"
-import DashboardUserOverview from "../components/DashboardUserOverview.vue"
+import DashboardPayMethod from "../components/DashboardPayMethod.vue";
+import DashboardUserOverview from "../components/DashboardUserOverview.vue";
 
 export default {
   name: "dashboard",
