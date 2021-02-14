@@ -90,8 +90,8 @@ export default {
   data: function() {
     return {
       pieData: [
-        ["NewUser", 230],
-        ["OldUser", 770]
+        ["ลูกค้าใหม่", 230],
+        ["ลูกค้าเดิม", 770]
       ]
     };
   },
