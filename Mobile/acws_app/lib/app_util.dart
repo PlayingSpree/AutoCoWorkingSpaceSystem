@@ -23,8 +23,7 @@ Future<dynamic> httpGetRequest(String url, BuildContext context) async {
       Navigator.pushReplacementNamed(context, '/login');
     }
   } else {
-    throw Exception(
-        '\nRequest Error Code: ${response.statusCode}\n ${response.body}');
+    throw Exception(response);
   }
   return null;
 }
@@ -48,7 +47,7 @@ Future<dynamic> httpRequest(String url, var body, BuildContext context,
           },
           body: jsonEncode(body))
       .timeout(const Duration(seconds: 6));
-  if (response.statusCode == 200) {
+  if (response.statusCode >= 200 && response.statusCode < 300) {
     return json.decode(utf8.decode(response.bodyBytes));
   } else if (response.statusCode == 403) {
     if (response.body == '{"detail":"Invalid token."}') {
@@ -57,8 +56,7 @@ Future<dynamic> httpRequest(String url, var body, BuildContext context,
       Navigator.pushReplacementNamed(context, '/login');
     }
   } else {
-    throw Exception(
-        '\nRequest Error Code: ${response.statusCode}\n ${response.body}');
+    throw Exception(response);
   }
   return null;
 }
