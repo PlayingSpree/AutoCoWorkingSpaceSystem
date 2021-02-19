@@ -14,4 +14,6 @@ class CoworkingSpaceSubscriptionViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return CoworkingSpaceSubscription.objects.all()
+        if user.is_anonymous:
+            return
         return CoworkingSpaceSubscription.objects.filter(user=user)
