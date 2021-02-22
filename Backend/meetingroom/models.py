@@ -14,24 +14,11 @@ def meetingroom_file_name(instance, filename):
 class MeetingRoom(models.Model):
     name = models.CharField(max_length=64)
     detail = models.TextField(blank=True)
-    picture = models.ImageField(null=True, blank=True, upload_to=meetingroom_file_name)
     is_active = models.BooleanField(default=False)
     price = models.IntegerField()
 
     def __str__(self):
         return '[MeetingRoom id:{}] {}'.format(self.id, self.name)
-
-    # Model Save override to set id as filename
-    def save(self, *args, **kwargs):
-        if self.id is None:
-            picture = self.picture
-            self.picture = None
-            super(MeetingRoom, self).save(*args, **kwargs)
-            self.picture = picture
-            if 'force_insert' in kwargs:
-                kwargs.pop('force_insert')
-
-        super(MeetingRoom, self).save(*args, **kwargs)
 
 
 class MeetingRoomBooking(models.Model):

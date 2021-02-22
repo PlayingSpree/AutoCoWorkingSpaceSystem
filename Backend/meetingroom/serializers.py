@@ -7,7 +7,7 @@ from meetingroom.models import MeetingRoom, MeetingRoomBooking
 class MeetingRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingRoom
-        fields = ['id', 'name', 'detail', 'picture', 'is_active', 'price']
+        fields = ['id', 'name', 'detail', 'is_active', 'price']
         read_only_fields = ['id']
 
     def validate_price(self, value):

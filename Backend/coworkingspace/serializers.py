@@ -7,7 +7,7 @@ from coworkingspace.models import CoworkingSpacePackage, CoworkingSpaceSubscript
 class CoworkingSpacePackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoworkingSpacePackage
-        fields = ['id', 'name', 'detail', 'is_active', 'price']
+        fields = ['id', 'name', 'detail', 'is_active', 'price', 'duration']
         read_only_fields = ['id']
 
     def validate_price(self, value):
@@ -24,18 +24,8 @@ class CoworkingSpaceSubscriptionSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {'required': True},
                         'package': {'required': True}}
 
-    def validate_date_start(self, value):
-        if value <= timezone.now():
-            raise serializers.ValidationError("date_start ({}) is in the past".format(value))
-        return value
-
-    def validate_date_end(self, value):
-        if value <= timezone.now():
-            raise serializers.ValidationError("date_end ({}) is in the past".format(value))
-        return value
-
     def validate_package(self, value):
-        if not value.active:
+        if not value.is_active:
             raise serializers.ValidationError("package ({}) is not active".format(value))
         return value
 
@@ -43,4 +33,6 @@ class CoworkingSpaceSubscriptionSerializer(serializers.ModelSerializer):
         if data['date_start'] >= data['date_end']:
             raise serializers.ValidationError(
                 "date_end ({}) must occur after date_start ({})".format(data['date_end'], data['date_start']))
+        # if data['date_end'] - data['date_start'] > timezone.timedelta(days=data['package'].duration):
+        #     raise serializers.ValidationError("duration are longer than package")
         return data

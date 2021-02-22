@@ -19,7 +19,7 @@ class MeetingRoomViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return MeetingRoom.objects.all()
         else:
-            return MeetingRoom.objects.filter(active=True)
+            return MeetingRoom.objects.filter(is_active=True)
 
     def get_permissions(self):
         return get_permissions_multi(self)

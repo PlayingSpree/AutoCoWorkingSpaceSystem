@@ -19,7 +19,7 @@ class PackageViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return CoworkingSpacePackage.objects.all()
         else:
-            return CoworkingSpacePackage.objects.filter(active=True)
+            return CoworkingSpacePackage.objects.filter(is_active=True)
 
     def get_permissions(self):
         return get_permissions_multi(self)
