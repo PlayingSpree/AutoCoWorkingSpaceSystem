@@ -23,7 +23,7 @@ Future<dynamic> httpGetRequest(String url, BuildContext context) async {
       Navigator.pushReplacementNamed(context, '/login');
     }
   } else {
-    throw Exception(response);
+    throw Exception(response.body);
   }
   return null;
 }
@@ -56,7 +56,7 @@ Future<dynamic> httpRequest(String url, var body, BuildContext context,
       Navigator.pushReplacementNamed(context, '/login');
     }
   } else {
-    throw Exception(response);
+    throw Exception(response.body);
   }
   return null;
 }

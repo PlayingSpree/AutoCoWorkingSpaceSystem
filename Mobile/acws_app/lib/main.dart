@@ -1,9 +1,10 @@
+import 'file:///E:/GitRepo/AutoCoWorkingSpaceSystem/Mobile/acws_app/lib/page/home/home.dart';
+import 'file:///E:/GitRepo/AutoCoWorkingSpaceSystem/Mobile/acws_app/lib/page/profile/profile.dart';
 import 'package:animations/animations.dart';
-import 'package:acws_app/member.dart';
 import 'package:flutter/material.dart';
 
-import 'login.dart';
-import 'remote.dart';
+import 'page/login/login.dart';
+import 'page/remote/remote.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,13 +36,7 @@ class _MainPageState extends State<MainPage> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static var _widgetOptions = [
-    Center(
-      key: UniqueKey(),
-      child: Text(
-        'Home',
-        style: optionStyle,
-      ),
-    ),
+    HomePage(),
     RemotePage(),
     Center(
       key: UniqueKey(),
