@@ -36,17 +36,18 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
+                  path('admin/', admin.site.urls),
+                  path('api-auth/', include('rest_framework.urls')),
 
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger'),
+                  path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger'),
 
-    path('auth/', include('dj_rest_auth.urls')),
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
-    path('auth/google/', GoogleLogin.as_view(), name='google_login'),
+                  path('auth/', include('dj_rest_auth.urls')),
+                  path('auth/registration/', include('dj_rest_auth.registration.urls')),
+                  path('auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+                  path('auth/google/', GoogleLogin.as_view(), name='google_login'),
 
-    path('coworkingspace/', include('coworkingspace.urls')),
-    path('meetingroom/', include('meetingroom.urls')),
-    path('iot/', include('iot.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # TEMP for file serving
+                  path('coworkingspace/', include('coworkingspace.urls')),
+                  path('meetingroom/', include('meetingroom.urls')),
+                  path('iot/', include('iot.urls')),
+                  path('payment/', include('payment.urls')),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # TEMP for file serving

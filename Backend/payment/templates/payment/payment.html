@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://cdn.omise.co/omise.js"></script>
+</head>
+<body>
+
+<form id="checkoutForm" method="POST" action="">
+    <input type="hidden" name="omiseToken">
+    <input type="hidden" name="omiseSource">
+    <button type="submit" id="checkoutButton">Pay with Omise</button>
+</form>
+
+<form method="POST" action="{% url 'payment_process' %}">{% csrf_token %}
+    <button type="submit" id="skipPaymentButton">Skip payment</button>
+</form>
+
+<script>
+    OmiseCard.configure({
+        publicKey: "pkey_test_5lruxk5hhrjbl14lcxn"
+    });
+
+    var button = document.querySelector("#checkoutButton");
+    var form = document.querySelector("#checkoutForm");
+
+    button.addEventListener("click", (event) => {
+        event.preventDefault();
+        OmiseCard.open({
+            amount: {{ amount }},
+            currency: "THB",
+            defaultPaymentMethod: "credit_card",
+            onCreateTokenSuccess: (nonce) => {
+                FlutterCallback.postMessage(nonce);
+            },
+            onFormClosed: () => {
+                FlutterCallback.postMessage('Close');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
