@@ -57,7 +57,7 @@ class _ReserveState extends State<Reserve> {
                   '4 Person Meeting Room',
                   'รายละเอียด Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nห้องสำหรับ 4 คน',
                   '99 ฿ / 1 ชม.',
-                  onPressed: () => {})
+                  onPressed: () {})
             ],
           )
         ]));
