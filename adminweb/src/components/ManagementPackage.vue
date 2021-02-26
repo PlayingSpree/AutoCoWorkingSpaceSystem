@@ -1,9 +1,7 @@
 <template>
   <v-card class="mt-5">
     <v-container fluid>
-      <v-card-title primary-title>
-        แพ็คเกจ
-      </v-card-title>
+      <v-card-title primary-title> แพ็คเกจ </v-card-title>
       <v-container class="d-flex align-content-start flex-wrap">
         <v-card
           v-for="key in Object.keys(packagedata())"
@@ -16,41 +14,33 @@
           <v-card-title class="justify-center">
             {{ key }}
           </v-card-title>
-          <v-card-text style="color: #FFFFFF">
-            รายละเอียด
-          </v-card-text>
+          <v-card-text style="color: #ffffff"> รายละเอียด </v-card-text>
           <v-card-text style="font-size: 20px">
             {{ packagedata()[key][0] }}
           </v-card-text>
           <v-row>
             <v-col cols="6">
-              <v-card-text>
-                ราคา
-              </v-card-text>
-              <v-card-text style="color: #FFFFFFB3; font-size:20px">
+              <v-card-text> ราคา </v-card-text>
+              <v-card-text style="color: #ffffffb3; font-size: 20px">
                 {{ packagedata()[key][1] }} บาท
               </v-card-text>
             </v-col>
             <v-col cols="6">
-              <v-card-text>
-                ระยะเวลา
-              </v-card-text>
-              <v-card-text style="color: #FFFFFFB3; font-size:20px">
+              <v-card-text> ระยะเวลา </v-card-text>
+              <v-card-text style="color: #ffffffb3; font-size: 20px">
                 {{ packagedata()[key][2] }} วัน
               </v-card-text>
             </v-col>
           </v-row>
-          <v-card-text>
-            สถานะ
-          </v-card-text>
+          <v-card-text> สถานะ </v-card-text>
           <v-select
-                  v-model="selectstatus"
-                  :placeholder="packagedata()[key][3]"
-                  :items="status"
-                  full-width="100px"
-                  @input="setPackageStatus(selectstatus, key)"
-                  solo
-                ></v-select>
+            v-model="selectstatus"
+            :placeholder="packagedata()[key][3]"
+            :items="status"
+            full-width="100px"
+            @input="setPackageStatus(selectstatus, key)"
+            solo
+          ></v-select>
         </v-card>
         <v-card outlined width="300px" height="400px" class="mx-2">
           <v-menu
@@ -126,12 +116,8 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn text @click="menu = false">
-                  Cancel
-                </v-btn>
-                <v-btn color="primary" text @click="addNewPackage">
-                  OK
-                </v-btn>
+                <v-btn text @click="menu = false"> Cancel </v-btn>
+                <v-btn color="primary" text @click="addNewPackage"> OK </v-btn>
               </v-card-actions>
             </v-card>
           </v-menu>
@@ -150,7 +136,6 @@ export default {
       statusgroup: 0
     };
   },
-
   methods: {
     addNewPackage: function() {
       this.menu = false;
@@ -165,7 +150,7 @@ export default {
 
       var old_name = JSON.parse(localStorage.getItem("packagedata"));
 
-      old_name[new_name] = [new_detail, new_price, new_range, 'ปิดการใช้งาน'];
+      old_name[new_name] = [new_detail, new_price, new_range, "ปิดการใช้งาน"];
 
       localStorage.setItem("packagedata", JSON.stringify(old_name));
     },
@@ -173,7 +158,11 @@ export default {
     packagedata: function() {
       var packagedata = JSON.parse(localStorage.getItem("packagedata"));
 
-      return packagedata;
+      if (packagedata != null) {
+        return packagedata;
+      } else {
+        return {};
+      }
     },
 
     setPackageStatus: function(value, key) {
