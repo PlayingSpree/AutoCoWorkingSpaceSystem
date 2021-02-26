@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'app_transition_route.dart';
-import 'app_util.dart';
+import '../../app_transition_route.dart';
+import '../../app_util.dart';
 
 class RemotePage extends StatefulWidget {
   @override
@@ -104,7 +104,6 @@ class _RemoteMeetingRoomPageState extends State<RemoteMeetingRoomPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Meeting Room Remote'),
-          bottom: PreferredSize(child: LinearProgressIndicator()),
         ),
         body: _response == null
             ? Center(child: CircularProgressIndicator())
@@ -196,7 +195,7 @@ class _DiscreteNumberRemoteState extends State<DiscreteNumberRemote> {
 
   Future<void> sendUpdate() async {
     try {
-      var response = await httpRequest(
+      await httpRequest(
           '/iot/room/${widget._room}/',
           {
             'iot_id': widget._iotId,

@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'authapp.apps.AuthappConfig',
     'coworkingspace.apps.CoworkingspaceConfig',
     'meetingroom.apps.MeetingroomConfig',
+    'payment.apps.PaymentConfig',
+    'statapp.apps.StatappConfig',
     'iot.apps.IotConfig',
     # Default apps
     'django.contrib.admin',
