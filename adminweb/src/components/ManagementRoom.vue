@@ -186,15 +186,147 @@
                 <v-card-title>
                   หลอดไฟ
                 </v-card-title>
+                <v-card-text class="mb-4">
+                  สีไฟ
+                </v-card-text>
+                <v-row class="mb-8" no-gutters>
+                  <v-col>
+                    <v-btn
+                      color="white"
+                      width="100px"
+                      @click="setRoomLightColor(0, key)"
+                      ><v-icon style="color: #000000">{{
+                        allroomname()[key][2] == 0 ? "mdi-check" : ""
+                      }}</v-icon></v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      color="amber lighten-5"
+                      width="100px"
+                      @click="setRoomLightColor(1, key)"
+                      style="color: #000000"
+                      ><v-icon style="color: #000000">{{
+                        allroomname()[key][2] == 1 ? "mdi-check" : ""
+                      }}</v-icon></v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      color="orange lighten-3"
+                      width="100px"
+                      @click="setRoomLightColor(2, key)"
+                      ><v-icon style="color: #000000">
+                        {{
+                          allroomname()[key][2] == 2 ? "mdi-check" : ""
+                        }}</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                </v-row>
+                <v-card-text class="mb-4">
+                  ความสว่าง
+                </v-card-text>
+                <v-row no-gutters>
+                  <v-col>
+                    <v-btn
+                      color="white"
+                      width="50px"
+                      @click="setRoomLightBright(0, key)"
+                      ><v-icon style="color: #000000">
+                        {{
+                          allroomname()[key][3] == 0 ? "mdi-check" : ""
+                        }}</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      color="grey lighten-2"
+                      width="50px"
+                      @click="setRoomLightBright(1, key)"
+                      ><v-icon style="color: #000000">
+                        {{
+                          allroomname()[key][3] == 1 ? "mdi-check" : ""
+                        }}</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      color="grey lighten-1"
+                      width="50px"
+                      @click="setRoomLightBright(2, key)"
+                      ><v-icon style="color: #000000">
+                        {{
+                          allroomname()[key][3] == 2 ? "mdi-check" : ""
+                        }}</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      color="grey darken-1"
+                      width="50px"
+                      @click="setRoomLightBright(3, key)"
+                      ><v-icon style="color: #000000">
+                        {{
+                          allroomname()[key][3] == 3 ? "mdi-check" : ""
+                        }}</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      color="grey darken-2"
+                      width="50px"
+                      @click="setRoomLightBright(4, key)"
+                      ><v-icon style="color: #000000">
+                        {{
+                          allroomname()[key][3] == 4 ? "mdi-check" : ""
+                        }}</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                </v-row>
               </v-card></v-col
             >
             <v-divider vertical></v-divider>
-            <v-col
-              ><v-card width="300px" elevation="0">
+            <v-col class="align-center"
+              ><v-card elevation="0">
                 <v-card-title>
                   เครื่องปรับอากาศ
                 </v-card-title>
+                <v-card-text>
+                  อุณหภูมิ
+                </v-card-text>
+                <v-container class="d-flex align-content-start mb-4">
+                  <v-btn
+                    color="light-blue lighten-2"
+                    class="mr-5"
+                    @click="setRoomTempDown(key)"
+                    ><v-icon>mdi-minus</v-icon></v-btn
+                  >
+                  <p class="mr-5" style="font-size: 20px">
+                    {{ allroomname()[key][4] }}
+                  </p>
+                  <v-btn color="pink lighten-1" @click="setRoomTempUp(key)"
+                    ><v-icon>mdi-plus</v-icon></v-btn
+                  >
+                </v-container>
+                <v-card-text class="mb-4">
+                  เปิด/ปิด
+                </v-card-text>
+                <v-btn
+                  class="ml-3"
+                  :color="allroomname()[key][5] ? 'success' : 'red darken-4'"
+                  @click="setRoomAir(key)"
+                  >{{ allroomname()[key][5] ? "on" : "off" }}</v-btn
+                >
               </v-card></v-col
+            >
+            <v-btn @click="deleteRoomName(key)" icon
+              ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
             >
           </v-row>
         </v-container>
@@ -205,8 +337,7 @@
           :close-on-content-click="false"
           :nudge-width="100"
           max-width="300px"
-          offset-x
-          transition="slide-x-transition"
+          transition="slide-y-transition"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn x-large v-bind="attrs" v-on="on" width="100%" height="100%"
@@ -251,7 +382,8 @@ export default {
       menu: false,
       menumeeting: false,
       show: false,
-      status: ["เปิดให้บริการ", "ปิดปรับปรุง"]
+      status: ["เปิดให้บริการ", "ปิดปรับปรุง"],
+      lightColorLabel: ["", "", ""]
     };
   },
 
@@ -312,7 +444,14 @@ export default {
       }
 
       var old_name = JSON.parse(localStorage.getItem("roomnamedata"));
-      old_name[new_name] = [];
+      old_name[new_name] = [
+        this.getRoomtype()[0],
+        this.status[1],
+        0,
+        0,
+        25,
+        false
+      ];
       localStorage.setItem("roomnamedata", JSON.stringify(old_name));
 
       this.menumeeting = false;
@@ -337,6 +476,50 @@ export default {
       var room = JSON.parse(localStorage.getItem("roomnamedata"));
       room[key][1] = value;
       localStorage.setItem("roomnamedata", JSON.stringify(room));
+    },
+
+    setRoomLightColor: function(color, key) {
+      var room = JSON.parse(localStorage.getItem("roomnamedata"));
+      room[key][2] = color;
+      localStorage.setItem("roomnamedata", JSON.stringify(room));
+      this.$forceUpdate();
+    },
+
+    setRoomLightBright: function(bright, key) {
+      var room = JSON.parse(localStorage.getItem("roomnamedata"));
+      room[key][3] = bright;
+      localStorage.setItem("roomnamedata", JSON.stringify(room));
+      this.$forceUpdate();
+    },
+
+    setRoomTempUp: function(key) {
+      var room = JSON.parse(localStorage.getItem("roomnamedata"));
+      room[key][4] += 1;
+      localStorage.setItem("roomnamedata", JSON.stringify(room));
+      this.$forceUpdate();
+    },
+
+    setRoomTempDown: function(key) {
+      var room = JSON.parse(localStorage.getItem("roomnamedata"));
+      room[key][4] -= 1;
+      localStorage.setItem("roomnamedata", JSON.stringify(room));
+      this.$forceUpdate();
+    },
+
+    setRoomAir: function(key) {
+      var room = JSON.parse(localStorage.getItem("roomnamedata"));
+      room[key][5] = !room[key][5];
+      localStorage.setItem("roomnamedata", JSON.stringify(room));
+      this.$forceUpdate();
+    },
+
+    deleteRoomName: function(roomtodel) {
+      var nametodel = JSON.parse(localStorage.getItem("roomnamedata"));
+
+      delete nametodel[roomtodel];
+      localStorage.setItem("roomnamedata", JSON.stringify(nametodel));
+
+      this.$forceUpdate();
     }
   }
 };

@@ -3,7 +3,7 @@
     <v-app-bar app>
       <v-btn @click="$router.push('/')" text>Dashboard</v-btn>
       <v-btn @click="$router.push('/manage')" text>Management</v-btn>
-      <v-btn @click="$router.push('/login')" text>Review</v-btn>
+      <v-btn @click="$router.push('/review')" text>Review</v-btn>
       <v-btn @click="$router.push('/login')" text>Report</v-btn>
       <v-btn @click="$router.push('/login')" text>User</v-btn>
       <v-spacer></v-spacer>
