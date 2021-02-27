@@ -4,7 +4,7 @@
       <v-btn @click="$router.push('/')" text>Dashboard</v-btn>
       <v-btn @click="$router.push('/manage')" text>Management</v-btn>
       <v-btn @click="$router.push('/review')" text>Review</v-btn>
-      <v-btn @click="$router.push('/login')" text>Report</v-btn>
+      <v-btn @click="$router.push('/report')" text>Report</v-btn>
       <v-btn @click="$router.push('/login')" text>User</v-btn>
       <v-spacer></v-spacer>
       <v-btn @click="$router.push('/login')" text
