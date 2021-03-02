@@ -45,6 +45,18 @@ class MeetingRoomTypeSerializer(serializers.ModelSerializer):
         return MeetingRoomBooking.objects.filter(date_end__gt=start, date_start__lt=end, room__type=obj,
                                                  is_canceled=False).count()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        start = self.context['request'].query_params.get('start', None)
+        end = self.context['request'].query_params.get('end', None)
+        if start is not None and end is not None:
+            start = parse_datetime(start)
+            end = parse_datetime(end)
+            if start is not None and end is not None:
+                return
+        self.fields.pop('available')
+
     class Meta:
         model = MeetingRoomType
         fields = ['id', 'name', 'detail', 'available']
