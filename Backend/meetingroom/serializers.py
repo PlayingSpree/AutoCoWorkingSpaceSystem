@@ -1,19 +1,54 @@
 from django.utils import timezone
 from rest_framework import serializers
+from django.utils.dateparse import parse_datetime
 
-from meetingroom.models import MeetingRoom, MeetingRoomBooking
+from meetingroom.models import MeetingRoom, MeetingRoomBooking, MeetingRoomType
 
 
 class MeetingRoomSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MeetingRoom
-        fields = ['id', 'name', 'detail', 'is_active', 'price']
-        read_only_fields = ['id']
+    available = serializers.SerializerMethodField(read_only=True)
+
+    def get_available(self, obj):
+        start = self.context['request'].query_params.get('start', None)
+        end = self.context['request'].query_params.get('end', None)
+        return MeetingRoomBooking.is_available(start, end, obj)
 
     def validate_price(self, value):
         if value <= 0:
             raise serializers.ValidationError("price ({}) is less than or equal to 0".format(value))
         return value
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        start = self.context['request'].query_params.get('start', None)
+        end = self.context['request'].query_params.get('end', None)
+        if start is not None and end is not None:
+            start = parse_datetime(start)
+            end = parse_datetime(end)
+            if start is not None and end is not None:
+                return
+        self.fields.pop('available')
+
+    class Meta:
+        model = MeetingRoom
+        fields = ['id', 'name', 'detail', 'is_active', 'price', 'available']
+        read_only_fields = ['id']
+
+
+class MeetingRoomTypeSerializer(serializers.ModelSerializer):
+    available = serializers.SerializerMethodField(read_only=True)
+
+    def get_available(self, obj):
+        start = self.context['request'].query_params.get('start', None)
+        end = self.context['request'].query_params.get('end', None)
+        return MeetingRoomBooking.objects.filter(date_end__gt=start, date_start__lt=end, room__type=obj,
+                                                 is_canceled=False).count()
+
+    class Meta:
+        model = MeetingRoomType
+        fields = ['id', 'name', 'detail', 'available']
+        read_only_fields = ['id']
 
 
 class MeetingRoomBookingSerializer(serializers.ModelSerializer):
@@ -35,7 +70,7 @@ class MeetingRoomBookingSerializer(serializers.ModelSerializer):
         return value
 
     def validate_room(self, value):
-        if not value.active:
+        if not value.is_active:
             raise serializers.ValidationError("room ({}) is not active".format(value))
         return value
 
