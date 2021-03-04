@@ -11,14 +11,23 @@ def meetingroom_file_name(instance, filename):
     return '/'.join(['uploads/meetingroom/', str(instance.id), 'picture{0}'.format(os.path.splitext(filename)[1])])
 
 
+class MeetingRoomType(models.Model):
+    name = models.CharField(max_length=64)
+    detail = models.TextField(blank=True)
+
+    def __str__(self):
+        return '[MeetingRoomType id:{}] {}'.format(self.id, self.name)
+
+
 class MeetingRoom(models.Model):
     name = models.CharField(max_length=64)
     detail = models.TextField(blank=True)
     is_active = models.BooleanField(default=False)
     price = models.IntegerField()
+    type = models.ForeignKey(MeetingRoomType, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return '[MeetingRoom id:{}] {}'.format(self.id, self.name)
+        return '[MeetingRoom id:{}] {} Type: {}'.format(self.id, self.name, self.type)
 
 
 class MeetingRoomBooking(models.Model):

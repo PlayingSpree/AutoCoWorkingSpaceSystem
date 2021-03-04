@@ -2,11 +2,21 @@ import 'file:///E:/GitRepo/AutoCoWorkingSpaceSystem/Mobile/acws_app/lib/page/hom
 import 'file:///E:/GitRepo/AutoCoWorkingSpaceSystem/Mobile/acws_app/lib/page/profile/profile.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 import 'page/login/login.dart';
 import 'page/remote/remote.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  _setupApp();
+  runApp(MyApp());
+}
+
+void _setupApp() {
+  initializeDateFormatting('en', null);
+  Intl.defaultLocale = 'th';
+}
 
 class MyApp extends StatelessWidget {
   @override

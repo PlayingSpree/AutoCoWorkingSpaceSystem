@@ -7,6 +7,9 @@ from meetingroom.serializers import MeetingRoomSerializer
 
 
 class MeetingRoomViewSet(viewsets.ModelViewSet):
+    """
+    query_params: start, end = Start/End DateTime
+    """
     queryset = MeetingRoom.objects.all()
     serializer_class = MeetingRoomSerializer
     permissions = [
@@ -15,11 +18,12 @@ class MeetingRoomViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
+        queryset = self.queryset.all()
+        # Check User
         user = self.request.user
-        if user.is_staff:
-            return MeetingRoom.objects.all()
-        else:
-            return MeetingRoom.objects.filter(is_active=True)
+        if not user.is_staff:
+            queryset = queryset.filter(is_active=True)
+        return queryset
 
     def get_permissions(self):
         return get_permissions_multi(self)
