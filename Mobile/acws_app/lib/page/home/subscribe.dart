@@ -14,13 +14,13 @@ class Subscribe extends StatefulWidget {
 class _SubscribeState extends State<Subscribe> {
   @override
   void initState() {
-    _loadPackage();
     super.initState();
+    _downloadData();
   }
 
   var _response;
 
-  Future<void> _loadPackage() async {
+  Future<void> _downloadData() async {
     var response = await httpGetRequest('/coworkingspace/package/', context);
     setState(() {
       _response = response;
