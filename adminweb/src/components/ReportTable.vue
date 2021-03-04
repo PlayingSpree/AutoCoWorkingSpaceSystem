@@ -13,7 +13,7 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="reportData" :search="search">
-      <template v-slot:item.fixed="{ item }">
+      <template v-slot:[`item.fixed`]="{ item }">
         <v-checkbox @click="fixedItem(item)"></v-checkbox>
       </template>
     </v-data-table>
@@ -72,7 +72,7 @@ export default {
     fixedItem: function(item) {
       this.editedIndex = this.reportData.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      Object.assign(this.reportData[this.editedIndex], this.editedItem)
+      Object.assign(this.reportData[this.editedIndex], this.editedItem);
     }
   }
 };

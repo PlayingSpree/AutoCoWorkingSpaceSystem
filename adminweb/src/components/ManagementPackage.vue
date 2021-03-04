@@ -33,14 +33,16 @@
             </v-col>
           </v-row>
           <v-card-text> สถานะ </v-card-text>
-          <v-select
-            v-model="selectstatus"
-            :placeholder="packagedata()[key][3]"
-            :items="status"
-            full-width="100px"
-            @input="setPackageStatus(selectstatus, key)"
-            solo
-          ></v-select>
+          <v-card-text>
+            <v-select
+              v-model="selectstatus"
+              :placeholder="packagedata()[key][3]"
+              :items="status"
+              full-width="100px"
+              @input="setPackageStatus(selectstatus, key)"
+              solo
+            ></v-select>
+          </v-card-text>
         </v-card>
         <v-card outlined width="300px" height="400px" class="mx-2">
           <v-menu

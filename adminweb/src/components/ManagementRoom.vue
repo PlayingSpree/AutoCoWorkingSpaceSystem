@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="mt-5">
     <v-container fluid>
       <v-card outlined>
         <v-container fluid>

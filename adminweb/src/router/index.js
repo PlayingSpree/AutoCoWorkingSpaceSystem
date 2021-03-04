@@ -5,6 +5,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Manage from "../views/Management.vue";
 import Review from "../views/Review.vue";
 import Report from "../views/Report.vue";
+import User from "../views/User.vue";
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,11 @@ const routes = [
     path: "/report",
     name: "Report",
     component: Report
+  },
+  {
+    path: "/user",
+    name: "User",
+    component: User
   }
 ];
 
