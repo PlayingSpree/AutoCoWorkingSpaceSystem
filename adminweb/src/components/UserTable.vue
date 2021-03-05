@@ -201,11 +201,31 @@
               </v-card>
 
               <v-card outlined class="mt-2">
-                <v-container> </v-container>
+                <v-container>
+                  <v-row>
+                    <v-card-title primary-title>
+                      ประวัติการซื้อแพ็คเกจ
+                    </v-card-title>
+                    <v-card-text>
+                      <v-data-table :headers="headerspackage" />
+                    </v-card-text>
+                  </v-row>
+                  <v-row>
+                    <v-card-title primary-title>
+                      ประวัติการจองห้องประชุม
+                    </v-card-title>
+                    <v-card-text>
+                      <v-data-table :headers="headersmeeting" />
+                    </v-card-text>
+                  </v-row>
+                </v-container>
               </v-card>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
+                <v-btn text @click="save">
+                  Save
+                </v-btn>
                 <v-btn color="blue darken-1" text @click="close">
                   Close
                 </v-btn>
@@ -265,6 +285,38 @@ export default {
         { text: "email", value: "email", filterable: false },
         { text: "เบอร์โทรศัพท์", value: "phone", filterable: false }
       ],
+      headerspackage: [
+        {
+          text: "ประเภทแพ็คเกจ",
+          align: "start",
+          value: "package"
+        },
+        {
+          text: "ระยะเวลา",
+          value: "time"
+        },
+        {
+          text: "ลบ/ยกเลิกการจอง",
+          value: "reserve"
+        }
+      ],
+      headersmeeting: [
+        { text: "ครั้งที่", align: "start", value: "round" },
+        {
+          text: "ห้อง",
+          value: "room"
+        },
+        {
+          text: "จองวันที่",
+          value: "date"
+        },
+        { text: "ระยะเวลา", value: "time" },
+        {
+          text: "สถานะ",
+          value: "status"
+        },
+        { text: "ลบ/ยกเลิกการจอง", value: "reserve" }
+      ],
       user: []
     };
   },
@@ -318,6 +370,15 @@ export default {
         this.profileItem = Object.assign({}, this.defaultItem);
         this.profileIndex = -1;
       });
+    },
+
+    save() {
+      if (this.profileIndex > -1) {
+        Object.assign(this.user[this.profileIndex], this.profileItem);
+      } else {
+        this.user.push(this.profileItem);
+      }
+      this.close();
     }
   }
 };
