@@ -5,6 +5,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../app_style.dart';
 import '../../app_transition_route.dart';
+import '../../app_util.dart';
+
+enum PaymentFor { member, meetingRoom }
 
 class PaymentPage extends StatelessWidget {
   const PaymentPage(
@@ -12,13 +15,17 @@ class PaymentPage extends StatelessWidget {
       @required this.title,
       @required this.detail,
       @required this.detailList,
-      @required this.price})
+      @required this.price,
+      @required this.paymentFor,
+      @required this.id})
       : super(key: key);
 
   final String title;
   final String detail;
   final Map<String, String> detailList;
-  final String price;
+  final int price;
+  final PaymentFor paymentFor;
+  final int id;
 
   List<Widget> _detailListBuilder() {
     List<Widget> list = [];
@@ -64,7 +71,8 @@ class PaymentPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('ราคา', style: AppTextStyle.HeaderText),
-                        Text(price, style: AppTextStyle.HeaderText)
+                        Text('${price.toStringAsFixed(2)} ฿',
+                            style: AppTextStyle.HeaderText)
                       ],
                     ),
                   )
@@ -88,7 +96,12 @@ class PaymentPage extends StatelessWidget {
                             title: Text('บัตรเครดิต / เดบิต'),
                             onTap: () {
                               Navigator.of(context).push(SlideLeftRoute(
-                                  exitPage: this, enterPage: PaymentWebView()));
+                                  exitPage: this,
+                                  enterPage: PaymentWebView(
+                                    id: id,
+                                    paymentFor: paymentFor,
+                                    price: price,
+                                  )));
                             },
                           ),
                         ),
@@ -102,8 +115,19 @@ class PaymentPage extends StatelessWidget {
 }
 
 class PaymentWebView extends StatefulWidget {
+  const PaymentWebView(
+      {Key key,
+      @required this.price,
+      @required this.paymentFor,
+      @required this.id})
+      : super(key: key);
+
   @override
   PaymentWebViewState createState() => PaymentWebViewState();
+
+  final int price;
+  final PaymentFor paymentFor;
+  final int id;
 }
 
 class PaymentWebViewState extends State<PaymentWebView> {
@@ -114,11 +138,27 @@ class PaymentWebViewState extends State<PaymentWebView> {
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
+  Future<void> _makePayment(String card) async {
+    var body;
+    String url;
+    switch (widget.paymentFor) {
+      case PaymentFor.member:
+        body = {"package": widget.id, "card_token": card};
+        url = '/coworkingspace/subscription/';
+        break;
+      case PaymentFor.meetingRoom:
+        body = {};
+        url = '/meetingroom/booking/';
+        break;
+    }
+    var response = await httpRequest(url, body, context);
+  }
+
   JavascriptChannel _callbackJavascriptChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'FlutterCallback',
         onMessageReceived: (JavascriptMessage message) {
-          // TODO card = message
+          _makePayment(message.message);
           Navigator.pop(context);
         });
   }
@@ -130,7 +170,8 @@ class PaymentWebViewState extends State<PaymentWebView> {
           title: Text('ชำระเงิน บัตรเครดิต / เดบิต'),
         ),
         body: WebView(
-          initialUrl: appConfig.serverUrl + '/payment/form/',
+          initialUrl:
+              appConfig.serverUrl + '/payment/form/?amount=${widget.price*100}',
           javascriptMode: JavascriptMode.unrestricted,
           javascriptChannels:
               <JavascriptChannel>[_callbackJavascriptChannel(context)].toSet(),

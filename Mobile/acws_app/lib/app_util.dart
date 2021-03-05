@@ -36,10 +36,13 @@ Future<dynamic> httpRequest(String url, var body, BuildContext context,
     case 'put':
       methodFunction = http.put;
       break;
+    case 'patch':
+      methodFunction = http.patch;
+      break;
     default:
       methodFunction = http.post;
   }
-  var response = await methodFunction(appConfig.serverUrl + url,
+  http.Response response = await methodFunction(appConfig.serverUrl + url,
           headers: {
             'accept': 'application/json',
             'Content-Type': 'application/json; charset=UTF-8',

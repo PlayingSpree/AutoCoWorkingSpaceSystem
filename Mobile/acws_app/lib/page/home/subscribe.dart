@@ -34,7 +34,9 @@ class _SubscribeState extends State<Subscribe> {
             title: package['name'],
             detail: package['detail'],
             detailList: {'ระยะเวลา': '${package['duration']} วัน'},
-            price: '${package['price']} ฿')));
+            price: package['price'],
+            paymentFor: PaymentFor.member,
+            id: package['id'])));
   }
 
   @override
