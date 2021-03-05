@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import 'page/history/history.dart';
 import 'page/login/login.dart';
 import 'page/remote/remote.dart';
 
@@ -48,13 +49,7 @@ class _MainPageState extends State<MainPage> {
   static var _widgetOptions = [
     HomePage(),
     RemotePage(),
-    Center(
-      key: UniqueKey(),
-      child: Text(
-        'Reservation',
-        style: optionStyle,
-      ),
-    ),
+    HistoryPage(),
     MemberPage(),
   ];
 
@@ -86,7 +81,7 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.schedule),
-            label: 'Reservation',
+            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

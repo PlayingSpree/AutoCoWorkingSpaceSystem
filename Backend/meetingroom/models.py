@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 from authapp.models import User
+from payment.models import Payment
 
 
 def meetingroom_file_name(instance, filename):
@@ -14,6 +15,7 @@ def meetingroom_file_name(instance, filename):
 class MeetingRoomType(models.Model):
     name = models.CharField(max_length=64)
     detail = models.TextField(blank=True)
+    price = models.IntegerField()
 
     def __str__(self):
         return '[MeetingRoomType id:{}] {}'.format(self.id, self.name)
@@ -23,7 +25,6 @@ class MeetingRoom(models.Model):
     name = models.CharField(max_length=64)
     detail = models.TextField(blank=True)
     is_active = models.BooleanField(default=False)
-    price = models.IntegerField()
     type = models.ForeignKey(MeetingRoomType, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -35,6 +36,7 @@ class MeetingRoomBooking(models.Model):
     date_end = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     room = models.ForeignKey(MeetingRoom, on_delete=models.SET_NULL, null=True)
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     is_canceled = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

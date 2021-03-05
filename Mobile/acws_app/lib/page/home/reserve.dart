@@ -97,7 +97,9 @@ class _ReserveState extends State<Reserve> {
               'ระยะเวลา': '$duration ชม.',
               'ราคาต่อชั่วโมง': '${roomType['price']} ฿ / ชม.'
             },
-            price: '${(roomType['price'] * duration).toStringAsFixed(0)} ฿')));
+            price: roomType['price'] * duration,
+            paymentFor: PaymentFor.meetingRoom,
+            id: roomType['id'])));
   }
 
   @override

@@ -1,4 +1,7 @@
 from django.db import models
+import omise
+
+omise.api_secret = 'skey_test_5lruxk5hrhpwbu5trj1'
 
 
 class Payment(models.Model):
@@ -9,4 +12,17 @@ class Payment(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '[Payment id:{}] Amount: {} Status: {}'.format(self.id, self.status, self.amount)
+        return '[Payment id:{}] Amount: {} Status: {}'.format(self.id, self.amount, self.status)
+
+    @staticmethod
+    def pay(card_token, amount):
+        payment = None
+        try:
+            charge = omise.Charge.create(
+                amount=amount * 100,
+                currency="THB",
+                card=card_token,
+            )
+            payment = Payment.objects.create(charge_token=charge.id, status=charge.status, amount=charge.amount)
+        finally:
+            return payment

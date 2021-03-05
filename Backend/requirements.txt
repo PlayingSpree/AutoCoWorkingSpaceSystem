@@ -18,6 +18,7 @@ itypes==1.2.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 oauthlib==3.1.0
+omise==0.11.0
 packaging==20.4
 Pillow==8.0.1
 pycparser==2.20

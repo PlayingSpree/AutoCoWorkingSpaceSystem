@@ -1,8 +1,13 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+
 from payment.views_form import PaymentForm
-from payment.views_process import ProcessView
+from payment.views_payment import PaymentViewSet
+
+router = routers.DefaultRouter()
+router.register('', PaymentViewSet)
 
 urlpatterns = [
     path('form/', PaymentForm.as_view(), name='payment_form'),
-    path('', ProcessView.as_view(), name='payment_process'),
+    path('', include(router.urls)),
 ]

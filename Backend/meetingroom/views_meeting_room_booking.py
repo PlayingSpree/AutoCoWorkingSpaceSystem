@@ -12,6 +12,8 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous:
+            return
         if user.is_staff:
-            return MeetingRoomBooking.objects.all()
-        return MeetingRoomBooking.objects.filter(user=user)
+            return self.queryset
+        return self.queryset.filter(user=user)
