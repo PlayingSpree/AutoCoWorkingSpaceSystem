@@ -1,7 +1,9 @@
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.fields import CharField
 
 from coworkingspace.models import CoworkingSpacePackage, CoworkingSpaceSubscription
+from payment.serializers import PaymentSerializer
 
 
 class CoworkingSpacePackageSerializer(serializers.ModelSerializer):
@@ -16,23 +18,29 @@ class CoworkingSpacePackageSerializer(serializers.ModelSerializer):
         return value
 
 
-class CoworkingSpaceSubscriptionSerializer(serializers.ModelSerializer):
+class CoworkingSpaceSubscriptionReadSerializer(serializers.ModelSerializer):
+    package = CoworkingSpacePackageSerializer(read_only=True)
+
     class Meta:
         model = CoworkingSpaceSubscription
-        fields = ['id', 'date_start', 'date_end', 'user', 'package', 'is_canceled', 'date_created', 'date_modified']
-        read_only_fields = ['id', 'date_created', 'date_modified']
-        extra_kwargs = {'user': {'required': True},
-                        'package': {'required': True}}
+        fields = ['id', 'user', 'package', 'payment', 'is_canceled', 'date_start', 'date_end', 'date_created',
+                  'date_modified']
+
+
+class CoworkingSpaceSubscriptionCreateSerializer(serializers.ModelSerializer):
+    card_token = CharField(allow_blank=False, write_only=True)
+
+    class Meta:
+        model = CoworkingSpaceSubscription
+        fields = ['package', 'card_token']
+        extra_kwargs = {'package': {'required': True},
+                        'card_token': {'required': True}}
 
     def validate_package(self, value):
         if not value.is_active:
             raise serializers.ValidationError("package ({}) is not active".format(value))
         return value
 
-    def validate(self, data):
-        if data['date_start'] >= data['date_end']:
-            raise serializers.ValidationError(
-                "date_end ({}) must occur after date_start ({})".format(data['date_end'], data['date_start']))
-        # if data['date_end'] - data['date_start'] > timezone.timedelta(days=data['package'].duration):
-        #     raise serializers.ValidationError("duration are longer than package")
-        return data
+    def create(self, validated_data):
+        validated_data.pop('card_token', None)
+        return super().create(validated_data)

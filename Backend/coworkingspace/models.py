@@ -1,5 +1,7 @@
 from django.db import models
 from authapp.models import User
+from payment.models import Payment
+
 
 
 class CoworkingSpacePackage(models.Model):
@@ -14,10 +16,11 @@ class CoworkingSpacePackage(models.Model):
 
 
 class CoworkingSpaceSubscription(models.Model):
-    date_start = models.DateTimeField()
-    date_end = models.DateTimeField()
+    date_start = models.DateField()
+    date_end = models.DateField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     package = models.ForeignKey(CoworkingSpacePackage, on_delete=models.SET_NULL, null=True)
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     is_canceled = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

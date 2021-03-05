@@ -32,7 +32,7 @@ class MeetingRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MeetingRoom
-        fields = ['id', 'name', 'detail', 'is_active', 'price', 'available']
+        fields = ['id', 'name', 'detail', 'is_active', 'available']
         read_only_fields = ['id']
 
 
@@ -59,7 +59,7 @@ class MeetingRoomTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MeetingRoomType
-        fields = ['id', 'name', 'detail', 'available']
+        fields = ['id', 'name', 'detail', 'price', 'available']
         read_only_fields = ['id']
 
 
