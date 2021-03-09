@@ -18,13 +18,7 @@ class _ReserveState extends State<Reserve> {
   TimeOfDay timeEnd;
   String validationText;
 
-  var _response;
-
-  @override
-  void initState() {
-    super.initState();
-    _downloadData();
-  }
+  List<dynamic> _response;
 
   Future<void> selectDate() async {
     var pickedDate = await showDatePicker(
@@ -33,10 +27,10 @@ class _ReserveState extends State<Reserve> {
         lastDate: DateTime.now().add(Duration(days: 365)),
         initialDate: date ?? DateTime.now());
     if (pickedDate == null || pickedDate == date) return;
-    validateDateTime();
     setState(() {
       date = pickedDate;
     });
+    validateDateTime();
   }
 
   Future<void> selectTime(bool isStart) async {
@@ -46,13 +40,14 @@ class _ReserveState extends State<Reserve> {
             ? timeStart ?? TimeOfDay(hour: 8, minute: 0)
             : timeEnd ?? TimeOfDay(hour: 16, minute: 0));
     if (pickedTime == null) return;
-    validateDateTime();
+
     setState(() {
       if (isStart)
         timeStart = pickedTime;
       else
         timeEnd = pickedTime;
     });
+    validateDateTime();
   }
 
   void validateDateTime() {
@@ -71,12 +66,21 @@ class _ReserveState extends State<Reserve> {
       }
     }
     setState(() {
+      _response = null;
       validationText = validateText;
     });
+    if (validateText == null) {
+      _downloadData();
+    }
   }
 
   Future<void> _downloadData() async {
-    var response = await httpGetRequest('/meetingroom/type/', context);
+    print(
+        '/meetingroom/type/?start=${_dateString(true, true)}&end=${_dateString(false, true)}');
+    List<dynamic> response = await httpGetRequest(
+        '/meetingroom/type/?start=${_dateString(true, true)}&end=${_dateString(false, true)}',
+        context);
+    response.removeWhere((element) => element['available'] == 0);
     setState(() {
       _response = response;
     });
@@ -97,9 +101,24 @@ class _ReserveState extends State<Reserve> {
               'ระยะเวลา': '$duration ชม.',
               'ราคาต่อชั่วโมง': '${roomType['price']} ฿ / ชม.'
             },
-            price: roomType['price'] * duration,
+            price: (roomType['price'] * duration).round(),
             paymentFor: PaymentFor.meetingRoom,
-            id: roomType['id'])));
+            data: {
+              "room_type": roomType['id'],
+              "date_start": _dateString(true),
+              "date_end": _dateString(false)
+            })));
+  }
+
+  String _dateString(bool start, [bool ignoreTimeZone = false]) {
+    return DateTime(
+                date.year,
+                date.month,
+                date.day,
+                start ? timeStart.hour : timeEnd.hour,
+                start ? timeStart.minute : timeEnd.minute)
+            .toIso8601String() +
+        (ignoreTimeZone ? '' : date.timeZoneName);
   }
 
   @override
@@ -174,16 +193,21 @@ class _ReserveState extends State<Reserve> {
                                       Theme.of(context).primaryColor)),
                             ),
                           ),
-                          secondChild: Column(children: [
-                            for (var roomType in _response ?? [])
-                              CardDetailButton(
-                                  roomType['name'],
-                                  roomType['detail'],
-                                  '${roomType['price']} ฿ / ชม.',
-                                  onPressed: () {
-                                _goToPayment(roomType);
-                              })
-                          ])),
+                          secondChild: _response != null &&
+                                  _response.length == 0
+                              ? Center(
+                                  child:
+                                      Text('ไม่มีห้องว่างในเวลาที่ท่านเลือก'))
+                              : Column(children: [
+                                  for (var roomType in _response ?? [])
+                                    CardDetailButton(
+                                        roomType['name'],
+                                        roomType['detail'],
+                                        '${roomType['price']} ฿ / ชม.',
+                                        onPressed: () {
+                                      _goToPayment(roomType);
+                                    })
+                                ])),
                     ],
                   ),
                   opacity: (date == null ||

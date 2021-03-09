@@ -36,7 +36,7 @@ class _SubscribeState extends State<Subscribe> {
             detailList: {'ระยะเวลา': '${package['duration']} วัน'},
             price: package['price'],
             paymentFor: PaymentFor.member,
-            id: package['id'])));
+            data: {'package': package['id']})));
   }
 
   @override

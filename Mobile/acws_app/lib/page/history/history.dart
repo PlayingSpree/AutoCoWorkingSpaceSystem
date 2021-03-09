@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../app_util.dart';
 
@@ -25,7 +24,7 @@ class HistoryPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Text('Meeting Room'),
+            MeetingRoomHistory(),
             CoworkingSpaceHistory(),
           ],
         ),
@@ -42,8 +41,14 @@ class MeetingRoomHistory extends StatefulWidget {
 class _MeetingRoomHistoryState extends State<MeetingRoomHistory> {
   var _response;
 
+  @override
+  void initState() {
+    super.initState();
+    _downloadData();
+  }
+
   Future<void> _downloadData() async {
-    var response = await httpGetRequest('/coworkingspace/member/', context);
+    var response = await httpGetRequest('/meetingroom/booking/', context);
     setState(() {
       _response = response;
     });
@@ -51,20 +56,41 @@ class _MeetingRoomHistoryState extends State<MeetingRoomHistory> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      // Let the ListView know how many items it needs to build.
-      itemCount: _response.length,
-      // Provide a builder function. This is where the magic happens.
-      // Convert each item into a widget based on the type of item it is.
-      itemBuilder: (context, index) {
-        final item = _response[index];
-
-        return ListTile(
-          title: item.buildTitle(context),
-          subtitle: item.buildSubtitle(context),
-        );
-      },
-    );
+    return _response == null
+        ? SizedBox.shrink()
+        : ListView.builder(
+            itemCount: _response.length,
+            itemBuilder: (context, index) {
+              var item = _response[index];
+              return Column(
+                children: [
+                  ListTile(
+                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                      title: Text(item['room']['name']),
+                      subtitle: Row(
+                        children: [
+                          Icon(
+                            Icons.date_range,
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                          Text(
+                              ' ${DateFormat.yMd().format(DateTime.parse(item['date_start']))}'),
+                          Icon(
+                            Icons.access_time,
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                          Text(
+                              ' ${DateFormat.Hm().format(DateTime.parse(item['date_start']).toLocal())} - ${DateFormat.Hm().format(DateTime.parse(item['date_end']).toLocal())}')
+                        ],
+                      ),
+                      trailing: Text('${item['amount']} ฿')),
+                  Divider()
+                ],
+              );
+            },
+          );
   }
 }
 
@@ -105,7 +131,11 @@ class _CoworkingSpaceHistoryState extends State<CoworkingSpaceHistory> {
                       title: Text(item['package']['name']),
                       subtitle: Row(
                         children: [
-                          Icon(Icons.date_range,color: Colors.grey,size: 16,),
+                          Icon(
+                            Icons.date_range,
+                            color: Colors.grey,
+                            size: 16,
+                          ),
                           Text(' ${item['date_start']} - ${item['date_end']}')
                         ],
                       ),

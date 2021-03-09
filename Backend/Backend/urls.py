@@ -50,4 +50,5 @@ urlpatterns = [
                   path('meetingroom/', include('meetingroom.urls')),
                   path('iot/', include('iot.urls')),
                   path('payment/', include('payment.urls')),
+                  path('stats/', include('statapp.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # TEMP for file serving

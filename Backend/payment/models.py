@@ -19,10 +19,12 @@ class Payment(models.Model):
         payment = None
         try:
             charge = omise.Charge.create(
-                amount=amount * 100,
+                amount=int(amount * 100),
                 currency="THB",
                 card=card_token,
             )
             payment = Payment.objects.create(charge_token=charge.id, status=charge.status, amount=charge.amount)
+        except Exception as err:
+            print(err)
         finally:
             return payment

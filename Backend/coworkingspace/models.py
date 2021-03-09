@@ -3,7 +3,6 @@ from authapp.models import User
 from payment.models import Payment
 
 
-
 class CoworkingSpacePackage(models.Model):
     name = models.CharField(max_length=64)
     detail = models.TextField(blank=True)
