@@ -7,6 +7,7 @@ omise.api_secret = 'skey_test_5lruxk5hrhpwbu5trj1'
 class Payment(models.Model):
     charge_token = models.CharField(max_length=50)
     status = models.CharField(max_length=20)
+    method = models.CharField(max_length=30)
     amount = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -23,7 +24,8 @@ class Payment(models.Model):
                 currency="THB",
                 card=card_token,
             )
-            payment = Payment.objects.create(charge_token=charge.id, status=charge.status, amount=charge.amount)
+            payment = Payment.objects.create(charge_token=charge.id, status=charge.status, amount=charge.amount,
+                                             method='card')
         except Exception as err:
             print(err)
         finally:

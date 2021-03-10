@@ -2,7 +2,7 @@ import ipaddress
 
 from rest_framework import serializers
 
-from iot.models import MeetingRoomIoT, UserImage
+from iot.models import MeetingRoomIoT
 
 
 class MeetingRoomIoTSerializer(serializers.ModelSerializer):
@@ -23,10 +23,10 @@ class MeetingRoomIoTSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Ip address is invalid: {}'.format(value))
         return '{}:{}'.format(ip, port)
 
-    def validate_iot_ip(self,value):
+    def validate_iot_ip(self, value):
         return self.validate_ip(value)
 
-    def validate_door_ip(self,value):
+    def validate_door_ip(self, value):
         return self.validate_ip(value)
 
 
@@ -37,9 +37,3 @@ class MeetingRoomIoTUpdateSerializer(serializers.Serializer):
     class Meta:
         fields = ['iot_id', 'data']
         extra_kwargs = {'room': {'required': True}}
-
-
-class UserImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserImage
-        fields = ['user', 'image1', 'image2', 'image3', 'image4', 'image5']
