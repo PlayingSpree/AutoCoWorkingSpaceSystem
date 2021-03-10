@@ -29,7 +29,7 @@ export default {
   },
   data: function() {
     return {
-      range: new Date(),
+      range: [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
       menu: false,
       shortcut: [
         {
@@ -42,7 +42,7 @@ export default {
           text: "7 days",
           onClick: () => {
             const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 6);
             this.range = [date, new Date()];
           }
         },

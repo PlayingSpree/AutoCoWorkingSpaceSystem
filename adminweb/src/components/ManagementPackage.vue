@@ -12,7 +12,9 @@
           class="mx-2"
         >
           <v-card-title class="justify-center">
-            {{ key }}
+            {{ key }} <v-spacer></v-spacer> <v-btn @click="deletePackageName(key)" icon
+              ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
+            >
           </v-card-title>
           <v-card-text style="color: #ffffff"> รายละเอียด </v-card-text>
           <v-card-text style="font-size: 20px">
@@ -121,9 +123,11 @@
                 <v-btn text @click="menu = false"> Cancel </v-btn>
                 <v-btn color="primary" text @click="addNewPackage"> OK </v-btn>
               </v-card-actions>
+              
             </v-card>
           </v-menu>
         </v-card>
+        
       </v-container>
     </v-container>
   </v-card>
@@ -171,6 +175,15 @@ export default {
       var packagedata = JSON.parse(localStorage.getItem("packagedata"));
       packagedata[key][3] = value;
       localStorage.setItem("packagedata", JSON.stringify(packagedata));
+    },
+
+    deletePackageName: function(packagetodel) {
+      var nametodel = JSON.parse(localStorage.getItem("packagedata"));
+
+      delete nametodel[packagetodel];
+      localStorage.setItem("packagedata", JSON.stringify(nametodel));
+
+      this.$forceUpdate();
     }
   }
 };

@@ -2,23 +2,28 @@
   <v-container id="manage">
     <v-row>
       <v-col cols="12">
-        <management-room />
-        <management-package />
+        <v-card class="mt-5">
+          <management-room-type />
+          <management-meeting-room />
+        </v-card>
+        <management-package-2 />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ManagementRoom from "../components/ManagementRoom.vue";
-import ManagementPackage from "../components/ManagementPackage.vue";
+import ManagementMeetingRoom from "../components/ManagementMeetingRoom.vue";
+import ManagementPackage2 from "../components/ManagementPackage2.vue";
+import ManagementRoomType from "../components/ManagementRoomType.vue";
 
 export default {
   name: "manage",
 
   components: {
-    ManagementRoom,
-    ManagementPackage
+    ManagementPackage2,
+    ManagementRoomType,
+    ManagementMeetingRoom
   }
 };
 </script>
