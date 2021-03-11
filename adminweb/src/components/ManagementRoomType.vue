@@ -7,7 +7,7 @@
       <v-container class="d-flex align-content-start flex-wrap">
         <v-card
           v-for="item in roomtypedata"
-          :key="item"
+          :key="'type' + item"
           outlined
           width="240px"
           height="240px"

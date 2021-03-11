@@ -8,15 +8,20 @@ import Chart from "chart.js";
 import VueAxios from "vue-axios";
 import axios from "axios";
 
+require("@/store/subscriber");
+
+axios.defaults.baseURL = "http://127.0.0.1:8000/";
+
 Vue.config.productionTip = false;
 Vue.use(Chartkick.use(Chart));
 
 Vue.use(VueAxios, axios);
 
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount("#app");
+store.dispatch("auth/attempt", localStorage.getItem("token")).then(() => {
+  new Vue({
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
+  }).$mount("#app");
+});

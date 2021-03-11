@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card
       v-for="item in roomnamedata"
-      :key="item"
+      :key="'meeting' + item"
       outlined
       class="my-2 align-center"
     >
@@ -22,7 +22,6 @@
               <v-select
                 v-model="item.type"
                 :items="roomtypedata"
-                full-width="100px"
                 @input="setroomtype(item.type, item)"
                 solo
               ></v-select>
@@ -32,7 +31,6 @@
               <v-select
                 v-model="item.status"
                 :items="status"
-                full-width="100px"
                 @input="setroomstatus(item.status, item)"
                 solo
               ></v-select>

@@ -6,14 +6,30 @@ import Manage from "../views/Management.vue";
 import Review from "../views/Review.vue";
 import Report from "../views/Report.vue";
 import User from "../views/User.vue";
+import store from "@/store";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
+    redirect: {
+      name: "Login"
+    }
+  },
+  {
+    path: "/dashboard",
     name: "Dashboard",
-    component: Dashboard
+    component: Dashboard,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters["auth/authenicated"]) {
+        return next({
+          name: "Login"
+        });
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/login",
@@ -23,22 +39,58 @@ const routes = [
   {
     path: "/manage",
     name: "Manage",
-    component: Manage
+    component: Manage,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters["auth/authenicated"]) {
+        return next({
+          name: "Login"
+        });
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/review",
     name: "Review",
-    component: Review
+    component: Review,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters["auth/authenicated"]) {
+        return next({
+          name: "Login"
+        });
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/report",
     name: "Report",
-    component: Report
+    component: Report,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters["auth/authenicated"]) {
+        return next({
+          name: "Login"
+        });
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/user",
     name: "User",
-    component: User
+    component: User,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters["auth/authenicated"]) {
+        return next({
+          name: "Login"
+        });
+      } else {
+        next();
+      }
+    }
   }
 ];
 

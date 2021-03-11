@@ -5,7 +5,7 @@
       <v-container class="d-flex align-content-start flex-wrap">
         <v-card
           v-for="item in packagedata"
-          :key="item"
+          :key="'package' + item"
           outlined
           width="300px"
           height="400px"
@@ -44,7 +44,6 @@
               v-model="item.status"
               :placeholder="item.status"
               :items="status"
-              full-width="100px"
               @input="setpackagestatus(item.status, item)"
               solo
             ></v-select

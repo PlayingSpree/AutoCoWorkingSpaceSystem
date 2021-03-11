@@ -4,7 +4,6 @@
       <v-card width="350" class="mx-auto" elevation="1">
         <v-card-text class="mt-5">
           <h2 align="center" class="mb-7">Log In to AdminWebsite</h2>
-          {{ form }}
           <v-form @submit.prevent="submit">
             <v-text-field
               label="Username"
@@ -37,7 +36,7 @@
 </template>
 
 <script>
-import axios from "axios"
+import { mapActions } from "vuex";
 
 export default {
   name: "login",
@@ -52,10 +51,14 @@ export default {
   }),
 
   methods: {
-    async submit() {
-      let response = axios.post("http://127.0.0.1:8000/auth/login/", this.form)
+    ...mapActions({
+      logIn: "auth/logIn"
+    }),
 
-      console.log(response.data)
+    submit() {
+      this.logIn(this.form).then(() => {
+        this.$router.push("/dashboard");
+      });
     }
   }
 };

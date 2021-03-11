@@ -1,18 +1,17 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-btn @click="$router.push('/')" text>Dashboard</v-btn>
-      <v-btn @click="$router.push('/manage')" text>Management</v-btn>
-      <v-btn @click="$router.push('/review')" text>Review</v-btn>
-      <v-btn @click="$router.push('/report')" text>Report</v-btn>
-      <v-btn @click="$router.push('/user')" text>User</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn @click="$router.push('/login')" text
-        ><span class="hidden-sm-and-down">Log in</span>
-        <v-icon class="ml-2">mdi-account-circle-outline</v-icon>
-      </v-btn>
+      <template v-if="authenicated">
+        <v-btn @click="$router.push('/dashboard')" text>Dashboard</v-btn>
+        <v-btn @click="$router.push('/manage')" text>Management</v-btn>
+        <v-btn @click="$router.push('/review')" text>Review</v-btn>
+        <v-btn @click="$router.push('/report')" text>Report</v-btn>
+        <v-btn @click="$router.push('/user')" text>User</v-btn>
+        <v-spacer></v-spacer>
+        <span class="hidden-sm-and-down">{{ user.email }}</span>
+        <v-btn @click="signOut" icon><v-icon>mdi-logout</v-icon></v-btn>
+      </template>
     </v-app-bar>
-
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -26,6 +25,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "App",
 
@@ -33,7 +34,28 @@ export default {
 
   data: () => ({
     //
-  })
+  }),
+
+  computed: {
+    ...mapGetters({
+      authenicated: "auth/authenicated",
+      user: "auth/user"
+    })
+  },
+
+  methods: {
+    ...mapActions({
+      signOutAction: 'auth/signOut'
+    }),
+
+    signOut () {
+      this.signOutAction().then(() => {
+        this.$router.replace({
+          name: 'Login'
+        })
+      })
+    }
+  }
 };
 </script>
 
