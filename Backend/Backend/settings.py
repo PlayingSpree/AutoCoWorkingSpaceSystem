@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'meetingroom.apps.MeetingroomConfig',
     'payment.apps.PaymentConfig',
     'iot.apps.IotConfig',
+    'feedback.apps.FeedbackConfig',
     # Default apps
     'django.contrib.admin',
     'django.contrib.auth',

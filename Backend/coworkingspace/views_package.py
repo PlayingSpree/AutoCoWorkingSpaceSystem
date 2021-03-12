@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from coworkingspace.models import CoworkingSpacePackage
 from coworkingspace.serializers import CoworkingSpacePackageSerializer
@@ -10,7 +10,7 @@ class PackageViewSet(viewsets.ModelViewSet):
     queryset = CoworkingSpacePackage.objects.all()
     serializer_class = CoworkingSpacePackageSerializer
     permissions = [
-        (['list', 'retrieve'], [AllowAny]),
+        (['list', 'retrieve'], [IsAuthenticated]),
         (['create', 'update', 'partial_update', 'destroy'], [IsAdminUser])
     ]
 

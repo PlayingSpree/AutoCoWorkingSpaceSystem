@@ -65,4 +65,4 @@ class CoworkingSpaceSubscriptionViewSet(viewsets.ModelViewSet):
             member_duration = max(0, (obj.date_end - timezone.localdate()).days + 1)
             return Response({'member_date_end': member_date_end, 'member_duration': member_duration})
         else:
-            return Response({'member_date_end': timezone.localdate(), 'member_duration': 0})
+            return Response({'member_date_end': timezone.localdate(), 'member_duration': -1})

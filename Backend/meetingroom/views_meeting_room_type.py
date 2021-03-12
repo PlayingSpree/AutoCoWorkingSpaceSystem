@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from meetingroom.models import MeetingRoomType
 from meetingroom.permissions import get_permissions_multi
@@ -10,7 +10,7 @@ class MeetingRoomTypeViewSet(viewsets.ModelViewSet):
     queryset = MeetingRoomType.objects.all()
     serializer_class = MeetingRoomTypeSerializer
     permissions = [
-        (['list', 'retrieve'], [AllowAny]),
+        (['list', 'retrieve'], [IsAuthenticated]),
         (['create', 'update', 'partial_update', 'destroy'], [IsAdminUser])
     ]
 
