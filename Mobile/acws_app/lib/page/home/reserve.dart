@@ -75,8 +75,6 @@ class _ReserveState extends State<Reserve> {
   }
 
   Future<void> _downloadData() async {
-    print(
-        '/meetingroom/type/?start=${_dateString(true, true)}&end=${_dateString(false, true)}');
     List<dynamic> response = await httpGetRequest(
         '/meetingroom/type/?start=${_dateString(true, true)}&end=${_dateString(false, true)}',
         context);

@@ -62,35 +62,49 @@ class _MeetingRoomHistoryState extends State<MeetingRoomHistory> {
             itemCount: _response.length,
             itemBuilder: (context, index) {
               var item = _response[index];
-              return Column(
-                children: [
-                  ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      title: Text(item['room']['name']),
-                      subtitle: Row(
-                        children: [
-                          Icon(
-                            Icons.date_range,
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                          Text(
-                              ' ${DateFormat.yMd().format(DateTime.parse(item['date_start']))}'),
-                          Icon(
-                            Icons.access_time,
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                          Text(
-                              ' ${DateFormat.Hm().format(DateTime.parse(item['date_start']).toLocal())} - ${DateFormat.Hm().format(DateTime.parse(item['date_end']).toLocal())}')
-                        ],
-                      ),
-                      trailing: Text('${item['amount']} ฿')),
-                  Divider()
-                ],
-              );
+              return MeetingRoomHistoryListItem(item: item);
             },
           );
+  }
+}
+
+class MeetingRoomHistoryListItem extends StatelessWidget {
+  const MeetingRoomHistoryListItem({
+    Key key,
+    @required this.item,
+  }) : super(key: key);
+
+  final item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+            title: Text(item['room']['name']),
+            subtitle: Row(
+              children: [
+                Icon(
+                  Icons.date_range,
+                  color: Colors.grey,
+                  size: 16,
+                ),
+                Text(
+                    ' ${DateFormat.yMd().format(DateTime.parse(item['date_start']))}'),
+                Icon(
+                  Icons.access_time,
+                  color: Colors.grey,
+                  size: 16,
+                ),
+                Text(
+                    ' ${DateFormat.Hm().format(DateTime.parse(item['date_start']).toLocal())} - ${DateFormat.Hm().format(DateTime.parse(item['date_end']).toLocal())}')
+              ],
+            ),
+            trailing: Text('${item['amount']} ฿')),
+        Divider()
+      ],
+    );
   }
 }
 

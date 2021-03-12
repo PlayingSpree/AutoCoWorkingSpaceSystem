@@ -1,12 +1,12 @@
-import 'file:///E:/GitRepo/AutoCoWorkingSpaceSystem/Mobile/acws_app/lib/page/home/home.dart';
-import 'file:///E:/GitRepo/AutoCoWorkingSpaceSystem/Mobile/acws_app/lib/page/profile/profile.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 import 'page/history/history.dart';
+import 'page/home/home.dart';
 import 'page/login/login.dart';
+import 'page/profile/profile.dart';
 import 'page/remote/remote.dart';
 
 void main() {

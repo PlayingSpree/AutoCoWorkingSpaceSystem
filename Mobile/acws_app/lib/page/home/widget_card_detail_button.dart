@@ -1,5 +1,6 @@
-import 'package:acws_app/app_style.dart';
 import 'package:flutter/material.dart';
+
+import '../../app_style.dart';
 
 class CardDetailButton extends StatelessWidget {
   const CardDetailButton(

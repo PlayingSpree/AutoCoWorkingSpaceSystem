@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from payment.models import Payment
 
 
 class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
+    """ Query Param: future(bool) Only future booking """
     queryset = MeetingRoomBooking.objects.all().order_by('-date_start')
     serializer_class = MeetingRoomBookingCreateSerializer
     permissions = [
@@ -25,6 +27,8 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
             return
         if user.is_staff:
             return self.queryset
+        if 'future' in self.request.query_params:
+            return self.queryset.filter(user=user, date_end__gte=timezone.now())
         return self.queryset.filter(user=user)
 
     def get_serializer_class(self):

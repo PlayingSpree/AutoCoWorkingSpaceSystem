@@ -1,14 +1,13 @@
 from django.db.models import Count, DateField, Sum
-from django.db.models.functions import ExtractMonth, ExtractDay, TruncDay
-from django.utils.dateparse import parse_datetime, parse_date
-from rest_framework import viewsets, status
+from django.db.models.functions import TruncDay
+from django.utils.dateparse import parse_date
+from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authapp.models import User
 from payment.models import Payment
-from payment.serializers import PaymentSerializer
 
 
 class PaymentStat(APIView):

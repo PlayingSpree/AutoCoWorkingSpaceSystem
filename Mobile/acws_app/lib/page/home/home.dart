@@ -1,8 +1,12 @@
-import 'package:acws_app/app_style.dart';
-import 'package:acws_app/app_transition_route.dart';
-import 'package:acws_app/page/home/reserve.dart';
-import 'package:acws_app/page/home/subscribe.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../app_style.dart';
+import '../../app_transition_route.dart';
+import '../../app_util.dart';
+import '../history/history.dart';
+import 'reserve.dart';
+import 'subscribe.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,6 +14,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _downloadData();
+  }
+
+  var _memberResponse;
+  var _roomResponse;
+
+  Future<void> _downloadData() async {
+    var memberResponse =
+        await httpGetRequest('/coworkingspace/subscription/me/', context);
+    var roomResponse =
+        await httpGetRequest('/meetingroom/booking/?future', context);
+    setState(() {
+      _memberResponse = memberResponse;
+      _roomResponse = roomResponse;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -24,12 +48,38 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text('Co-working Space Member', style: AppTextStyle.HeaderText),
                 SizedBox(height: 8),
-                Text('ยังไม่ได้เป็นสมาชิก'),
+                if (_memberResponse == null)
+                  Text('')
+                else if (_memberResponse['member_duration'] < 0)
+                  Text('ยังไม่ได้เป็นสมาชิก')
+                else if (_memberResponse['member_duration'] == 0)
+                  Text('สมาชิกหมดอายุ')
+                else
+                  Text(
+                      'สมาชิกสิ้นสุด: ${DateFormat.yMd().format(DateTime.parse(_memberResponse['member_date_end']))} (${_memberResponse['member_duration']} วัน)'),
                 SizedBox(height: 8),
+                if (_memberResponse != null)
+                  _memberResponse['member_duration'] > 0
+                      ? Card(
+                          child: ListTile(
+                            leading: Icon(Icons.lock_open),
+                            title: Text('ปลดล็อคประตู'),
+                            onTap: () {
+                              Navigator.of(context).push(SlideLeftRoute(
+                                  exitPage: this.widget,
+                                  enterPage:
+                                      Subscribe())); // TODO Unlock QR Code
+                            },
+                          ),
+                        )
+                      : SizedBox.shrink(),
                 Card(
                   child: ListTile(
                     leading: Icon(Icons.person),
-                    title: Text('สมัครสมาชิก Co-working Space'),
+                    title: _memberResponse == null ||
+                            _memberResponse['member_duration'] < 0
+                        ? Text('สมัครสมาชิก Co-working Space')
+                        : Text('ต่ออายุสมาชิก'),
                     onTap: () {
                       Navigator.of(context).push(SlideLeftRoute(
                           exitPage: this.widget, enterPage: Subscribe()));
@@ -62,6 +112,14 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
+                if (_roomResponse != null && _roomResponse.length > 0)
+                  SizedBox(height: 8),
+                Column(
+                  children: [
+                    for (var item in _roomResponse ?? [])
+                      MeetingRoomHistoryListItem(item: item)
+                  ],
+                )
               ],
             ),
           ),

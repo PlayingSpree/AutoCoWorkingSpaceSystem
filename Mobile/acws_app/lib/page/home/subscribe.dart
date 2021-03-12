@@ -1,10 +1,10 @@
-import 'package:acws_app/app_style.dart';
-import 'package:acws_app/page/home/widget_card_detail_button.dart';
 import 'package:flutter/material.dart';
 
+import '../../app_style.dart';
 import '../../app_transition_route.dart';
 import '../../app_util.dart';
 import 'payment.dart';
+import 'widget_card_detail_button.dart';
 
 class Subscribe extends StatefulWidget {
   @override

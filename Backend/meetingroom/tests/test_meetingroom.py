@@ -15,21 +15,19 @@ class TestApi(APITestCase, BaseApiTest):
             "name": "Meeting Room 1",
             "description": "Test",
             "active": True,
-            "price": 99.99
         }
-        self.required = ['name', 'price']
-        self.non_valid = [['price', 0],
-                          ['price', -19.99]]
+        self.required = ['name']
+        self.non_valid = []
 
-        MeetingRoom.objects.create(name="Active", active=True, price=100.0)
-        MeetingRoom.objects.create(name="Inactive", price=10.0)
+        MeetingRoom.objects.create(name="Active", is_active=True)
+        MeetingRoom.objects.create(name="Inactive")
 
         self.user = User.objects.create_user(email='user@user.com', password='user1234')
         self.admin = User.objects.create_superuser(email='admin@admin.com', password='admin1234')
         return super().setUp()
 
     def test_auth_anon(self):
-        self.auth_test(self.url, 200, 200, 403, 403, 403)
+        self.auth_test(self.url, 403, 403, 403, 403, 403)
 
     def test_auth_user(self):
         self.client.force_authenticate(user=self.user)

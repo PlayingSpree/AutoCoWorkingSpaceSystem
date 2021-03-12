@@ -154,6 +154,7 @@ class PaymentWebViewState extends State<PaymentWebView> {
       var response = await httpRequest(url, body, context);
       await _showDialog('การชำระเงินสำเร็จ');
       Navigator.popUntil(context, ModalRoute.withName('/main'));
+      Navigator.pushReplacementNamed(context, '/main');
     } catch (e) {
       await _showDialog('การชำระเงินล้มเหลว',e.toString());
       Navigator.pop(context);

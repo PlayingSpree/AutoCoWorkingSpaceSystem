@@ -16,8 +16,8 @@ class TestModel(TestCase):
         self.user = User.objects.create_user(email='user@user.com', password='user1234')
         self.admin = User.objects.create_superuser(email='admin@admin.com', password='admin1234')
 
-        self.room = [MeetingRoom.objects.create(name="Active", active=True, price=100.0),
-                     MeetingRoom.objects.create(name="Active", active=True, price=100.0)]
+        self.room = [MeetingRoom.objects.create(name="Active", is_active=True),
+                     MeetingRoom.objects.create(name="Active", is_active=True)]
         booking_date = [[datetime(2030, 6, 15, 10, 0), datetime(2030, 6, 15, 10, 30)],
                         [datetime(2030, 6, 15, 10, 30), datetime(2030, 6, 15, 11, 0)],
                         [datetime(2030, 6, 15, 12, 0), datetime(2030, 6, 15, 13, 0)]]
@@ -129,8 +129,8 @@ class TestApi(APITestCase, BaseApiTest):
                           ['date_end', make_aware(datetime(2020, 6, 15, 10, 0))],
                           ['date_end', make_aware(datetime(2030, 6, 15, 9, 0))]]
 
-        self.room = [MeetingRoom.objects.create(name="Active", active=True, price=100.0),
-                     MeetingRoom.objects.create(name="Inactive", price=10.0)]
+        self.room = [MeetingRoom.objects.create(name="Active", is_active=True),
+                     MeetingRoom.objects.create(name="Inactive")]
 
         self.user = User.objects.create_user(email='user@user.com', password='user1234')
         self.admin = User.objects.create_superuser(email='admin@admin.com', password='admin1234')
