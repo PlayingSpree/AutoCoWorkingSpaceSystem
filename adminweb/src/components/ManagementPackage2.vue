@@ -34,7 +34,7 @@
             <v-col cols="6">
               <v-card-text> ระยะเวลา </v-card-text>
               <v-card-text style="color: #ffffffb3; font-size: 20px">
-                {{ item.period }} วัน
+                {{ item.duration }} วัน
               </v-card-text>
             </v-col>
           </v-row>
@@ -42,7 +42,6 @@
             สถานะ
             <v-select
               v-model="item.status"
-              :placeholder="item.status"
               :items="status"
               @input="setpackagestatus(item.status, item)"
               solo
@@ -86,7 +85,7 @@
               </v-card-text>
               <v-card-text>
                 <v-text-field
-                  v-model="packageItem.period"
+                  v-model="packageItem.duration"
                   label="ระยะเวลา"
                   suffix="วัน"
                   type="number"
@@ -111,6 +110,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data: function() {
     return {
@@ -122,14 +123,16 @@ export default {
         name: "",
         detail: "",
         price: "",
-        period: "",
+        duration: "",
+        is_active: false,
         status: "ปิดการใช้งาน"
       },
       defaultItem: {
         name: "",
         detail: "",
         price: "",
-        period: "",
+        duration: "",
+        is_active: false,
         status: "ปิดการใช้งาน"
       }
     };
@@ -152,23 +155,18 @@ export default {
   },
 
   methods: {
-    showpackagedata: function() {
-      var packagedata = JSON.parse(localStorage.getItem("packagedata"));
+    async showpackagedata() {
+      var packagedata = await axios.get("coworkingspace/package/");
 
-      if (packagedata != null) {
-        this.packagedata = packagedata;
-      } else {
-        return [];
+      this.packagedata = packagedata.data;
+
+      for (var i = 0; i < this.packagedata.length; i++) {
+        if (this.packagedata[i].is_active == true) {
+          this.packagedata[i].status = "เปิดการใช้งาน";
+        } else {
+          this.packagedata[i].status = "ปิดการใช้งาน";
+        }
       }
-    },
-
-    setpackagestatus: function(status, item) {
-      var packagedata = JSON.parse(localStorage.getItem("packagedata"));
-      this.packageIndex = this.packagedata.indexOf(item);
-      packagedata[this.packageIndex].status = status;
-      localStorage.setItem("packagedata", JSON.stringify(packagedata));
-      this.close();
-      this.showpackagedata();
     },
 
     editItem: function(item) {
@@ -177,33 +175,26 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem: function(item) {
-      var packagedata = JSON.parse(localStorage.getItem("packagedata"));
+    async deleteItem(item) {
       this.packageIndex = this.packagedata.indexOf(item);
-      this.packageItem = Object.assign({}, item);
-      packagedata.splice(this.packageIndex, 1);
-      localStorage.setItem("packagedata", JSON.stringify(packagedata));
-      this.$nextTick(() => {
-        this.packageItem = Object.assign({}, this.defaultItem);
-        this.packageIndex = -1;
-      });
+
+      await axios.delete(
+        `coworkingspace/package/${this.packagedata[this.packageIndex].id}/`
+      );
+
       this.showpackagedata();
+      this.close();
     },
 
-    save: function() {
-      if (localStorage.getItem("packagedata") == null) {
-        localStorage.setItem("packagedata", "[]");
-      }
-
-      var old_name = JSON.parse(localStorage.getItem("packagedata"));
-
+    async save() {
       if (this.packageIndex > -1) {
-        Object.assign(old_name[this.packageIndex], this.packageItem);
+        await axios.put(
+          `coworkingspace/package/${this.packagedata[this.packageIndex].id}/`,
+          this.packageItem
+        );
       } else {
-        old_name.push(this.packageItem);
+        await axios.post("coworkingspace/package/", this.packageItem);
       }
-
-      localStorage.setItem("packagedata", JSON.stringify(old_name));
       this.showpackagedata();
       this.close();
     },
@@ -214,6 +205,24 @@ export default {
         this.packageItem = Object.assign({}, this.defaultItem);
         this.packageIndex = -1;
       });
+    },
+
+    async setpackagestatus(status, item) {
+      let active = false;
+      if (status == "เปิดการใช้งาน") {
+        active = true;
+      } else {
+        active = false;
+      }
+      this.packageIndex = this.packagedata.indexOf(item);
+      this.packageItem = Object.assign({}, item);
+      this.packageItem.is_active = active;
+      await axios.put(
+        `coworkingspace/package/${this.packagedata[this.packageIndex].id}/`,
+        this.packageItem
+      );
+      this.close();
+      this.showpackagedata();
     }
   }
 };

@@ -37,6 +37,9 @@
               <line-chart
                 :data="chartData"
                 :colors="['#fa9056', '#92c970']"
+                :curve="false"
+                suffix=" บาท"
+                thousands=","
               ></line-chart> </v-card
           ></v-col>
         </v-row>
@@ -46,53 +49,86 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   components: {},
+  props: {
+    range: []
+  },
+  created() {
+    this.getpackagestat();
+  },
   data: function() {
     return {
-      chartData: [
-        {
-          name: "ยอดขายแพ็คเกจ",
-          data: {
-            "2020-02-8": 500,
-            "2020-02-9": 1500,
-            "2020-02-10": 1800,
-            "2020-02-11": 0,
-            "2020-02-12": 1700,
-            "2020-02-13": 2500,
-            "2020-02-14": 1000
-          }
-        },
-        {
-          name: "ยอดจองห้องประชุม",
-          data: {
-            "2020-02-8": 100,
-            "2020-02-9": 1500,
-            "2020-02-10": 1000,
-            "2020-02-11": 3000,
-            "2020-02-12": 1800,
-            "2020-02-13": 1500,
-            "2020-02-14": 2000
-          }
-        }
-      ]
+      datearr: [],
+      chartData: []
     };
+  },
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getpackagestat();
+    }
   },
 
   methods: {
-    packageIncome: function() {
-      var sum = 0;
-      for (var key in this.chartData[0].data) {
-        sum += this.chartData[0].data[key];
+    async getpackagestat() {
+      let allstat = await axios.get(
+        `payment/stat/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
+      this.chartData = [];
+      var packagestat = allstat.data.coworkingspace_sale_by_date;
+      var meetingstat = allstat.data.meetingroom_sale_by_date;
+      this.datearr = this.arrDate(this.range[0], this.range[1]);
+
+      var packdata = {
+        name: "ยอดขายแพ็คเกจ",
+        data: {}
+      };
+
+      var meetdata = {
+        name: "ยอดจองห้องประชุม",
+        data: {}
+      };
+
+      for (var i = 0; i < this.datearr.length; i++) {
+        packdata.data[this.datearr[i]] = 0;
+        meetdata.data[this.datearr[i]] = 0;
       }
+
+      for (i = 0; i < packagestat.length; i++) {
+        packdata.data[packagestat[i].date] = packagestat[i].amount;
+      }
+
+      for (i = 0; i < meetingstat.length; i++) {
+        meetdata.data[meetingstat[i].date] = meetingstat[i].amount;
+      }
+
+      this.chartData.push(packdata);
+      this.chartData.push(meetdata);
+    },
+
+    arrDate(startDate, stopDate) {
+      var datearray = [];
+      var currentDate = startDate;
+      while (currentDate <= stopDate) {
+        datearray.push(currentDate.toISOString().substr(0, 10));
+        currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+      }
+      return datearray;
+    },
+
+    packageIncome: function() {
+      const sum = Object.values(this.chartData[0].data).reduce((a, b) => a + b);
       return sum;
     },
 
     meetingIncome: function() {
-      var sum = 0;
-      for (var key in this.chartData[1].data) {
-        sum += this.chartData[1].data[key];
-      }
+      const sum = Object.values(this.chartData[1].data).reduce((a, b) => a + b);
       return sum;
     },
 

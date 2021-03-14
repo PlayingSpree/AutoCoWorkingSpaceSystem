@@ -4,11 +4,12 @@
       ><p class="my-auto mr-2">ระยะเวลาของข้อมูล</p>
       <date-picker
         v-model="range"
+        v-on:input="emitdate"
         lang="en"
         range
         type="date"
         format="YYYY-MM-DD"
-        confirm
+        :confirm="true"
         :shortcuts="shortcut"
       ></date-picker>
       <v-spacer></v-spacer>
@@ -27,35 +28,48 @@ export default {
   components: {
     DatePicker
   },
+  props: {
+    range: []
+  },
   data: function() {
     return {
-      range: [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
       menu: false,
       shortcut: [
         {
           text: "today",
           onClick: () => {
-            this.range = [new Date(), new Date()];
+            const date = [new Date(), new Date()];
+            this.range = date;
           }
         },
         {
           text: "7 days",
           onClick: () => {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 6);
-            this.range = [date, new Date()];
+            const date = [
+              new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+              new Date()
+            ];
+            this.range = date;
           }
         },
         {
           text: "30 days",
           onClick: () => {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 29);
-            this.range = [date, new Date()];
+            const date = [
+              new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
+              new Date()
+            ];
+            this.range = date;
           }
         }
       ]
     };
+  },
+
+  methods: {
+    emitdate() {
+      this.$emit("getnewdate", this.range);
+    }
   }
 };
 </script>

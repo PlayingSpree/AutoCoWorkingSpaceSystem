@@ -20,9 +20,9 @@
                 ประเภทห้อง
               </v-card-text>
               <v-select
-                v-model="item.type"
+                v-model="item.detail"
                 :items="roomtypedata"
-                @input="setroomtype(item.type, item)"
+                @input="setroomtype(item.detail, item)"
                 solo
               ></v-select>
               <v-card-text>
@@ -31,7 +31,7 @@
               <v-select
                 v-model="item.status"
                 :items="status"
-                @input="setroomstatus(item.status, item)"
+                @change="setroomstatus(item.status, item)"
                 solo
               ></v-select>
             </v-card>
@@ -209,6 +209,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data: function() {
     return {
@@ -219,8 +221,9 @@ export default {
       status: ["ปิดปรับปรุง", "เปิดให้บริการ"],
       roomnameItem: {
         name: "",
-        type: "",
-        status: "ปิดปรับปรุง",
+        detail: "",
+        status: "",
+        is_active: false,
         lightColor: 0,
         brightness: 0,
         temp: 25,
@@ -228,8 +231,9 @@ export default {
       },
       defaultItem: {
         name: "",
-        type: "",
-        status: "ปิดปรับปรุง",
+        detail: "",
+        status: "",
+        is_active: false,
         lightColor: 0,
         brightness: 0,
         temp: 25,
@@ -248,13 +252,16 @@ export default {
     this.allroomtype();
   },
   methods: {
-    showroomnamedata: function() {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
+    async showroomnamedata() {
+      var roomnamedata = await axios.get("meetingroom/");
 
-      if (roomnamedata != null) {
-        this.roomnamedata = roomnamedata;
-      } else {
-        return [];
+      this.roomnamedata = roomnamedata.data;
+      for (var i = 0; i < this.roomnamedata.length; i++) {
+        if (this.roomnamedata[i].is_active == true) {
+          this.roomnamedata[i].status = "เปิดให้บริการ";
+        } else {
+          this.roomnamedata[i].status = "ปิดปรับปรุง";
+        }
       }
     },
 
@@ -264,33 +271,26 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem: function(item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
+    async deleteItem(item) {
       this.roomnameIndex = this.roomnamedata.indexOf(item);
-      this.roomnameItem = Object.assign({}, item);
-      roomnamedata.splice(this.roomnameIndex, 1);
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      this.$nextTick(() => {
-        this.roomnameItem = Object.assign({}, this.defaultItem);
-        this.roomnameIndex = -1;
-      });
+
+      await axios.delete(
+        `meetingroom/${this.roomnamedata[this.roomnameIndex].id}/`
+      );
+
       this.showroomnamedata();
+      this.close();
     },
 
-    save: function() {
-      if (localStorage.getItem("roomnamedata") == null) {
-        localStorage.setItem("roomnamedata", "[]");
-      }
-
-      var old_name = JSON.parse(localStorage.getItem("roomnamedata"));
-
+    async save() {
       if (this.roomnameIndex > -1) {
-        Object.assign(old_name[this.roomnameIndex], this.roomnameItem);
+        await axios.put(
+          `meetingroom/${this.roomnamedata[this.roomnameIndex].id}/`,
+          this.roomnameItem
+        );
       } else {
-        old_name.push(this.roomnameItem);
+        await axios.post("meetingroom/", this.roomnameItem);
       }
-
-      localStorage.setItem("roomnamedata", JSON.stringify(old_name));
       this.showroomnamedata();
       this.close();
     },
@@ -303,32 +303,45 @@ export default {
       });
     },
 
-    allroomtype() {
+    async allroomtype() {
       var alltype = [];
-      var roomtypedata = JSON.parse(localStorage.getItem("roomtypedata"));
+      var roomtypedata = await axios.get("meetingroom/type/");
 
-      for (var i = 0; i < roomtypedata.length; i++) {
-        alltype.push(roomtypedata[i].name);
+      for (var i = 0; i < roomtypedata.data.length; i++) {
+        alltype.push(roomtypedata.data[i].name);
       }
       this.roomtypedata = alltype;
-      this.showroomnamedata();
     },
 
-    setroomtype(type, item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
+    async setroomtype(type, item) {
+      this.allroomtype();
       this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].type = type;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      console.log(roomnamedata.type);
+      this.roomnameItem = Object.assign({}, item);
+      this.roomnameItem.detail = type;
+
+      await axios.put(
+        `meetingroom/${this.roomnamedata[this.roomnameIndex].id}/`,
+        this.roomnameItem
+      );
       this.close();
       this.showroomnamedata();
     },
 
-    setroomstatus(status, item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
+    async setroomstatus(status, item) {
+      let active = false;
+      if (status == "เปิดให้บริการ") {
+        active = true;
+      } else {
+        active = false;
+      }
       this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].status = status;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
+      this.roomnameItem = Object.assign({}, item);
+      this.roomnameItem.is_active = active;
+
+      await axios.put(
+        `meetingroom/${this.roomnamedata[this.roomnameIndex].id}/`,
+        this.roomnameItem
+      );
       this.close();
       this.showroomnamedata();
     },

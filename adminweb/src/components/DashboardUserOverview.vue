@@ -17,6 +17,7 @@
                       :colors="['#FF4081', '#80D8FF']"
                       :data="pieData"
                       :legend="false"
+                      :donut="true"
                     ></pie-chart
                   ></v-col>
                   <v-col>
@@ -87,6 +88,9 @@
 
 <script>
 export default {
+  props: {
+    range: []
+  },
   data: function() {
     return {
       pieData: [

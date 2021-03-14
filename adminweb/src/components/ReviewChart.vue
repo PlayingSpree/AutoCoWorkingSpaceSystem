@@ -18,7 +18,7 @@
             1 ดาว
           </v-card-title>
           <v-card-text>
-            {{ countStar()[0] }}
+            {{ chartData[0].data["1 ดาว"] }}
           </v-card-text>
         </v-card>
         <v-card width="150px" height="100px" class="mr-2 mb-2" outlined>
@@ -26,7 +26,7 @@
             2 ดาว
           </v-card-title>
           <v-card-text>
-            {{ countStar()[1] }}
+            {{ chartData[0].data["2 ดาว"] }}
           </v-card-text>
         </v-card>
         <v-card width="150px" height="100px" class="mr-2 mb-2" outlined>
@@ -34,7 +34,7 @@
             3 ดาว
           </v-card-title>
           <v-card-text>
-            {{ countStar()[2] }}
+            {{ chartData[0].data["3 ดาว"] }}
           </v-card-text>
         </v-card>
         <v-card width="150px" height="100px" class="mr-2 mb-2" outlined>
@@ -42,7 +42,7 @@
             4 ดาว
           </v-card-title>
           <v-card-text>
-            {{ countStar()[3] }}
+            {{ chartData[0].data["4 ดาว"] }}
           </v-card-text>
         </v-card>
         <v-card width="150px" height="100px" class="mr-2 mb-2" outlined>
@@ -50,100 +50,75 @@
             5 ดาว
           </v-card-title>
           <v-card-text>
-            {{ countStar()[4] }}
+            {{ chartData[0].data["5 ดาว"] }}
           </v-card-text>
         </v-card>
       </v-container>
-      <line-chart :data="chartData"></line-chart>
+      <bar-chart
+        :data="chartData"
+        :legend="false"
+        :colors="[['#C62828', '#EF6C00', '#FDD835', '#76FF03', '#388E3C']]"
+      ></bar-chart>
     </v-container>
   </v-card>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data: function() {
     return {
-      chartData: [
-        {
-          name: "1",
-          data: {
-            "2020-02-8": 0,
-            "2020-02-9": 1,
-            "2020-02-10": 1,
-            "2020-02-11": 1,
-            "2020-02-12": 0
-          }
-        },
-        {
-          name: "2",
-          data: {
-            "2020-02-8": 2,
-            "2020-02-9": 0,
-            "2020-02-10": 1,
-            "2020-02-11": 0,
-            "2020-02-12": 1
-          }
-        },
-        {
-          name: "3",
-          data: {
-            "2020-02-8": 3,
-            "2020-02-9": 0,
-            "2020-02-10": 2,
-            "2020-02-11": 0,
-            "2020-02-12": 0
-          }
-        },
-        {
-          name: "4",
-          data: {
-            "2020-02-8": 3,
-            "2020-02-9": 4,
-            "2020-02-10": 1,
-            "2020-02-11": 2,
-            "2020-02-12": 5
-          }
-        },
-        {
-          name: "5",
-          data: {
-            "2020-02-8": 2,
-            "2020-02-9": 1,
-            "2020-02-10": 3,
-            "2020-02-11": 2,
-            "2020-02-12": 1
-          }
-        }
-      ]
+      review: {},
+      chartData: []
     };
   },
 
+  created() {
+    this.getReview();
+  },
+
   methods: {
+    async getReview() {
+      var data = {
+        name: "จำนวนครั้ง",
+        data: {
+          "1 ดาว": 0,
+          "2 ดาว": 0,
+          "3 ดาว": 0,
+          "4 ดาว": 0,
+          "5 ดาว": 0
+        }
+      };
+      let review = await axios.get("feedback/");
+      review = review.data;
+
+      for (var i = 0; i < review.length; i++) {
+        if (review[i].rating == 1) {
+          data.data["1 ดาว"] += 1;
+        } else if (review[i].rating == 2) {
+          data.data["2 ดาว"] += 1;
+        } else if (review[i].rating == 3) {
+          data.data["3 ดาว"] += 1;
+        } else if (review[i].rating == 4) {
+          data.data["4 ดาว"] += 1;
+        } else if (review[i].rating == 5) {
+          data.data["5 ดาว"] += 1;
+        }
+      }
+      this.chartData.push(data);
+    },
+
     avgScore: function() {
       var sum = 0;
       var count = 0;
-      for (var i = 0; i < 5; i++) {
-        var counti = Object.values(this.chartData[i].data).reduce(
-          (a, b) => a + b,
-          0
-        );
+      for (var i = 1; i < 6; i++) {
+        var counti = this.chartData[0].data[`${i} ดาว`];
+        var sumi = counti * i;
+        sum += sumi;
         count += counti;
-        sum += counti * (i + 1);
       }
       return (sum / count).toFixed(2);
-    },
-
-    countStar: function() {
-      var countStar = [];
-
-      for (var i = 0; i < 5; i++) {
-        var counti = Object.values(this.chartData[i].data).reduce(
-          (a, b) => a + b,
-          0
-        );
-        countStar.push(counti);
-      }
-      return countStar;
     }
   }
 };

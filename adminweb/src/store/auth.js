@@ -52,11 +52,11 @@ export default {
       }
     },
 
-    signOut ({ commit }) {
-      return axios.post('auth/logout/').then(() => {
+    signOut({ commit }) {
+      return axios.post("auth/logout/").then(() => {
         commit("SET_TOKEN", null);
         commit("SET_USER", null);
-      })
+      });
     }
   },
   modules: {}

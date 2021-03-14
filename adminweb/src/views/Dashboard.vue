@@ -8,12 +8,12 @@
           </h3>
         </v-col>
       </v-row>
-      <dashboard-download />
-      <dashboard-main />
-      <dashboard-pay-method />
-      <dashboard-user-overview />
-      <dashboard-report />
-      <dashboard-access />
+      <dashboard-download :range="date" @getnewdate="changedate" />
+      <dashboard-main :range="date" />
+      <dashboard-pay-method :range="date" />
+      <dashboard-user-overview :range="date" />
+      <dashboard-report :range="date" />
+      <dashboard-access :range="date" />
     </v-container>
   </div>
 </template>
@@ -35,6 +35,18 @@ export default {
     DashboardUserOverview,
     DashboardReport,
     DashboardAccess
+  },
+
+  data: function() {
+    return {
+      date: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()]
+    };
+  },
+
+  methods: {
+    changedate(value) {
+      this.date = value;
+    }
   }
 };
 </script>

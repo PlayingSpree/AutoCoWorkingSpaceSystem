@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data: function() {
     return {
@@ -27,45 +29,28 @@ export default {
           text: "รหัส",
           align: "start",
           filterable: true,
-          value: "name"
+          value: "id"
         },
-        { text: "รายละเอียด", value: "comment" },
-        { text: "วันและเวลา", value: "dateandtime" },
-        { text: "คะแนน", value: "score" }
+        { text: "รายละเอียด", value: "text" },
+        { text: "วันและเวลา", value: "date_created" },
+        { text: "คะแนน", value: "rating" }
       ],
-      review: [
-        {
-          name: "001",
-          comment: "ดีมากก",
-          dateandtime: new Date("2020-02-8 15:30"),
-          score: 5
-        },
-        {
-          name: "002",
-          comment: "พอใช้",
-          dateandtime: new Date("2020-02-8 16:30"),
-          score: 3
-        },
-        {
-          name: "003",
-          comment: "ดีมาก",
-          dateandtime: new Date("2020-02-9 15:30"),
-          score: 4
-        },
-        {
-          name: "004",
-          comment: "ดีมากก",
-          dateandtime: new Date("2020-02-10 15:30"),
-          score: 5
-        },
-        {
-          name: "005",
-          comment: "แย่",
-          dateandtime: new Date("2020-02-11 15:30"),
-          score: 2
-        }
-      ]
+      review: []
     };
+  },
+
+  created() {
+    this.getReview();
+  },
+
+  methods: {
+    async getReview() {
+      let review = await axios.get("feedback/");
+      this.review = review.data;
+      for (var i = 0; i < this.review.length; i++) {
+        this.review[i].date_created = new Date(this.review[i].date_created);
+      }
+    }
   }
 };
 </script>

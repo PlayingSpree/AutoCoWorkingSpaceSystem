@@ -13,25 +13,32 @@
           height="240px"
           class="mb-4 mx-2"
         >
-          <v-card-title primary-title>
-            {{ item.name }} <v-spacer></v-spacer>
-            <v-tooltip bottom class="ml-3">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" small>mdi-information</v-icon>
-              </template>
-              <span>{{ item.detail }}</span>
-            </v-tooltip>
-          </v-card-title>
-          <v-card-text> จำนวนคนสูงสุด: {{ item.numUser }} </v-card-text>
-          <v-card-text> ราคา: {{ item.price }} ฿/hr </v-card-text>
-          <v-card-actions class="justify-center">
-            <v-btn @click="editItem(item)" icon
-              ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
-            >
-            <v-btn @click="deleteItem(item)" icon
-              ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
-            >
-          </v-card-actions>
+          <v-container>
+            <v-card-title primary-title>
+              {{ item.name }} <v-spacer></v-spacer>
+            </v-card-title>
+            <v-card-text>
+              <v-container
+                ><v-row><span>รายละเอียด</span></v-row>
+                <v-row>
+                  <span>{{ item.detail ? item.detail : "-" }}</span>
+                </v-row>
+                <v-row
+                  ><span>ราคา: {{ item.price }} ฿/hr</span></v-row
+                ></v-container
+              >
+            </v-card-text>
+            <v-footer class="justify-center">
+              <v-card-actions>
+                <v-btn @click="editItem(item)" icon
+                  ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
+                >
+                <v-btn @click="deleteItem(item)" icon
+                  ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
+                >
+              </v-card-actions>
+            </v-footer>
+          </v-container>
         </v-card>
 
         <v-card outlined width="240px" height="240px" class="mb-4 mx-2">
@@ -61,15 +68,6 @@
               </v-card-text>
               <v-card-text>
                 <v-text-field
-                  v-model="roomtypeItem.numUser"
-                  label="จำนวนคนสูงสุด"
-                  suffix="คน"
-                  type="number"
-                  required
-                ></v-text-field>
-              </v-card-text>
-              <v-card-text>
-                <v-text-field
                   v-model="roomtypeItem.price"
                   label="ราคา"
                   suffix="บาท"
@@ -95,6 +93,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data: function() {
     return {
@@ -104,13 +104,11 @@ export default {
       roomtypeItem: {
         name: "",
         detail: "",
-        numUser: "",
         price: ""
       },
       defaultItem: {
         name: "",
         detail: "",
-        numUser: "",
         price: ""
       }
     };
@@ -125,11 +123,11 @@ export default {
     this.showroomtypedata();
   },
   methods: {
-    showroomtypedata: function() {
-      var roomtypedata = JSON.parse(localStorage.getItem("roomtypedata"));
+    async showroomtypedata() {
+      var roomtypedata = await axios.get("meetingroom/type/");
 
       if (roomtypedata != null) {
-        this.roomtypedata = roomtypedata;
+        this.roomtypedata = roomtypedata.data;
       } else {
         return [];
       }
@@ -141,35 +139,29 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem: function(item) {
-      var roomtypedata = JSON.parse(localStorage.getItem("roomtypedata"));
+    async deleteItem(item) {
       this.roomtypeIndex = this.roomtypedata.indexOf(item);
-      this.roomtypeItem = Object.assign({}, item);
-      roomtypedata.splice(this.roomtypeIndex, 1);
-      localStorage.setItem("roomtypedata", JSON.stringify(roomtypedata));
-      this.$nextTick(() => {
-        this.roomtypeItem = Object.assign({}, this.defaultItem);
-        this.roomtypeIndex = -1;
-      });
-      this.showroomtypedata();
-    },
+      await axios.delete(
+        `meetingroom/type/${this.roomtypedata[this.roomtypeIndex].id}/`
+      );
 
-    save: function() {
-      if (localStorage.getItem("roomtypedata") == null) {
-        localStorage.setItem("roomtypedata", "[]");
-      }
-
-      var old_name = JSON.parse(localStorage.getItem("roomtypedata"));
-
-      if (this.roomtypeIndex > -1) {
-        Object.assign(old_name[this.roomtypeIndex], this.roomtypeItem);
-      } else {
-        old_name.push(this.roomtypeItem);
-      }
-
-      localStorage.setItem("roomtypedata", JSON.stringify(old_name));
       this.showroomtypedata();
       this.close();
+    },
+
+    async save() {
+      if (this.roomtypeIndex > -1) {
+        await axios.put(
+          `meetingroom/type/${this.roomtypedata[this.roomtypeIndex].id}/`,
+          this.roomtypeItem
+        );
+      } else {
+        await axios.post("meetingroom/type/", this.roomtypeItem);
+      }
+
+      this.showroomtypedata();
+      this.close();
+      this.$forceUpdate();
     },
 
     close() {

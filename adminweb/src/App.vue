@@ -45,15 +45,15 @@ export default {
 
   methods: {
     ...mapActions({
-      signOutAction: 'auth/signOut'
+      signOutAction: "auth/signOut"
     }),
 
-    signOut () {
+    signOut() {
       this.signOutAction().then(() => {
         this.$router.replace({
-          name: 'Login'
-        })
-      })
+          name: "Login"
+        });
+      });
     }
   }
 };
