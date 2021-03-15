@@ -45,6 +45,7 @@ urlpatterns = [
                   path('auth/registration/', include('dj_rest_auth.registration.urls')),
                   path('auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
                   path('auth/google/', GoogleLogin.as_view(), name='google_login'),
+                  path('auth/', include('authapp.urls')),
 
                   path('coworkingspace/', include('coworkingspace.urls')),
                   path('meetingroom/', include('meetingroom.urls')),

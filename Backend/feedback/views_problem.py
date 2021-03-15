@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
-from feedback.models import Feedback, ProblemType
-from feedback.serializers import FeedbackSerializer, ProblemTypeSerializer
+from feedback.models import Feedback, ProblemType, Problem
+from feedback.serializers import FeedbackSerializer, ProblemTypeSerializer, ProblemSerializer
 from meetingroom.permissions import get_permissions_multi
 
 
@@ -13,8 +13,8 @@ class ProblemTypeViewSet(viewsets.ModelViewSet):
 
 
 class ProblemViewSet(viewsets.ModelViewSet):
-    queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
+    queryset = Problem.objects.all()
+    serializer_class = ProblemSerializer
     permissions = [
         (['create'], [IsAuthenticated]),
         (['list', 'retrieve', 'update', 'partial_update', 'destroy'], [IsAdminUser])
