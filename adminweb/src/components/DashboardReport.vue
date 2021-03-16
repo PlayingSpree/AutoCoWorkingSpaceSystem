@@ -25,12 +25,12 @@
                   <v-col>
                     <p>
                       <v-icon style="color: #FFA726" small>mdi-circle</v-icon>
-                      ชำระผ่านพร้อมเพย์
+                      ปัญหาจากอุปกรณ์
                     </p>
                     <p>{{ elecPercent() }} %</p>
                     <p>
                       <v-icon style="color: #C62828" small>mdi-circle</v-icon>
-                      ชำระผ่านบัตรเครดิต
+                      ปัญหาจากแอพพลิเคชั่น
                     </p>
                     <p>{{ appPercent() }} %</p>
                   </v-col>
