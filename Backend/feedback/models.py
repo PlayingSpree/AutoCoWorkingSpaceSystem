@@ -7,7 +7,7 @@ from authapp.models import User
 class Feedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    text = models.CharField(max_length=500)
+    text = models.CharField(max_length=500, default='')
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -25,8 +25,9 @@ class ProblemType(models.Model):
 class Problem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.ForeignKey(ProblemType, on_delete=models.CASCADE)
-    text = models.CharField(max_length=500)
-    severity = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True)
+    text = models.CharField(max_length=500, default='')
+    severity = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True,
+                                   default=None)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
