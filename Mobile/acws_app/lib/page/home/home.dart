@@ -5,6 +5,7 @@ import '../../app_style.dart';
 import '../../app_transition_route.dart';
 import '../../app_util.dart';
 import '../history/history.dart';
+import 'qr_code.dart';
 import 'reserve.dart';
 import 'subscribe.dart';
 
@@ -22,12 +23,17 @@ class _HomePageState extends State<HomePage> {
 
   var _memberResponse;
   var _roomResponse;
+  var _qrResponse;
 
   Future<void> _downloadData() async {
     var memberResponse =
         await httpGetRequest('/coworkingspace/subscription/me/', context);
     var roomResponse =
         await httpGetRequest('/meetingroom/booking/?future', context);
+    if (memberResponse['member_duration'] > 0) {
+      _qrResponse = await httpGetRequest(
+          '/coworkingspace/key/${memberResponse['id']}/', context);
+    }
     setState(() {
       _memberResponse = memberResponse;
       _roomResponse = roomResponse;
@@ -67,8 +73,12 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               Navigator.of(context).push(SlideLeftRoute(
                                   exitPage: this.widget,
-                                  enterPage:
-                                      Subscribe())); // TODO Unlock QR Code
+                                  enterPage: QRCode(
+                                    title: 'ปลดล็อคประตู',
+                                    qrCodeData: _qrResponse.toString(),
+                                    detail:
+                                        'แสกน QR Code หน้าประตูเพื่อปลดล็อค',
+                                  ))); // TODO Unlock QR Code
                             },
                           ),
                         )

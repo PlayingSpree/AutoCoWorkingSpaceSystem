@@ -21,6 +21,8 @@ Future<dynamic> httpGetRequest(String url, BuildContext context) async {
       final prefs = await SharedPreferences.getInstance();
       prefs.remove('authToken');
       Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      throw Exception(response.body);
     }
   } else {
     throw Exception(response.body);
@@ -42,14 +44,15 @@ Future<dynamic> httpRequest(String url, var body, BuildContext context,
     default:
       methodFunction = http.post;
   }
-  http.Response response = await methodFunction(appConfig.serverUrl + url,
-          headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json; charset=UTF-8',
-            HttpHeaders.authorizationHeader: 'Token ' + token
-          },
-          body: jsonEncode(body))
-      .timeout(const Duration(seconds: 6));
+  http.Response response =
+      await methodFunction(Uri.parse(appConfig.serverUrl + url),
+              headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
+                HttpHeaders.authorizationHeader: 'Token ' + token
+              },
+              body: jsonEncode(body))
+          .timeout(const Duration(seconds: 6));
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return json.decode(utf8.decode(response.bodyBytes));
   } else if (response.statusCode == 403) {
@@ -57,6 +60,8 @@ Future<dynamic> httpRequest(String url, var body, BuildContext context,
       final prefs = await SharedPreferences.getInstance();
       prefs.remove('authToken');
       Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      throw Exception(response.body);
     }
   } else {
     throw Exception(response.body);
