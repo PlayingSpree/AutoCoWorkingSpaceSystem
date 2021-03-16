@@ -150,7 +150,8 @@ class _CoworkingSpaceHistoryState extends State<CoworkingSpaceHistory> {
                             color: Colors.grey,
                             size: 16,
                           ),
-                          Text(' ${item['date_start']} - ${item['date_end']}')
+                          Text(
+                              ' ${DateFormat.yMd().format(DateTime.parse(item['date_start']))} - ${DateFormat.yMd().format(DateTime.parse(item['date_end']))}')
                         ],
                       ),
                       trailing: Text('${item['package']['price']} ฿')),

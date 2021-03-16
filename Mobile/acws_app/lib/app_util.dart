@@ -9,7 +9,7 @@ import 'app_config.dart' as appConfig;
 
 Future<dynamic> httpGetRequest(String url, BuildContext context) async {
   final token = appConfig.AppData.authToken;
-  var response = await http.get(appConfig.serverUrl + url, headers: {
+  var response = await http.get(Uri.parse(appConfig.serverUrl + url), headers: {
     'accept': 'application/json',
     'Content-Type': 'application/json; charset=UTF-8',
     HttpHeaders.authorizationHeader: 'Token ' + token

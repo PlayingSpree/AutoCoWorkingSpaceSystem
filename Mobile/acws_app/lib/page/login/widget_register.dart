@@ -40,8 +40,8 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _showSnackBar(String text) {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(text),
     ));
   }
@@ -57,7 +57,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
       try {
         var response = await http
-            .post(appConfig.serverUrl + '/auth/registration/',
+            .post(Uri.parse(appConfig.serverUrl + '/auth/registration/'),
                 headers: <String, String>{
                   'Content-Type': 'application/json; charset=UTF-8',
                 },
@@ -166,9 +166,7 @@ class _RegisterFormState extends State<RegisterForm> {
               if (value.length < 8) {
                 return 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร';
               }
-              if (RegExp(
-                  r"^[0-9]*$")
-                  .hasMatch(value)) {
+              if (RegExp(r"^[0-9]*$").hasMatch(value)) {
                 return 'รหัสผ่านต้องไม่เป็นตัวเลขอย่างเดียว';
               }
               if (_invalidPassword != null) {

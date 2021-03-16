@@ -66,8 +66,8 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _showSnackBar(String text) {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(text),
     ));
   }
@@ -84,11 +84,11 @@ class _LoginFormState extends State<LoginForm> {
       if (token == null) {
         throw ('Cannot read token.');
       }
-      var response = await http.get(appConfig.serverUrl + '/auth/user/',
-          headers: {
-            'accept': 'application/json',
-            HttpHeaders.authorizationHeader: 'Token ' + token
-          }).timeout(const Duration(seconds: 6));
+      var response = await http
+          .get(Uri.parse(appConfig.serverUrl + '/auth/user/'), headers: {
+        'accept': 'application/json',
+        HttpHeaders.authorizationHeader: 'Token ' + token
+      }).timeout(const Duration(seconds: 6));
       if (response.statusCode == 200) {
         await Future.delayed(Duration(seconds: 1));
         _loginComplete(token);
@@ -122,7 +122,7 @@ class _LoginFormState extends State<LoginForm> {
 
       try {
         var response = await http
-            .post(appConfig.serverUrl + '/auth/login/',
+            .post(Uri.parse(appConfig.serverUrl + '/auth/login/'),
                 headers: <String, String>{
                   'Content-Type': 'application/json; charset=UTF-8',
                 },
@@ -178,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
       case FacebookLoginStatus.loggedIn:
         try {
           var response = await http
-              .post(appConfig.serverUrl + '/auth/facebook/',
+              .post(Uri.parse(appConfig.serverUrl + '/auth/facebook/'),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
@@ -221,7 +221,7 @@ class _LoginFormState extends State<LoginForm> {
         'profile',
       ],
     );
-    if(await googleSignIn.signInSilently() != null){
+    if (await googleSignIn.signInSilently() != null) {
       googleSignIn.signOut();
     }
     try {
@@ -232,7 +232,7 @@ class _LoginFormState extends State<LoginForm> {
       if (acc != null) {
         try {
           var response = await http
-              .post(appConfig.serverUrl + '/auth/google/',
+              .post(Uri.parse(appConfig.serverUrl + '/auth/google/'),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },

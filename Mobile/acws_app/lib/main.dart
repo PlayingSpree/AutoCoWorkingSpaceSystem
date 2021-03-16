@@ -48,7 +48,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     RemotePage(),
     HistoryPage(),
-    MemberPage(),
+    ProfilePage(),
   ];
 
   @override
@@ -83,7 +83,7 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Member',
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
