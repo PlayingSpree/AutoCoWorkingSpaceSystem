@@ -245,6 +245,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data: function() {
     return {
@@ -321,7 +323,7 @@ export default {
     };
   },
   created() {
-    this.initialize();
+    this.getUser();
   },
 
   watch: {
@@ -330,38 +332,17 @@ export default {
     }
   },
   methods: {
-    initialize: function() {
-      this.user = [
-        {
-          id: "001",
-          name: "เข็มทิศ ธัญลักษณานันท์",
-          email: "example1@gmail.com",
-          phone: "0892222222",
-          sex: "ชาย"
-        },
-        {
-          id: "002",
-          name: "ไทธนัช เธียรประดับโชค",
-          email: "example2@gmail.com",
-          phone: "0892222223",
-          sex: "ชาย"
-        },
-        {
-          id: "003",
-          name: "ณัชพล ศานติพิบูล",
-          email: "example3@gmail.com",
-          phone: "0892222224",
-          sex: "ชาย"
-        }
-      ];
+    async getUser() {
+      let user = await axios.get('auth/user/')
+      let newuser = user.data
+      newuser.name = user.data.first_name + ' ' + user.data.last_name
+      this.user.push(newuser)
     },
 
     seeProfile: function(item) {
       this.profileIndex = this.user.indexOf(item);
       this.profileItem = Object.assign({}, item);
-      console.log(this.dialog);
       this.dialog = true;
-      console.log(this.dialog);
     },
 
     close() {

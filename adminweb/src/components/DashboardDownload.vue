@@ -46,7 +46,7 @@ export default {
           text: "7 days",
           onClick: () => {
             const date = [
-              new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+              new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
               new Date()
             ];
             this.range = date;
@@ -56,7 +56,7 @@ export default {
           text: "30 days",
           onClick: () => {
             const date = [
-              new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
+              new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
               new Date()
             ];
             this.range = date;
@@ -68,6 +68,11 @@ export default {
 
   methods: {
     emitdate() {
+      if (this.range[0].getHours() == 0) {
+        this.range[0] = new Date(this.range[0].getTime() + 24 * 60 * 60 * 500);
+        this.range[1] = new Date(this.range[1].getTime() + 24 * 60 * 60 * 500);
+      }
+
       this.$emit("getnewdate", this.range);
     }
   }
