@@ -25,6 +25,7 @@ class ProblemType(models.Model):
 class Problem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.ForeignKey(ProblemType, on_delete=models.CASCADE)
+    text = models.CharField(max_length=500)
     severity = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

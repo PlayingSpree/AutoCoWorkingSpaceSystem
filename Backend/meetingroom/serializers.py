@@ -1,10 +1,9 @@
 from django.utils import timezone
-from rest_framework import serializers
 from django.utils.dateparse import parse_datetime
+from rest_framework import serializers
 from rest_framework.fields import CharField, IntegerField
 
 from meetingroom.models import MeetingRoom, MeetingRoomBooking, MeetingRoomType
-from payment.serializers import PaymentSerializer
 
 
 class MeetingRoomSerializer(serializers.ModelSerializer):
@@ -37,7 +36,7 @@ class MeetingRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MeetingRoom
-        fields = ['id', 'name', 'detail', 'is_active', 'available']
+        fields = ['id', 'name', 'detail', 'type', 'is_active', 'available']
         read_only_fields = ['id']
 
 
@@ -77,7 +76,7 @@ class MeetingRoomBookingReadSerializer(serializers.ModelSerializer):
     def get_amount(self, obj):
         if obj.payment is None:
             return 0
-        return obj.payment.amount
+        return int(obj.payment.amount / 100)
 
     class Meta:
         model = MeetingRoomBooking
