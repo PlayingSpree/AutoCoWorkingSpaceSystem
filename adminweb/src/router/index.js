@@ -34,7 +34,16 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: Login
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      if (store.getters["auth/authenicated"]) {
+        return next({
+          name: "Dashboard"
+        });
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/manage",

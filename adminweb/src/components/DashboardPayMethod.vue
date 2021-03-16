@@ -84,20 +84,52 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     range: []
   },
   data: function() {
     return {
-      pieData: [
-        ["ชำระผ่านบัตรเครดิต", 770],
-        ["ชำระผ่านพร้อมเพย์", 230]
-      ]
+      pieData: []
     };
+  },
+  created() {
+    this.getmethod();
+  },
+
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getmethod();
+    }
   },
 
   methods: {
+    async getmethod() {
+      let allstat = await axios.get(
+        `payment/stat/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
+      var piedata = [];
+
+      var pieDatacredit = [
+        "ชำระผ่านบัตรเครดิต",
+        allstat.data.payment_method[0].amount / 100
+      ];
+      var pieDataprompt = [
+        "ชำระผ่านพร้อมเพย์",
+        allstat.data.payment_method[1].amount / 100
+      ];
+
+      piedata.push(pieDatacredit);
+      piedata.push(pieDataprompt);
+      this.pieData = piedata;
+    },
+
     creditPercent: function() {
       return (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *

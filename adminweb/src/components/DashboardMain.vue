@@ -101,11 +101,11 @@ export default {
       }
 
       for (i = 0; i < packagestat.length; i++) {
-        packdata.data[packagestat[i].date] = packagestat[i].amount;
+        packdata.data[packagestat[i].date] = packagestat[i].amount / 100;
       }
 
       for (i = 0; i < meetingstat.length; i++) {
-        meetdata.data[meetingstat[i].date] = meetingstat[i].amount;
+        meetdata.data[meetingstat[i].date] = meetingstat[i].amount / 100;
       }
 
       this.chartData.push(packdata);

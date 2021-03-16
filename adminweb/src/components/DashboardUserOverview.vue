@@ -87,19 +87,45 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     range: []
   },
   data: function() {
     return {
-      pieData: [
-        ["ลูกค้าใหม่", 230],
-        ["ลูกค้าเดิม", 770]
-      ]
+      pieData: []
     };
   },
+  created() {
+    this.getUserOverview();
+  },
+
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getUserOverview();
+    }
+  },
+
   methods: {
+    async getUserOverview() {
+      let allstat = await axios.get(
+        `payment/stat/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
+      var piedata = [];
+
+      var pienewuser = ["ลูกค้าใหม่", allstat.data.customer_new];
+      var pieolduser = ["ลูกค้าเดิม", allstat.data.customer_old];
+
+      piedata.push(pienewuser);
+      piedata.push(pieolduser);
+      this.pieData = piedata;
+    },
     newPercent: function() {
       return (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *

@@ -21,6 +21,9 @@
 import axios from "axios";
 
 export default {
+  props: {
+    range: []
+  },
   data: function() {
     return {
       search: "",
@@ -43,9 +46,21 @@ export default {
     this.getReview();
   },
 
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getReview();
+    }
+  },
+
   methods: {
     async getReview() {
-      let review = await axios.get("feedback/");
+      let review = await axios.get(
+        `feedback/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
       this.review = review.data;
       for (var i = 0; i < this.review.length; i++) {
         this.review[i].date_created = new Date(this.review[i].date_created);

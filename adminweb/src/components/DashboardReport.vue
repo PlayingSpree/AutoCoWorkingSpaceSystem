@@ -84,6 +84,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     range: []
@@ -97,7 +99,47 @@ export default {
     };
   },
 
+  created() {
+    this.getmethod();
+  },
+
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getmethod();
+    }
+  },
+
   methods: {
+    async getmethod() {
+      let allstat = await axios.get(
+        `feedback/problem/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
+      allstat = allstat.data;
+
+      var piedata = [];
+
+      let appcount = 0;
+      let itemcount = 0;
+      for (let i = 0; i < allstat.length; i++) {
+        if (allstat[i].type == 1) {
+          appcount += 1;
+        } else {
+          itemcount += 1;
+        }
+      }
+
+      var pieDataApp = ["ชำระผ่านบัตรเครดิต", appcount];
+      var pieDataItem = ["ชำระผ่านพร้อมเพย์", itemcount];
+
+      piedata.push(pieDataApp);
+      piedata.push(pieDataItem);
+      this.pieData = piedata;
+    },
+
     appPercent: function() {
       return (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *

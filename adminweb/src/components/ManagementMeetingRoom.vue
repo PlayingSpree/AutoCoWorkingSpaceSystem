@@ -20,9 +20,9 @@
                 ประเภทห้อง
               </v-card-text>
               <v-select
-                v-model="item.detail"
-                :items="roomtypedata"
-                @input="setroomtype(item.detail, item)"
+                v-model="item.type_detail.name"
+                :items="roomtypename"
+                @input="setroomtype(item.type_detail.name, item)"
                 solo
               ></v-select>
               <v-card-text>
@@ -217,12 +217,15 @@ export default {
       dialog: false,
       roomnameIndex: -1,
       roomnamedata: [],
+      roomtypename: [],
       roomtypedata: [],
       status: ["ปิดปรับปรุง", "เปิดให้บริการ"],
       roomnameItem: {
         name: "",
         detail: "",
         status: "",
+        type: "",
+        type_detail: {},
         is_active: false,
         lightColor: 0,
         brightness: 0,
@@ -233,6 +236,8 @@ export default {
         name: "",
         detail: "",
         status: "",
+        type: "",
+        type_detail: {},
         is_active: false,
         lightColor: 0,
         brightness: 0,
@@ -256,7 +261,13 @@ export default {
       var roomnamedata = await axios.get("meetingroom/");
 
       this.roomnamedata = roomnamedata.data;
+
       for (var i = 0; i < this.roomnamedata.length; i++) {
+        if (this.roomnamedata[i].type_detail == null) {
+          this.roomnamedata[i].type_detail = {
+            name: ""
+          };
+        }
         if (this.roomnamedata[i].is_active == true) {
           this.roomnamedata[i].status = "เปิดให้บริการ";
         } else {
@@ -310,14 +321,20 @@ export default {
       for (var i = 0; i < roomtypedata.data.length; i++) {
         alltype.push(roomtypedata.data[i].name);
       }
-      this.roomtypedata = alltype;
+      this.roomtypename = alltype;
+      this.roomtypedata = roomtypedata.data;
     },
 
     async setroomtype(type, item) {
       this.allroomtype();
       this.roomnameIndex = this.roomnamedata.indexOf(item);
       this.roomnameItem = Object.assign({}, item);
-      this.roomnameItem.detail = type;
+      for (var i = 0; i < this.roomtypedata.length; i++) {
+        if (this.roomtypedata[i].name == type) {
+          this.roomnameItem.type_detail.name = this.roomtypedata[i];
+          this.roomnameItem.type = this.roomtypedata[i].id;
+        }
+      }
 
       await axios.put(
         `meetingroom/${this.roomnamedata[this.roomnameIndex].id}/`,

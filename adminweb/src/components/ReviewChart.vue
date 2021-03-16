@@ -67,6 +67,9 @@
 import axios from "axios";
 
 export default {
+  props: {
+    range: []
+  },
   data: function() {
     return {
       review: {},
@@ -76,6 +79,14 @@ export default {
 
   created() {
     this.getReview();
+  },
+
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getReview();
+    }
   },
 
   methods: {
@@ -90,7 +101,11 @@ export default {
           "5 ดาว": 0
         }
       };
-      let review = await axios.get("feedback/");
+      let review = await axios.get(
+        `feedback/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
       review = review.data;
 
       for (var i = 0; i < review.length; i++) {
@@ -106,6 +121,7 @@ export default {
           data.data["5 ดาว"] += 1;
         }
       }
+      this.chartData = [];
       this.chartData.push(data);
     },
 

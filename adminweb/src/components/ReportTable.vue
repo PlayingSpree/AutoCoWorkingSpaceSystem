@@ -12,68 +12,107 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="reportData" :search="search">
-      <template v-slot:[`item.fixed`]="{ item }">
-        <v-checkbox @click="fixedItem(item)"></v-checkbox>
+    <v-data-table :headers="headers" :items="report" :search="search">
+      <template v-slot:[`item.sev`]="{ item }">
+        <v-select v-model="item.sev" @change="setsev(item)" :items="sevlevel" />
       </template>
     </v-data-table>
   </v-card>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  props: {
+    range: []
+  },
   data: function() {
     return {
+      menu: false,
+      sevlevel: [
+        "แก้ไขเรียบร้อย",
+        "ไม่กระทบต่อระบบ",
+        "กระทบต่อระบบน้อย",
+        "รุนแรง",
+        "รุนแรงมาก",
+        "รุนแรงมากที่สุด"
+      ],
       search: "",
       editedIndex: -1,
       editedItem: {
-        name: "",
-        comment: "",
-        dateandtime: "",
-        critical: ""
+        id: "",
+        text: "",
+        date_modified: "",
+        severity: null,
+        sev: "ยังไม่กำหนด"
       },
       headers: [
         {
           text: "รหัส",
           align: "start",
           filterable: true,
-          value: "name"
+          value: "id"
         },
-        { text: "รายละเอียด", value: "comment" },
-        { text: "วันและเวลา", value: "dateandtime" },
-        { text: "ความรุนแรง", value: "critical" },
-        { text: "การแก้ไข", value: "fixed", sortable: false }
+        { text: "รายละเอียด", value: "text" },
+        { text: "วันและเวลา", value: "date_created", width: "30%" },
+        { text: "ความรุนแรง", value: "sev", width: "20%" }
       ],
 
-      reportData: []
+      report: []
     };
   },
+
   created() {
-    this.initialize();
+    this.getReport();
   },
+
+  watch: {
+    range(val) {
+      this.range[0] = val[0];
+      this.range[1] = val[1];
+      this.getReport();
+    }
+  },
+
   methods: {
-    initialize: function() {
-      this.reportData = [
-        {
-          name: "001",
-          comment: "เปิดประตูไม่ได้",
-          dateandtime: "2020-02-8 15:30",
-          critical: "รุนแรงมาก"
-        },
-        {
-          name: "002",
-          comment: "เปิดแอร์ไม่ได้",
-          dateandtime: "2020-02-8 15:30",
-          critical: "รุนแรงมาก"
+    async getReport() {
+      let report = await axios.get(
+        `feedback/problem/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
+      this.report = report.data;
+      for (var i = 0; i < this.report.length; i++) {
+        this.report[i].date_created = new Date(this.report[i].date_created);
+        if (this.report[i].severity == null) {
+          this.report[i].sev = "";
+        } else {
+          this.report[i].sev = this.sevlevel[this.report[i].severity];
         }
-      ];
+      }
     },
 
-    fixedItem: function(item) {
-      this.editedIndex = this.reportData.indexOf(item);
+    async setsev(item) {
+      this.editedIndex = this.report.indexOf(item);
+      item.severity = this.sevlevel.indexOf(item.sev);
+      if (item.severity < 0) {
+        item.severity = null;
+      }
       this.editedItem = Object.assign({}, item);
-      Object.assign(this.reportData[this.editedIndex], this.editedItem);
+      console.log(this.editedItem);
+      await axios.put(
+        `feedback/problem/${this.editedItem.id}/`,
+        this.editedItem
+      );
+      this.getReport();
     }
   }
 };
 </script>
+
+<style>
+.row-pointer {
+  cursor: pointer;
+}
+</style>
