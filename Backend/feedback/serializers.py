@@ -20,5 +20,5 @@ class ProblemTypeSerializer(serializers.ModelSerializer):
 class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
-        fields = ['id', 'user', 'type', 'severity', 'date_created', 'date_created']
+        fields = ['id', 'user', 'text', 'type', 'severity', 'date_created', 'date_created']
         read_only_fields = ['id', 'date_created', 'date_created']
