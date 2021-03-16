@@ -6,8 +6,41 @@ from rest_framework.fields import CharField, IntegerField
 from meetingroom.models import MeetingRoom, MeetingRoomBooking, MeetingRoomType
 
 
+class MeetingRoomTypeSerializer(serializers.ModelSerializer):
+    available = serializers.SerializerMethodField(read_only=True)
+
+    def get_available(self, obj):
+        start = self.context['request'].query_params.get('start', None)
+        end = self.context['request'].query_params.get('end', None)
+        return MeetingRoom.objects.filter(type=obj,
+                                          is_active=True).exclude(meetingroombooking__date_end__gt=start,
+                                                                  meetingroombooking__date_start__lt=end,
+                                                                  meetingroombooking__is_canceled=False).count()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        try:
+            start = self.context['request'].query_params.get('start', None)
+            end = self.context['request'].query_params.get('end', None)
+            if start is not None and end is not None:
+                start = parse_datetime(start)
+                end = parse_datetime(end)
+                if start is not None and end is not None:
+                    return
+        except KeyError:
+            pass
+        self.fields.pop('available')
+
+    class Meta:
+        model = MeetingRoomType
+        fields = ['id', 'name', 'detail', 'price', 'available']
+        read_only_fields = ['id']
+
+
 class MeetingRoomSerializer(serializers.ModelSerializer):
     available = serializers.SerializerMethodField(read_only=True)
+    type_detail = MeetingRoomTypeSerializer(read_only=True, source='type')
 
     def get_available(self, obj):
         start = self.context['request'].query_params.get('start', None)
@@ -36,36 +69,7 @@ class MeetingRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MeetingRoom
-        fields = ['id', 'name', 'detail', 'type', 'is_active', 'available']
-        read_only_fields = ['id']
-
-
-class MeetingRoomTypeSerializer(serializers.ModelSerializer):
-    available = serializers.SerializerMethodField(read_only=True)
-
-    def get_available(self, obj):
-        start = self.context['request'].query_params.get('start', None)
-        end = self.context['request'].query_params.get('end', None)
-        return MeetingRoom.objects.filter(type=obj,
-                                          is_active=True).exclude(meetingroombooking__date_end__gt=start,
-                                                                  meetingroombooking__date_start__lt=end,
-                                                                  meetingroombooking__is_canceled=False).count()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        start = self.context['request'].query_params.get('start', None)
-        end = self.context['request'].query_params.get('end', None)
-        if start is not None and end is not None:
-            start = parse_datetime(start)
-            end = parse_datetime(end)
-            if start is not None and end is not None:
-                return
-        self.fields.pop('available')
-
-    class Meta:
-        model = MeetingRoomType
-        fields = ['id', 'name', 'detail', 'price', 'available']
+        fields = ['id', 'name', 'detail', 'type', 'type_detail', 'is_active', 'available']
         read_only_fields = ['id']
 
 
