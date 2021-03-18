@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../app_config.dart' as appConfig;
-import 'widget_register.dart';
+import 'form_register.dart';
 import '../../icons/social_icons.dart';
 
 class LoginPage extends StatefulWidget {

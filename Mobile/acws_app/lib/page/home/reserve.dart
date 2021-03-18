@@ -1,5 +1,5 @@
 import 'package:acws_app/app_style.dart';
-import 'package:acws_app/page/home/widget_card_detail_button.dart';
+import 'package:acws_app/page/home/card_detail_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

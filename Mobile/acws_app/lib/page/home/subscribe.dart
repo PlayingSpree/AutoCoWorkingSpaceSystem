@@ -4,7 +4,7 @@ import '../../app_style.dart';
 import '../../app_transition_route.dart';
 import '../../app_util.dart';
 import 'payment.dart';
-import 'widget_card_detail_button.dart';
+import 'card_detail_button.dart';
 
 class Subscribe extends StatefulWidget {
   @override

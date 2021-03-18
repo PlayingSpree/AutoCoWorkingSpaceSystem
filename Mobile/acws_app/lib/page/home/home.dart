@@ -69,6 +69,7 @@ class _HomePageState extends State<HomePage> {
                       ? Card(
                           child: ListTile(
                             leading: Icon(Icons.lock_open),
+                            trailing: Icon(Icons.arrow_forward),
                             title: Text('ปลดล็อคประตู'),
                             onTap: () {
                               Navigator.of(context).push(SlideLeftRoute(
@@ -86,6 +87,7 @@ class _HomePageState extends State<HomePage> {
                 Card(
                   child: ListTile(
                     leading: Icon(Icons.person),
+                    trailing: Icon(Icons.arrow_forward),
                     title: _memberResponse == null ||
                             _memberResponse['member_duration'] < 0
                         ? Text('สมัครสมาชิก Co-working Space')

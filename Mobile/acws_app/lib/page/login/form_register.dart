@@ -19,8 +19,8 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
-  final FocusNode _focusNodePassword = FocusNode();
-  final FocusNode _focusNodePasswordConfirm = FocusNode();
+  final _focusNodePassword = FocusNode();
+  final _focusNodePasswordConfirm = FocusNode();
   final _emailText = TextEditingController();
   final _passwordText = TextEditingController();
   final _passwordConfirmText = TextEditingController();
