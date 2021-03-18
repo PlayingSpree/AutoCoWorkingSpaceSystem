@@ -13,6 +13,11 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="review" :search="search">
+      <template v-slot:[`item.rating`]="{ item }">
+        <v-chip :color="getColor(item.rating)" style="color: black">
+          {{ item.rating }}
+        </v-chip>
+      </template>
     </v-data-table>
   </v-card>
 </template>
@@ -22,7 +27,8 @@ import axios from "axios";
 
 export default {
   props: {
-    range: []
+    range: [],
+    datatowatch: []
   },
   data: function() {
     return {
@@ -51,20 +57,49 @@ export default {
       this.range[0] = val[0];
       this.range[1] = val[1];
       this.getReview();
+    },
+
+    datatowatch: {
+      deep: true,
+      handler() {
+        this.getReview();
+      }
     }
   },
 
   methods: {
     async getReview() {
+      let enstar = [];
+
+      for (let i in this.datatowatch) {
+        if (this.datatowatch[i] == true) {
+          enstar.push(i);
+        }
+      }
       let review = await axios.get(
         `feedback/?start=${this.range[0]
           .toISOString()
           .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
       );
-      this.review = review.data;
-      for (var i = 0; i < this.review.length; i++) {
-        this.review[i].date_created = new Date(this.review[i].date_created);
+      review = review.data;
+      let enreview = [];
+      for (let i = 0; i < review.length; i++) {
+        for (let j = 0; j < enstar.length; j++) {
+          if (review[i].rating == enstar[j]) {
+            review[i].date_created = new Date(review[i].date_created);
+            enreview.push(review[i]);
+          }
+        }
       }
+      this.review = enreview;
+    },
+
+    getColor(rating) {
+      if (rating == 1) return "#C62828";
+      else if (rating == 2) return "#EF6C00";
+      else if (rating == 3) return "#FDD835";
+      else if (rating == 4) return "#76FF03";
+      else return "#388E3C";
     }
   }
 };

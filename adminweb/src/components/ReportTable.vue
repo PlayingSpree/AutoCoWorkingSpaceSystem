@@ -1,7 +1,7 @@
 <template>
   <v-card class="mt-5">
     <v-card-title>
-      ลำดับความรุนแรงของปัญหา
+      รายละเอียดการรายงานปัญหาของลูกค้า
     </v-card-title>
     <v-card-title>
       <v-text-field
@@ -25,7 +25,9 @@ import axios from "axios";
 
 export default {
   props: {
-    range: []
+    range: [],
+    datatowatch: [],
+    all: null
   },
   data: function() {
     return {
@@ -72,25 +74,49 @@ export default {
       this.range[0] = val[0];
       this.range[1] = val[1];
       this.getReport();
+    },
+
+    datatowatch: {
+      deep: true,
+      handler() {
+        this.getReport();
+      }
     }
   },
 
   methods: {
     async getReport() {
+      let ensev = [];
+      for (let i in this.datatowatch) {
+        if (this.datatowatch[i] == true) {
+          ensev.push(i);
+        }
+      }
       let report = await axios.get(
         `feedback/problem/?start=${this.range[0]
           .toISOString()
           .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
       );
-      this.report = report.data;
-      for (var i = 0; i < this.report.length; i++) {
-        this.report[i].date_created = new Date(this.report[i].date_created);
-        if (this.report[i].severity == null) {
-          this.report[i].sev = "";
-        } else {
-          this.report[i].sev = this.sevlevel[this.report[i].severity];
+      report = report.data;
+      let enreport = [];
+      for (let i = 0; i < report.length; i++) {
+        for (let j = 0; j < ensev.length; j++) {
+          if (ensev[j] == "null") {
+            ensev[j] = null;
+          }
+          if (report[i].severity == ensev[j]) {
+            if (report[i].severity == null) {
+              report[i].sev = "";
+            } else {
+              report[i].sev = this.sevlevel[report[i].severity];
+            }
+            report[i].date_created = new Date(report[i].date_created).toString().substring(0, 24)
+            enreport.push(report[i]);
+            break;
+          }
         }
       }
+      this.report = enreport;
     },
 
     async setsev(item) {

@@ -12,10 +12,6 @@
         :confirm="true"
         :shortcuts="shortcut"
       ></date-picker>
-      <v-spacer></v-spacer>
-      <v-btn outlined
-        ><v-icon class="mr-1" small>mdi-download</v-icon> ดาวน์โหลดข้อมูล</v-btn
-      >
     </v-card-actions>
   </v-card>
 </template>
@@ -65,7 +61,6 @@ export default {
       ]
     };
   },
-
   methods: {
     emitdate() {
       if (this.range[0].getHours() == 0) {

@@ -73,6 +73,9 @@
                         <v-card-title style="font-size:1em">
                           ความพึงพอใจในการใช้บริการ
                         </v-card-title>
+                        <v-card-text>
+                          {{ avgScore() }}
+                        </v-card-text>
                       </v-card>
                     </v-col>
                   </v-row>
@@ -95,11 +98,13 @@ export default {
   },
   data: function() {
     return {
-      pieData: []
+      pieData: [],
+      reviewdata: []
     };
   },
   created() {
     this.getUserOverview();
+    this.getReview();
   },
 
   watch: {
@@ -107,6 +112,7 @@ export default {
       this.range[0] = val[0];
       this.range[1] = val[1];
       this.getUserOverview();
+      this.getReview();
     }
   },
 
@@ -117,28 +123,97 @@ export default {
           .toISOString()
           .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
       );
-      var piedata = [];
+      let piedata = [];
+      let pienewuser = ["ลูกค้าใหม่", 0];
+      let pieolduser = ["ลูกค้าเดิม", 0];
 
-      var pienewuser = ["ลูกค้าใหม่", allstat.data.customer_new];
-      var pieolduser = ["ลูกค้าเดิม", allstat.data.customer_old];
+      if (
+        allstat.data.customer_new != null ||
+        allstat.data.customer_old != null
+      ) {
+        pienewuser = ["ลูกค้าใหม่", allstat.data.customer_new];
+        pieolduser = ["ลูกค้าเดิม", allstat.data.customer_old];
+      }
 
       piedata.push(pienewuser);
       piedata.push(pieolduser);
       this.pieData = piedata;
     },
     newPercent: function() {
-      return (
+      let percent = (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *
         100
       ).toFixed(2);
+      if (isNaN(percent)) {
+        percent = 0;
+      }
+      return percent;
     },
 
     oldPercent: function() {
-      return (100 - this.newPercent()).toFixed(2);
+      let percent = (
+        (this.pieData[1][1] / (this.pieData[0][1] + this.pieData[1][1])) *
+        100
+      ).toFixed(2);
+      if (isNaN(percent)) {
+        percent = 0;
+      }
+      return percent;
     },
 
     allUser: function() {
       return this.pieData[0][1] + this.pieData[1][1];
+    },
+
+    async getReview() {
+      var data = {
+        name: "จำนวนครั้ง",
+        data: {
+          "1 ดาว": 0,
+          "2 ดาว": 0,
+          "3 ดาว": 0,
+          "4 ดาว": 0,
+          "5 ดาว": 0
+        }
+      };
+      let review = await axios.get(
+        `feedback/?start=${this.range[0]
+          .toISOString()
+          .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
+      );
+      review = review.data;
+
+      for (var i = 0; i < review.length; i++) {
+        if (review[i].rating == 1) {
+          data.data["1 ดาว"] += 1;
+        } else if (review[i].rating == 2) {
+          data.data["2 ดาว"] += 1;
+        } else if (review[i].rating == 3) {
+          data.data["3 ดาว"] += 1;
+        } else if (review[i].rating == 4) {
+          data.data["4 ดาว"] += 1;
+        } else if (review[i].rating == 5) {
+          data.data["5 ดาว"] += 1;
+        }
+      }
+      this.reviewdata = [];
+      this.reviewdata.push(data);
+    },
+
+    avgScore: function() {
+      let sum = 0;
+      let count = 0;
+      for (var i = 1; i < 6; i++) {
+        let counti = this.reviewdata[0].data[`${i} ดาว`];
+        let sumi = counti * i;
+        sum += sumi;
+        count += counti;
+      }
+      let avg = (sum / count).toFixed(2);
+      if (isNaN(avg)) {
+        avg = 0;
+      }
+      return avg;
     }
   }
 };

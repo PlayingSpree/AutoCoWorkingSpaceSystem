@@ -92,10 +92,7 @@ export default {
   },
   data: function() {
     return {
-      pieData: [
-        ["แอพพลิเคชั่น", 4],
-        ["อุปกรณ์", 1]
-      ]
+      pieData: []
     };
   },
 
@@ -141,14 +138,25 @@ export default {
     },
 
     appPercent: function() {
-      return (
+      let percent = (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *
         100
       ).toFixed(2);
+      if (isNaN(percent)) {
+        percent = 0;
+      }
+      return percent;
     },
 
     elecPercent: function() {
-      return (100 - this.appPercent()).toFixed(2);
+      let percent = (
+        (this.pieData[1][1] / (this.pieData[0][1] + this.pieData[1][1])) *
+        100
+      ).toFixed(2);
+      if (isNaN(percent)) {
+        percent = 0;
+      }
+      return percent;
     },
 
     allReport: function() {

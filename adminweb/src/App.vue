@@ -15,12 +15,6 @@
     <v-content>
       <router-view></router-view>
     </v-content>
-    <v-footer>
-      <v-switch
-        v-model="$vuetify.theme.dark"
-        label="Switch to Dark Mode"
-      ></v-switch>
-    </v-footer>
   </v-app>
 </template>
 

@@ -114,16 +114,22 @@ export default {
           .toISOString()
           .substr(0, 10)}&end=${this.range[1].toISOString().substr(0, 10)}`
       );
-      var piedata = [];
-
-      var pieDatacredit = [
-        "ชำระผ่านบัตรเครดิต",
-        allstat.data.payment_method[0].amount / 100
-      ];
-      var pieDataprompt = [
-        "ชำระผ่านพร้อมเพย์",
-        allstat.data.payment_method[1].amount / 100
-      ];
+      let piedata = [];
+      let pieDatacredit = ["ชำระผ่านบัตรเครดิต", 0];
+      let pieDataprompt = ["ชำระผ่านพร้อมเพย์", 0];
+      if (
+        allstat.data.payment_method[0] != null ||
+        allstat.data.payment_method[1] != null
+      ) {
+        pieDatacredit = [
+          "ชำระผ่านบัตรเครดิต",
+          allstat.data.payment_method[0].amount / 100
+        ];
+        pieDataprompt = [
+          "ชำระผ่านพร้อมเพย์",
+          allstat.data.payment_method[1].amount / 100
+        ];
+      }
 
       piedata.push(pieDatacredit);
       piedata.push(pieDataprompt);
@@ -131,14 +137,25 @@ export default {
     },
 
     creditPercent: function() {
-      return (
+      let percent = (
         (this.pieData[0][1] / (this.pieData[0][1] + this.pieData[1][1])) *
         100
       ).toFixed(2);
+      if (isNaN(percent)) {
+        percent = 0;
+      }
+      return percent;
     },
 
     promptPercent: function() {
-      return (100 - this.creditPercent()).toFixed(2);
+      let percent = (
+        (this.pieData[1][1] / (this.pieData[0][1] + this.pieData[1][1])) *
+        100
+      ).toFixed(2);
+      if (isNaN(percent)) {
+        percent = 0;
+      }
+      return percent;
     },
 
     allPay: function() {
