@@ -9,8 +9,7 @@ class MeetingRoomIoTSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingRoomIoT
         fields = ['room', 'iot_ip', 'door_ip']
-        read_only_fields = ['room']
-        extra_kwargs = {'room': {'required': True}}
+        extra_kwargs = {'room': {'required': False}}
 
     def validate_ip(self, value):
         try:

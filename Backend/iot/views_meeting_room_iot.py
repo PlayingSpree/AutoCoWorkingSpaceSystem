@@ -15,6 +15,8 @@ class MeetingRoomIoTViewSet(viewsets.GenericViewSet, RetrieveDestroyAPIView):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance is None:
+            lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+            request.data['room'] = self.kwargs[lookup_url_kwarg]
             serializer = self.get_serializer(data=request.data)
         else:
             serializer = self.get_serializer(instance, data=request.data)
