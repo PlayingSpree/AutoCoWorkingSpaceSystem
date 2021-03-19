@@ -16,11 +16,36 @@
       <v-btn @click="emitall" outlined :color="all ? 'red' : 'red lighten-4'"
         >ทั้งหมด</v-btn
       >
-      <v-btn @click="emitstate(1)" outlined :color="datatowatch[1] ? 'white' : 'grey darken-2'">1 ดาว</v-btn>
-      <v-btn @click="emitstate(2)" outlined :color="datatowatch[2] ? 'white' : 'grey darken-2'">2 ดาว</v-btn>
-      <v-btn @click="emitstate(3)" outlined :color="datatowatch[3] ? 'white' : 'grey darken-2'">3 ดาว</v-btn>
-      <v-btn @click="emitstate(4)" outlined :color="datatowatch[4] ? 'white' : 'grey darken-2'">4 ดาว</v-btn>
-      <v-btn @click="emitstate(5)" outlined :color="datatowatch[5] ? 'white' : 'grey darken-2'">5 ดาว</v-btn>
+      <v-btn
+        @click="emitstate(1)"
+        outlined
+        :color="datatowatch[1] ? 'white' : 'grey darken-2'"
+        >1 ดาว</v-btn
+      >
+      <v-btn
+        @click="emitstate(2)"
+        outlined
+        :color="datatowatch[2] ? 'white' : 'grey darken-2'"
+        >2 ดาว</v-btn
+      >
+      <v-btn
+        @click="emitstate(3)"
+        outlined
+        :color="datatowatch[3] ? 'white' : 'grey darken-2'"
+        >3 ดาว</v-btn
+      >
+      <v-btn
+        @click="emitstate(4)"
+        outlined
+        :color="datatowatch[4] ? 'white' : 'grey darken-2'"
+        >4 ดาว</v-btn
+      >
+      <v-btn
+        @click="emitstate(5)"
+        outlined
+        :color="datatowatch[5] ? 'white' : 'grey darken-2'"
+        >5 ดาว</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>
@@ -45,7 +70,10 @@ export default {
         {
           text: "24 hours",
           onClick: () => {
-            const date = [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()];
+            const date = [
+              new Date(Date.now() - 24 * 60 * 60 * 1000),
+              new Date()
+            ];
             this.range = date;
           }
         },
@@ -83,8 +111,8 @@ export default {
     },
 
     emitall() {
-        this.all = !this.all;
-      
+      this.all = !this.all;
+
       if (this.all == true) {
         this.datatowatch[1] = true;
         this.datatowatch[2] = true;

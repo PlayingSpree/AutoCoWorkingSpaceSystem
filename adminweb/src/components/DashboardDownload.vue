@@ -38,7 +38,10 @@ export default {
         {
           text: "24 hours",
           onClick: () => {
-            const date = [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()];
+            const date = [
+              new Date(Date.now() - 24 * 60 * 60 * 1000),
+              new Date()
+            ];
             this.range = date;
           }
         },
