@@ -3,208 +3,226 @@
     <v-card-title primary-title>
       ห้องประชุม
     </v-card-title>
-    <v-card
-      v-for="item in roomnamedata"
-      :key="'meeting' + item"
-      outlined
-      class="my-2 align-center"
-    >
-      <v-container fluid>
-        <v-row>
-          <v-col cols="2">
-            <v-card elevation="0">
-              <v-card-title>
-                {{ item.name }}
-              </v-card-title>
-              <v-card-text>
-                ประเภทห้อง
-              </v-card-text>
-              <v-select
-                v-model="item.type_detail.name"
-                :items="roomtypename"
-                @input="setroomtype(item.type_detail.name, item)"
-                solo
-              ></v-select>
-              <v-card-text>
-                สถานะ
-              </v-card-text>
-              <v-select
-                v-model="item.status"
-                :items="status"
-                @change="setroomstatus(item.status, item)"
-                solo
-              ></v-select>
-            </v-card>
-          </v-col>
-          <v-divider vertical></v-divider>
-          <v-col cols="5"
-            ><v-card width="400px" elevation="0">
-              <v-card-title>
-                หลอดไฟ
-              </v-card-title>
-              <v-card-text class="mb-4">
-                สีไฟ
-              </v-card-text>
-              <v-row class="mb-8" no-gutters>
-                <v-col>
-                  <v-btn
-                    color="white"
-                    width="100px"
-                    @click="setRoomLightColor(0, item)"
-                    ><v-icon style="color: #000000">{{
-                      item.lightColor == 0 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="amber lighten-5"
-                    width="100px"
-                    @click="setRoomLightColor(1, item)"
-                    style="color: #000000"
-                    ><v-icon style="color: #000000">{{
-                      item.lightColor == 1 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="orange lighten-3"
-                    width="100px"
-                    @click="setRoomLightColor(2, item)"
-                    ><v-icon style="color: #000000">
-                      {{ item.lightColor == 2 ? "mdi-check" : "" }}</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-              </v-row>
-              <v-card-text class="mb-4">
-                ความสว่าง
-              </v-card-text>
-              <v-row no-gutters>
-                <v-col>
-                  <v-btn
-                    color="white"
-                    width="50px"
-                    @click="setRoomLightBright(0, item)"
-                    ><v-icon style="color: #000000">
-                      {{ item.brightness == 0 ? "mdi-check" : "" }}</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="grey lighten-2"
-                    width="50px"
-                    @click="setRoomLightBright(1, item)"
-                    ><v-icon style="color: #000000">
-                      {{ item.brightness == 1 ? "mdi-check" : "" }}</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="grey lighten-1"
-                    width="50px"
-                    @click="setRoomLightBright(2, item)"
-                    ><v-icon style="color: #000000">
-                      {{ item.brightness == 2 ? "mdi-check" : "" }}</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="grey darken-1"
-                    width="50px"
-                    @click="setRoomLightBright(3, item)"
-                    ><v-icon style="color: #000000">
-                      {{ item.brightness == 3 ? "mdi-check" : "" }}</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="grey darken-2"
-                    width="50px"
-                    @click="setRoomLightBright(4, item)"
-                    ><v-icon style="color: #000000">
-                      {{ item.brightness == 4 ? "mdi-check" : "" }}</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-card></v-col
-          >
-          <v-divider vertical></v-divider>
-          <v-col class="align-center"
-            ><v-card elevation="0">
-              <v-card-title>
-                เครื่องปรับอากาศ
-              </v-card-title>
-              <v-card-text>
-                อุณหภูมิ
-              </v-card-text>
-              <v-container class="d-flex align-content-start mb-4">
-                <v-btn
-                  color="light-blue lighten-2"
-                  class="mr-5"
-                  @click="setRoomTempDown(item)"
-                  ><v-icon>mdi-minus</v-icon></v-btn
-                >
-                <p class="mr-5" style="font-size: 20px">
-                  {{ item.temp }}
-                </p>
-                <v-btn color="pink lighten-1" @click="setRoomTempUp(item)"
-                  ><v-icon>mdi-plus</v-icon></v-btn
-                >
-              </v-container>
-              <v-card-text class="mb-4">
-                เปิด/ปิด
-              </v-card-text>
-              <v-btn
-                class="ml-3"
-                :color="item.air ? 'success' : 'red darken-4'"
-                @click="setRoomAir(item)"
-                >{{ item.air ? "on" : "off" }}</v-btn
-              >
-            </v-card></v-col
-          >
-          <v-btn @click="editItem(item)" icon
+    <v-container d-flex align-content-start flex-wrap>
+      <v-card
+        v-for="item in roomnamedata"
+        :key="'meeting' + item"
+        outlined
+        width="300px"
+        height="400px"
+        class="mx-2"
+      >
+        <v-card-title>
+          {{ item.name }} <v-spacer></v-spacer
+          ><v-btn @click="editItem(item)" icon
             ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
-          >
-          <v-btn @click="deleteItem(item)" icon
+          ><v-btn @click="deleteItem(item)" icon
             ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
           >
-        </v-row>
-      </v-container>
-    </v-card>
-    <v-card outlined height="338px" class="my-2">
-      <v-dialog v-model="dialog" max-width="500px">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn x-large v-bind="attrs" v-on="on" width="100%" height="100%"
-            ><v-icon size="50">mdi-plus-box</v-icon></v-btn
-          >
-        </template>
+        </v-card-title>
+        <v-card-text>
+          ประเภทห้อง
+          <v-select
+            v-model="item.type_detail.name"
+            :items="roomtypename"
+            @input="setroomtype(item.type_detail.name, item)"
+            solo
+          ></v-select>
+          สถานะ
+          <v-select
+            v-model="item.status"
+            :items="status"
+            @change="setroomstatus(item.status, item)"
+            solo
+          ></v-select>
+        </v-card-text>
+        <v-card-actions class="justify-center">
+          <v-btn block @click="editIot(item.id)" v-bind="attrs" v-on="on">
+            ตั้งค่าห้องประชุม
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+
+      <v-dialog v-model="dialogiot" max-width="600px">
         <v-card>
-          <v-card-title primary-title>
-            {{ formTitle }}
+          <v-card-title>
+            จัดการห้องประชุม
           </v-card-title>
           <v-card-text>
+            <span
+              >status:
+              <v-icon :color="iotItem.status ? 'green' : 'red'" x-small
+                >mdi-circle</v-icon
+              ></span
+            >
             <v-text-field
-              v-model="roomnameItem.name"
-              label="ชื่อห้อง"
+              v-model="iotItem.iot_ip"
+              label="for IOT"
+              prefix="IP : "
+              :rules="[() => !!iotItem.iot_ip || 'This field is required']"
+              :ref="iotItem.iot_ip"
+            ></v-text-field>
+            <v-text-field
+              v-model="iotItem.door_ip"
+              label="for Door"
+              prefix="IP : "
+              :rules="[() => !!iotItem.door_ip || 'This field is required']"
+              :ref="iotItem.door_ip"
             ></v-text-field>
           </v-card-text>
+          <template v-if="iotItem.status">
+            <v-card-title>
+              หลอดไฟ
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row class="d-flex align-center">
+                  <v-col cols="3">
+                    <span>สีไฟ</span>
+                  </v-col>
+                  <v-btn
+                    class="mx-2"
+                    color="white"
+                    @click="setroomlightcolor(0)"
+                    ><v-icon color="black">{{
+                      iotItem.color == 0 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                  <v-btn
+                    class="mx-2"
+                    color="amber lighten-5"
+                    @click="setroomlightcolor(1)"
+                    ><v-icon color="black">{{
+                      iotItem.color == 1 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                  <v-btn
+                    class="mx-2"
+                    color="orange lighten-3"
+                    @click="setroomlightcolor(2)"
+                    ><v-icon color="black">{{
+                      iotItem.color == 2 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                </v-row>
+                <v-row class="d-flex align-center mt-5">
+                  <v-col cols="3">
+                    <span>ความสว่าง</span>
+                  </v-col>
+                  <v-btn class="mx-2" color="white" @click="setroombright(100)"
+                    ><v-icon color="black">{{
+                      iotItem.brightness == 100 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                  <v-btn
+                    class="mx-2"
+                    color="grey lighten-2"
+                    @click="setroombright(80)"
+                    ><v-icon color="black">{{
+                      iotItem.brightness == 80 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                  <v-btn
+                    class="mx-2"
+                    color="grey lighten-1"
+                    @click="setroombright(60)"
+                    ><v-icon color="black">{{
+                      iotItem.brightness == 60 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                  <v-btn
+                    class="mx-2"
+                    color="grey darken-1"
+                    @click="setroombright(40)"
+                    ><v-icon color="black">{{
+                      iotItem.brightness == 40 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                  <v-btn
+                    class="mx-2"
+                    color="grey darken-2"
+                    @click="setroombright(20)"
+                    ><v-icon color="black">{{
+                      iotItem.brightness == 20 ? "mdi-check" : ""
+                    }}</v-icon></v-btn
+                  >
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-title>
+              เครื่องปรับอากาศ
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row class="d-flex align-center">
+                  <v-col cols="3">
+                    <span>อุณหภูมิ</span>
+                  </v-col>
+                  <v-btn
+                    class="mx-2"
+                    color="light-blue lighten-2"
+                    @click="setroomtemp('down')"
+                    ><v-icon>mdi-minus</v-icon></v-btn
+                  >
+                  <span>{{ iotItem.temp }}</span>
+                  <v-btn
+                    class="mx-2"
+                    color="pink lighten-1"
+                    @click="setroomtemp('up')"
+                    ><v-icon>mdi-plus</v-icon></v-btn
+                  >
+                </v-row>
+                <v-row class="d-flex align-center">
+                  <v-col cols="3">
+                    <span>เปิด/ปิด</span>
+                  </v-col>
+                  <v-btn
+                    class="mx-2"
+                    :color="iotItem.air ? 'success' : 'red darken-4'"
+                    >{{ iotItem.air ? "on" : "off" }}</v-btn
+                  >
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </template>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text @click="close"> Close </v-btn>
-            <v-btn color="primary" text @click="save">
+            <v-btn text @click="closeiot"> Close </v-btn>
+            <v-btn color="primary" text @click="saveiot">
               Save
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-card>
+
+      <v-card outlined width="300px" height="400px" class="mx-2">
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn x-large v-bind="attrs" v-on="on" width="100%" height="100%"
+              ><v-icon size="50">mdi-plus-box</v-icon></v-btn
+            >
+          </template>
+          <v-card>
+            <v-card-title primary-title>
+              {{ formTitle }}
+            </v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="roomnameItem.name"
+                label="ชื่อห้อง"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text @click="close"> Close </v-btn>
+              <v-btn color="primary" text @click="save">
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-card>
+    </v-container>
   </v-container>
 </template>
 
@@ -214,39 +232,61 @@ import axios from "axios";
 export default {
   data: function() {
     return {
+      formHasErrors: false,
       dialog: false,
+      dialogiot: false,
       roomnameIndex: -1,
       roomnamedata: [],
       roomtypename: [],
       roomtypedata: [],
+      iotdata: {},
+      iotip: {},
       status: ["ปิดปรับปรุง", "เปิดให้บริการ"],
       roomnameItem: {
+        id: "",
         name: "",
         detail: "",
         status: "",
         type: "",
         type_detail: {},
-        is_active: false,
-        lightColor: 0,
+        is_active: false
+      },
+      defaultItem: {
+        id: "",
+        name: "",
+        detail: "",
+        status: "",
+        type: "",
+        type_detail: {},
+        is_active: false
+      },
+      iotItem: {
+        room_id: "",
+        iot_ip: "",
+        door_ip: "",
+        status: false,
+        color: 0,
         brightness: 0,
         temp: 25,
         air: false
       },
-      defaultItem: {
-        name: "",
-        detail: "",
-        status: "",
-        type: "",
-        type_detail: {},
-        is_active: false,
-        lightColor: 0,
+      defaultiot: {
+        room_id: "",
+        iot_ip: "",
+        door_ip: "",
+        status: false,
+        color: 0,
         brightness: 0,
         temp: 25,
         air: false
       }
     };
   },
-
+  watch: {
+    dialogiot(val) {
+      val || this.closeiot();
+    }
+  },
   computed: {
     formTitle() {
       return this.roomnameIndex === -1 ? "New Item" : "Edit Item";
@@ -274,6 +314,54 @@ export default {
           this.roomnamedata[i].status = "ปิดปรับปรุง";
         }
       }
+    },
+
+    async editIot(room_id) {
+      this.dialogiot = true;
+      let checkroomstatus = null;
+
+      await axios
+        .get(`iot/room/setup/${room_id}/`)
+        .then(response => {
+          this.iotip = response.data;
+        })
+        .catch(error => (checkroomstatus = error.response.data));
+
+      await axios
+        .get(`iot/room/${room_id}/`)
+        .then(responese => (this.iotdata = responese.data))
+        .catch(error => (checkroomstatus = error.response.data));
+
+      this.iotItem.room_id = room_id;
+      if (checkroomstatus == null) {
+        this.iotItem.iot_ip = this.iotip.iot_ip;
+        this.iotItem.door_ip = this.iotip.door_ip;
+        this.iotItem.status = true;
+        this.iotItem.color = this.iotdata[1].data.color;
+        this.iotItem.brightness = this.iotdata[1].data.brightness;
+        this.iotItem.temp = this.iotdata[0].data.temp;
+        this.iotItem.air = true;
+      } else {
+        this.iotItem.status = false;
+        this.iotItem.iot_ip = this.iotip.iot_ip;
+        this.iotItem.door_ip = this.iotip.door_ip;
+      }
+    },
+
+    async saveiot() {
+      this.iotip.iot_ip = this.iotItem.iot_ip;
+      this.iotip.door_ip = this.iotItem.door_ip;
+      await axios.put(`iot/room/setup/${this.iotItem.room_id}/`, this.iotip);
+      this.closeiot();
+    },
+
+    closeiot() {
+      this.dialogiot = false;
+      this.$nextTick(() => {
+        this.iotItem = Object.assign({}, this.defaultiot);
+        this.iotdata = Object.assign({}, {});
+        this.iotip = Object.assign({}, {});
+      });
     },
 
     editItem: function(item) {
@@ -363,47 +451,46 @@ export default {
       this.showroomnamedata();
     },
 
-    setRoomLightColor(color, item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
-      this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].lightColor = color;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      this.showroomnamedata();
-      this.$forceUpdate();
+    async setroomlightcolor(color) {
+      this.iotItem.color = color;
+      this.iotdata[1].data.color = color;
+      await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+        iot_id: 2,
+        data: this.iotdata[1].data
+      });
     },
 
-    setRoomLightBright(bright, item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
-      this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].brightness = bright;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      this.showroomnamedata();
-      this.$forceUpdate();
+    async setroombright(brightness) {
+      this.iotItem.brightness = brightness;
+      this.iotdata[1].data.brightness = brightness;
+      await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+        iot_id: 2,
+        data: this.iotdata[1].data
+      });
     },
 
-    setRoomTempUp: function(item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
-      this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].temp += 1;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      this.showroomnamedata();
-    },
-
-    setRoomTempDown: function(item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
-      this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].temp -= 1;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      this.showroomnamedata();
-    },
-
-    setRoomAir: function(item) {
-      var roomnamedata = JSON.parse(localStorage.getItem("roomnamedata"));
-      this.roomnameIndex = this.roomnamedata.indexOf(item);
-      roomnamedata[this.roomnameIndex].air = !roomnamedata[this.roomnameIndex]
-        .air;
-      localStorage.setItem("roomnamedata", JSON.stringify(roomnamedata));
-      this.showroomnamedata();
+    async setroomtemp(type) {
+      if (
+        type == "up" &&
+        this.iotItem.temp < this.iotdata[0].data_info.temp.max
+      ) {
+        this.iotItem.temp += 1;
+        this.iotdata[0].data.temp += 1;
+        await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+          iot_id: 1,
+          data: this.iotdata[0].data
+        });
+      } else if (
+        type == "down" &&
+        this.iotItem.temp > this.iotdata[0].data_info.temp.min
+      ) {
+        this.iotItem.temp -= 1;
+        this.iotdata[0].data.temp -= 1;
+        await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+          iot_id: 1,
+          data: this.iotdata[0].data
+        });
+      }
     }
   }
 };

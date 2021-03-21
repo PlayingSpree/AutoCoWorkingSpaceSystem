@@ -402,7 +402,6 @@ export default {
       }
 
       this.user = activeuser;
-      console.log(this.user);
     },
 
     seeProfile: function(item) {
