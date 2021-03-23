@@ -110,9 +110,7 @@ export default {
             } else {
               report[i].sev = this.sevlevel[report[i].severity];
             }
-            report[i].date_created = new Date(report[i].date_created)
-              .toString()
-              .substring(0, 24);
+            report[i].date_created = new Date(report[i].date_created);
             enreport.push(report[i]);
             break;
           }
