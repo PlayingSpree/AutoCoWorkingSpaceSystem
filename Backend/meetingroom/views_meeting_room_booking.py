@@ -10,7 +10,7 @@ from payment.models import Payment
 
 
 class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
-    """ Query Param: future(bool) Only future booking """
+    """ Query Param: future(bool) Only future booking, now(bool) Only now booking"""
     queryset = MeetingRoomBooking.objects.all().order_by('-date_start')
     serializer_class = MeetingRoomBookingCreateSerializer
     permissions = [
@@ -29,6 +29,8 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
             return self.queryset
         if 'future' in self.request.query_params:
             return self.queryset.filter(user=user, date_end__gte=timezone.now())
+        if 'now' in self.request.query_params:
+            return self.queryset.filter(user=user, date_start__gte=timezone.now(), date_end__lte=timezone.now())
         return self.queryset.filter(user=user)
 
     def get_serializer_class(self):
