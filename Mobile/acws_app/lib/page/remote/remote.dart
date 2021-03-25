@@ -12,29 +12,26 @@ class RemotePage extends StatefulWidget {
 }
 
 class _RemotePageState extends State<RemotePage> {
+  var _response;
+
+  @override
+  void initState() {
+    super.initState();
+    _downloadData();
+  }
+
+  Future<void> _downloadData() async {
+    var response = await httpGetRequest('/meetingroom/booking/?now', context);
+    setState(() {
+      _response = response;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(8.0),
       children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                'Co-working Space',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.lock_open),
-                title: Text('ปลดล็อกประตู Co-working Space'),
-                onTap: () {},
-              ),
-            )
-          ],
-        ),
         Center(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -44,25 +41,27 @@ class _RemotePageState extends State<RemotePage> {
             ),
           ),
         ),
-        Card(
-          child: ListTile(
-            leading: Icon(Icons.meeting_room),
-            title: Text('ห้องประชุม 401 (4 คน)'),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {
-              Navigator.of(context).push(SlideLeftRoute(
-                  exitPage: this.widget, enterPage: RemoteMeetingRoomPage(1)));
-            },
+        if ((_response ?? []).length == 0)
+          Center(child: Text('ไม่มีห้องประชุมที่สามารถควบคุมได้ในขณะนี้'))
+        else
+          Column(
+            children: [
+              for (var item in _response ?? [])
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.meeting_room),
+                    title: Text(item['room']['name']),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () {
+                      Navigator.of(context).push(SlideLeftRoute(
+                          exitPage: this.widget,
+                          enterPage:
+                              RemoteMeetingRoomPage(item['room']['id'])));
+                    },
+                  ),
+                ),
+            ],
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Icon(Icons.meeting_room),
-            title: Text('ห้องประชุม 601 (6 คน)'),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {},
-          ),
-        )
       ],
     );
   }
