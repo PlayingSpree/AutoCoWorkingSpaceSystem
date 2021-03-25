@@ -26,6 +26,9 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
         if user.is_anonymous:
             return
         if user.is_staff:
+            user = self.request.query_params.get('user')
+            if user is not None:
+                return self.queryset.filter(user_id=user)
             return self.queryset
         if 'future' in self.request.query_params:
             return self.queryset.filter(user=user, date_end__gte=timezone.now())
@@ -39,6 +42,13 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
         return MeetingRoomBookingReadSerializer
 
     def create(self, request, *args, **kwargs):
+        if request.user.is_staff:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # Date

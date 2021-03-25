@@ -36,3 +36,26 @@ class MeetingRoomIoTUpdateSerializer(serializers.Serializer):
     class Meta:
         fields = ['iot_id', 'data']
         extra_kwargs = {'room': {'required': True}}
+
+
+class DoorSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    type = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate_type(self, value):
+        if value == 'room' or value == 'space':
+            return value
+        raise serializers.ValidationError('type is invalid: {}'.format(value))
+
+
+class CoworkingAccessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeetingRoomIoT
+        fields = ['room', 'user', 'date_access']
+
+
+class MeetingRoomAccessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeetingRoomIoT
+        fields = ['user', 'date_access']
