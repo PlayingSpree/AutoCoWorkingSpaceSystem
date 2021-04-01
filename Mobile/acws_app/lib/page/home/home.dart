@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 
 import '../../app_style.dart';
 import '../../app_transition_route.dart';
@@ -76,10 +79,10 @@ class _HomePageState extends State<HomePage> {
                                   exitPage: this.widget,
                                   enterPage: QRCode(
                                     title: 'ปลดล็อคประตู',
-                                    qrCodeData: _qrResponse.toString(),
+                                    qrCodeData: json.encode(_qrResponse),
                                     detail:
                                         'แสกน QR Code หน้าประตูเพื่อปลดล็อค',
-                                  ))); // TODO Unlock QR Code
+                                  )));
                             },
                           ),
                         )

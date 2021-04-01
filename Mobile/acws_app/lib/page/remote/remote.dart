@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_transition_route.dart';
 import '../../app_util.dart';
+import '../home/qr_code.dart';
 
 class RemotePage extends StatefulWidget {
   @override
@@ -56,7 +58,7 @@ class _RemotePageState extends State<RemotePage> {
                       Navigator.of(context).push(SlideLeftRoute(
                           exitPage: this.widget,
                           enterPage:
-                              RemoteMeetingRoomPage(item['room']['id'])));
+                              RemoteMeetingRoomPage(item['room']['id'],item['id'])));
                     },
                   ),
                 ),
@@ -68,9 +70,10 @@ class _RemotePageState extends State<RemotePage> {
 }
 
 class RemoteMeetingRoomPage extends StatefulWidget {
-  RemoteMeetingRoomPage(this._room);
+  RemoteMeetingRoomPage(this._room,this._id);
 
   final int _room;
+  final int _id;
 
   @override
   _RemoteMeetingRoomPageState createState() => _RemoteMeetingRoomPageState();
@@ -78,6 +81,7 @@ class RemoteMeetingRoomPage extends StatefulWidget {
 
 class _RemoteMeetingRoomPageState extends State<RemoteMeetingRoomPage> {
   var _response;
+  var _qrResponse;
 
   @override
   void initState() {
@@ -89,6 +93,9 @@ class _RemoteMeetingRoomPageState extends State<RemoteMeetingRoomPage> {
     try {
       var response =
           await httpGetRequest('/iot/room/${widget._room}/', context);
+      print(widget._id);
+      _qrResponse = await httpGetRequest(
+          '/meetingroom/key/${widget._id}/', context);
       setState(() {
         _response = response;
       });
@@ -115,7 +122,16 @@ class _RemoteMeetingRoomPageState extends State<RemoteMeetingRoomPage> {
                       child: ListTile(
                         leading: Icon(Icons.lock_open),
                         title: Text('ปลดล็อกประตู'),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(SlideLeftRoute(
+                              exitPage: this.widget,
+                              enterPage: QRCode(
+                                title: 'ปลดล็อคประตู',
+                                qrCodeData: json.encode(_qrResponse),
+                                detail:
+                                'แสกน QR Code หน้าประตูเพื่อปลดล็อค',
+                              )));
+                        },
                       ),
                     );
                   } else {
