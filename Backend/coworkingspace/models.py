@@ -26,7 +26,7 @@ class CoworkingSpaceSubscription(models.Model):
     package = models.ForeignKey(CoworkingSpacePackage, on_delete=models.SET_NULL, null=True)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     is_canceled = models.BooleanField(default=False)
-    qr_key = models.IntegerField(default=random.randint(0, 99999))
+    qr_key = models.IntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -35,6 +35,10 @@ class CoworkingSpaceSubscription(models.Model):
 
     def is_in_subscription_date(self, date=timezone.localdate()):
         return not self.is_canceled and self.date_start <= date <= self.date_end
+
+    def save(self, *args, **kwargs):
+        self.qr_key = random.randint(0, 99999)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return '[PackageSubscription id:{}{}] {} to {} by {} at {}'.format(self.id,

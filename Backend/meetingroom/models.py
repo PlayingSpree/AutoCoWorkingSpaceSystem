@@ -36,7 +36,7 @@ class MeetingRoomBooking(models.Model):
     room = models.ForeignKey(MeetingRoom, on_delete=models.SET_NULL, null=True)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     is_canceled = models.BooleanField(default=False)
-    qr_key = models.IntegerField(default=random.randint(0, 99999))
+    qr_key = models.IntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -54,6 +54,7 @@ class MeetingRoomBooking(models.Model):
             minutes=MEETING_ROOM_MIN_EARLY) and self.date_end >= date
 
     def save(self, *args, **kwargs):
+        self.qr_key = random.randint(0, 99999)
         super().save(*args, **kwargs)
         if not self.is_canceled:
             add_job_iot_on(self.room.meetingroomiot.iot_ip, self.id, self.date_start)
