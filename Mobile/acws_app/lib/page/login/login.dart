@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Login Page', style: TextStyle(fontSize: 64)),
+            Text('ACWP', style: TextStyle(fontSize: 64)),
             LoginForm()
           ],
         ),
