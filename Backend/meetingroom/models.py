@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 from authapp.models import User
+from iot.job import add_job_iot_on, add_job_iot_off
 from meetingroom.appconfig import MEETING_ROOM_MIN_EARLY
 from payment.models import Payment
 
@@ -51,6 +52,12 @@ class MeetingRoomBooking(models.Model):
     def is_in_reserved_time(self, date=timezone.now()):
         return not self.is_canceled and self.date_start <= date + timedelta(
             minutes=MEETING_ROOM_MIN_EARLY) and self.date_end >= date
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.is_canceled:
+            add_job_iot_on(self.room.meetingroomiot.iot_ip, self.id, self.date_start)
+            add_job_iot_off(self.room.meetingroomiot.iot_ip, self.id, self.date_end)
 
     @staticmethod
     def is_available(date_start, date_end, room):
