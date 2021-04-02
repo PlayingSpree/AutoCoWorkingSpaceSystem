@@ -33,7 +33,7 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
         if 'future' in self.request.query_params:
             return self.queryset.filter(user=user, date_end__gte=timezone.now())
         if 'now' in self.request.query_params:
-            return self.queryset.filter(user=user, date_start__gte=timezone.now(), date_end__lte=timezone.now())
+            return self.queryset.filter(user=user, date_start__lte=timezone.now(), date_end__gte=timezone.now())
         return self.queryset.filter(user=user)
 
     def get_serializer_class(self):

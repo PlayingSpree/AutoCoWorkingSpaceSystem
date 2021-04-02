@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,7 +11,7 @@ from meetingroom.models import MeetingRoomBooking
 
 
 class IoTDoorViewSet(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = DoorSerializer(data=request.data)
@@ -21,10 +21,11 @@ class IoTDoorViewSet(APIView):
         if serializer.validated_data['type'] == 'room':
             queryset = MeetingRoomBooking.objects.all()
         obj = get_object_or_404(queryset.filter(id=serializer.validated_data['id']))
+        print(obj)
         if obj.get_qr_hash() != serializer.validated_data['password']:
             return Response('{"error":"Invalid input"}', status=status.HTTP_400_BAD_REQUEST)
         if serializer.validated_data['type'] == 'room':
-            MeetingRoomAccess.objects.create(room=obj, user=obj.user)
+            MeetingRoomAccess.objects.create(room=obj.room, user=obj.user)
         elif serializer.validated_data['type'] == 'space':
             CoworkingAccess.objects.create(user=obj.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
