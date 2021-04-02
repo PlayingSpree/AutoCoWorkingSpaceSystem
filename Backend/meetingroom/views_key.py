@@ -27,5 +27,5 @@ class MeetingRoomKey(APIView):
         return Response({
             'id': id,
             'type': 'room',
-            'pass': obj.get_qr_hash()
+            'pass': obj.get_qr_key()
         })

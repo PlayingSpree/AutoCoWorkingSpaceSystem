@@ -27,5 +27,5 @@ class CoworkingSpaceKey(APIView):
         return Response({
             'id': id,
             'type': 'space',
-            'pass': obj.get_qr_hash()
+            'pass': obj.get_qr_key()
         })

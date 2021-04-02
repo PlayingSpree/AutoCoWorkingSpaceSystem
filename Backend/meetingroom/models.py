@@ -1,5 +1,4 @@
-import hashlib
-import os
+import random
 from datetime import timedelta
 
 from django.db import models
@@ -36,6 +35,7 @@ class MeetingRoomBooking(models.Model):
     room = models.ForeignKey(MeetingRoom, on_delete=models.SET_NULL, null=True)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     is_canceled = models.BooleanField(default=False)
+    qr_key = models.IntegerField(default=random.randint(0, 99999))
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -45,9 +45,8 @@ class MeetingRoomBooking(models.Model):
                                                                           self.date_start, self.date_end, self.user,
                                                                           self.room)
 
-    def get_qr_hash(self):
-        data = self.date_start.__str__() + self.date_end.__str__() + self.id.__str__()
-        return hashlib.md5(data.encode()).hexdigest()
+    def get_qr_key(self):
+        return str(self.qr_key)
 
     def is_in_reserved_time(self, date=timezone.now()):
         return not self.is_canceled and self.date_start <= date + timedelta(

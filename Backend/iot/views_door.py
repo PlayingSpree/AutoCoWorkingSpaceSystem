@@ -21,7 +21,7 @@ class IoTDoorViewSet(APIView):
         if serializer.validated_data['type'] == 'room':
             queryset = MeetingRoomBooking.objects.all()
         obj = get_object_or_404(queryset.filter(id=serializer.validated_data['id']))
-        if obj.get_qr_hash() != serializer.validated_data['password']:
+        if obj.get_qr_key() != serializer.validated_data['password']:
             return Response('{"error":"Invalid input"}', status=status.HTTP_400_BAD_REQUEST)
         if serializer.validated_data['type'] == 'room':
             MeetingRoomAccess.objects.create(room=obj, user=obj.user)
