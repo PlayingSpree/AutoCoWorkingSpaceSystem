@@ -30,7 +30,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
     # Project apps
     'authapp.apps.AuthappConfig',
     'coworkingspace.apps.CoworkingspaceConfig',
@@ -48,6 +47,8 @@ INSTALLED_APPS = [
     # Installed apps
     'rest_framework',
     'django_filters',
+    "django_apscheduler",
+    'corsheaders',
     # Auth
     'django.contrib.sites',
     'rest_framework.authtoken',
