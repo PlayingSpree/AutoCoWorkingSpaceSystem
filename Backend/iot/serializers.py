@@ -2,7 +2,7 @@ import ipaddress
 
 from rest_framework import serializers
 
-from iot.models import MeetingRoomIoT
+from iot.models import MeetingRoomIoT, CoworkingAccess, MeetingRoomAccess
 
 
 class MeetingRoomIoTSerializer(serializers.ModelSerializer):
@@ -51,11 +51,11 @@ class DoorSerializer(serializers.Serializer):
 
 class CoworkingAccessSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MeetingRoomIoT
-        fields = ['room', 'user', 'date_access']
+        model = CoworkingAccess
+        fields = ['user', 'date_access']
 
 
 class MeetingRoomAccessSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MeetingRoomIoT
-        fields = ['user', 'date_access']
+        model = MeetingRoomAccess
+        fields = ['user', 'room', 'date_access']
