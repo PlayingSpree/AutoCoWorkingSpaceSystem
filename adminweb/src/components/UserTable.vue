@@ -23,7 +23,14 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="1000px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+              <v-btn
+                color="primary"
+                dark
+                class="mb-2"
+                v-bind="attrs"
+                v-on="on"
+                @click="haveuser = false"
+              >
                 เพิ่มผู้ใช้
               </v-btn>
             </template>
@@ -65,7 +72,7 @@
                                   () =>
                                     !!profileItem.email ||
                                     'This field is required',
-                                  v =>
+                                  (v) =>
                                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
                                       v
                                     ) || 'E-mail must be valid'
@@ -84,114 +91,119 @@
                           </v-row>
                         </v-container>
                       </v-col>
-                      <v-divider vertical></v-divider>
-                      <v-col>
-                        <v-container>
-                          <v-card-title primary-title>
-                            แพ็คเกจ
-                          </v-card-title>
-                          <v-card-text>
-                            <span>เลือกวันที่เริ่มใช้แพ็คเกจ</span>
-                            <date-picker
-                              v-model="datesub"
-                              lang="en"
-                              type="date"
-                              confirm
-                              :time-picker-options="{
-                                start: '00:00',
-                                step: '01:00',
-                                end: '23:00',
-                                format: 'HH:mm'
-                              }"
-                              range
-                            ></date-picker>
-                          </v-card-text>
-                          <v-card-text>
-                            <span>ประเภทแพ็คเกจ</span>
-                            <v-select
-                              v-model="coworkpackage"
-                              :items="allpack"
-                              label="ประเภทของแพ็คเกจ"
-                              @input="choosepackage(coworkpackage)"
-                              solo
-                            ></v-select>
-                          </v-card-text>
-                          <v-card-actions
-                            ><v-spacer></v-spacer
-                            ><v-btn color="primary" @click="confirmsub()"
-                              >บันทึก</v-btn
-                            ></v-card-actions
-                          >
-                        </v-container>
-                        <v-divider> </v-divider>
-                        <v-container>
-                          <v-card-title primary-title>
-                            ห้องประชุม
-                          </v-card-title>
-                          <v-card-text>
-                            <span>เลือกวันที่และเวลา</span>
-                            <date-picker
-                              v-model="dateroom"
-                              lang="en"
-                              type="datetime"
-                              :time-picker-options="{
-                                start: '00:00',
-                                step: '01:00',
-                                end: '23:00',
-                                format: 'HH:mm'
-                              }"
-                              confirm
-                              range
-                            ></date-picker>
-                          </v-card-text>
-                          <v-card-text>
-                            <span>เลือกห้องประชุม</span>
-                            <v-select
-                              v-model="room"
-                              :items="allroom"
-                              label="ห้อง"
-                              @input="chooseroom(room)"
-                              solo
-                            ></v-select>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer
-                            ><v-btn color="primary" @click="confirmbook()"
-                              >บันทึก</v-btn
+
+                      <template v-if="haveuser">
+                        <v-divider vertical></v-divider>
+                        <v-col>
+                          <v-container>
+                            <v-card-title primary-title>
+                              แพ็คเกจ
+                            </v-card-title>
+                            <v-card-text>
+                              <span>เลือกวันที่เริ่มใช้แพ็คเกจ</span>
+                              <date-picker
+                                v-model="datesub"
+                                lang="en"
+                                type="date"
+                                confirm
+                                :time-picker-options="{
+                                  start: '00:00',
+                                  step: '01:00',
+                                  end: '23:00',
+                                  format: 'HH:mm'
+                                }"
+                                range
+                              ></date-picker>
+                            </v-card-text>
+                            <v-card-text>
+                              <span>ประเภทแพ็คเกจ</span>
+                              <v-select
+                                v-model="coworkpackage"
+                                :items="allpack"
+                                label="ประเภทของแพ็คเกจ"
+                                @input="choosepackage(coworkpackage)"
+                                solo
+                              ></v-select>
+                            </v-card-text>
+                            <v-card-actions
+                              ><v-spacer></v-spacer
+                              ><v-btn color="primary" @click="confirmsub()"
+                                >บันทึก</v-btn
+                              ></v-card-actions
                             >
-                          </v-card-actions>
-                        </v-container>
-                      </v-col>
+                          </v-container>
+                          <v-divider> </v-divider>
+                          <v-container>
+                            <v-card-title primary-title>
+                              ห้องประชุม
+                            </v-card-title>
+                            <v-card-text>
+                              <span>เลือกวันที่และเวลา</span>
+                              <date-picker
+                                v-model="dateroom"
+                                lang="en"
+                                type="datetime"
+                                :time-picker-options="{
+                                  start: '00:00',
+                                  step: '01:00',
+                                  end: '23:00',
+                                  format: 'HH:mm'
+                                }"
+                                confirm
+                                range
+                              ></date-picker>
+                            </v-card-text>
+                            <v-card-text>
+                              <span>เลือกห้องประชุม</span>
+                              <v-select
+                                v-model="room"
+                                :items="allroom"
+                                label="ห้อง"
+                                @input="chooseroom(room)"
+                                solo
+                              ></v-select>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer
+                              ><v-btn color="primary" @click="confirmbook()"
+                                >บันทึก</v-btn
+                              >
+                            </v-card-actions>
+                          </v-container>
+                        </v-col>
+                      </template>
                     </v-row>
                   </v-container>
                 </v-card>
 
-                <v-card outlined class="mt-2">
-                  <v-container>
-                    <v-row>
-                      <v-card-title primary-title>
-                        ประวัติการซื้อแพ็คเกจ
-                      </v-card-title>
-                      <v-card-text>
-                        <v-data-table
-                          :headers="headerssub"
-                          :items="subhistory"
-                        />
-                      </v-card-text>
-                    </v-row>
-                    <v-row>
-                      <v-card-title primary-title>
-                        ประวัติการจองห้องประชุม
-                      </v-card-title>
-                      <v-card-text>
-                        <v-data-table
-                          :headers="headersmeeting"
-                          :items="meetinghistory"
-                        />
-                      </v-card-text>
-                    </v-row>
-                  </v-container>
-                </v-card>
+                <template v-if="haveuser">
+                  <v-card outlined class="mt-2">
+                    <v-container>
+                      <v-row>
+                        <v-card-title primary-title>
+                          ประวัติการซื้อแพ็คเกจ
+                        </v-card-title>
+                        <v-card-text>
+                          <v-data-table
+                            :headers="headerssub"
+                            :items="subhistory"
+                          />
+                        </v-card-text>
+                      </v-row>
+                      <v-row>
+                        <v-card-title primary-title>
+                          ประวัติการจองห้องประชุม
+                        </v-card-title>
+                        <v-card-text>
+                          <v-data-table
+                            :headers="headersmeeting"
+                            :items="meetinghistory"
+                          />
+                        </v-card-text>
+                      </v-row>
+                    </v-container>
+                  </v-card>
+                </template>
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -251,11 +263,12 @@ export default {
   data: function() {
     return {
       emailRules: [
-        v =>
+        (v) =>
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "E-mail must be valid"
       ],
       formHasErrors: false,
+      haveuser: true,
       datesub: [new Date(), new Date()],
       menuprofile1: false,
       menuprofile2: false,
@@ -509,6 +522,7 @@ export default {
 
     close() {
       this.dialog = false;
+      this.haveuser = true;
       this.$nextTick(() => {
         this.profileItem = Object.assign({}, this.defaultItem);
         this.profileIndex = -1;
