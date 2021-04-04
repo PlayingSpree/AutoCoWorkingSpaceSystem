@@ -127,3 +127,9 @@ class MeetingRoomBookingCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "date_end ({}) must occur after date_start ({})".format(data['date_end'], data['date_start']))
         return data
+
+
+class MeetingRoomBookingAdminCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeetingRoomBooking
+        fields = ['date_start', 'date_end', 'user', 'room', 'payment', 'is_canceled']

@@ -8,12 +8,12 @@
           </h3>
         </v-col>
       </v-row>
-      <dashboard-download :range="date" @getnewdate="changedate" />
-      <dashboard-main :range="date" />
-      <dashboard-pay-method :range="date" />
-      <dashboard-user-overview :range="date" />
-      <dashboard-report :range="date" />
-      <dashboard-access :range="date" />
+      <dashboard-download :range="datemain" @getnewdate="changedate" />
+      <dashboard-main :range="datemain" />
+      <dashboard-pay-method :range="datepaymethod" />
+      <dashboard-user-overview :range="dateover" />
+      <dashboard-report :range="datereport" />
+      <dashboard-access :range="dateaccess" />
     </v-container>
   </div>
 </template>
@@ -39,13 +39,21 @@ export default {
 
   data: function() {
     return {
-      date: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()]
+      datemain: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
+      datepaymethod: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
+      dateover: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
+      datereport: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
+      dateaccess: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
     };
   },
 
   methods: {
     changedate(value) {
-      this.date = value;
+      this.datemain = value;
+      this.datepaymethod = value;
+      this.dateover = value;
+      this.datereport = value;
+      this.dateaccess = value;
     }
   }
 };

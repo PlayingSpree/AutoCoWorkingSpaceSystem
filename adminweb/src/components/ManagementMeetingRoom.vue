@@ -76,35 +76,6 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-row class="d-flex align-center">
-                  <v-col cols="3">
-                    <span>สีไฟ</span>
-                  </v-col>
-                  <v-btn
-                    class="mx-2"
-                    color="white"
-                    @click="setroomlightcolor(0)"
-                    ><v-icon color="black">{{
-                      iotItem.color == 0 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                  <v-btn
-                    class="mx-2"
-                    color="amber lighten-5"
-                    @click="setroomlightcolor(1)"
-                    ><v-icon color="black">{{
-                      iotItem.color == 1 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                  <v-btn
-                    class="mx-2"
-                    color="orange lighten-3"
-                    @click="setroomlightcolor(2)"
-                    ><v-icon color="black">{{
-                      iotItem.color == 2 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                </v-row>
                 <v-row class="d-flex align-center mt-5">
                   <v-col cols="3">
                     <span>ความสว่าง</span>
