@@ -24,7 +24,7 @@
           <v-dialog v-model="dialog" max-width="1000px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                Add User
+                เพิ่มผู้ใช้
               </v-btn>
             </template>
             <v-card>
@@ -65,7 +65,7 @@
                                   () =>
                                     !!profileItem.email ||
                                     'This field is required',
-                                  v =>
+                                  (v) =>
                                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
                                       v
                                     ) || 'E-mail must be valid'
@@ -91,132 +91,75 @@
                             แพ็คเกจ
                           </v-card-title>
                           <v-card-text>
-                            เลือกวันที่เริ่มใช้แพ็คเกจ
-                          </v-card-text>
-                          <v-row class="px-2">
-                            <v-col cols="4"
-                              ><v-menu
-                                v-model="menuprofile1"
-                                :close-on-content-click="false"
-                                :nudge-right="0"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="auto"
-                              >
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-text-field
-                                    v-model="dateprofile1"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    max-width="10px"
-                                  ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                  v-model="dateprofile1"
-                                  @input="menuprofile1 = false"
-                                ></v-date-picker> </v-menu
-                            ></v-col>
-                            <v-col cols="2">
-                              <v-card-text>
-                                ถึง
-                              </v-card-text>
-                            </v-col>
-                            <v-col cols="4"
-                              ><v-menu
-                                v-model="menuprofile2"
-                                :close-on-content-click="false"
-                                :nudge-right="0"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="auto"
-                              >
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-text-field
-                                    v-model="dateprofile2"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                  ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                  v-model="dateprofile2"
-                                  @input="menuprofile2 = false"
-                                ></v-date-picker> </v-menu
-                            ></v-col>
-                          </v-row>
-                          <v-card-text>
-                            ประเภทแพ็คเกจ
+                            <span>เลือกวันที่เริ่มใช้แพ็คเกจ</span>
+                            <date-picker
+                              v-model="datesub"
+                              lang="en"
+                              type="date"
+                              confirm
+                              :time-picker-options="{
+                                start: '00:00',
+                                step: '01:00',
+                                end: '23:00',
+                                format: 'HH:mm'
+                              }"
+                              range
+                            ></date-picker>
                           </v-card-text>
                           <v-card-text>
-                            <v-select :items="profiledata" solo></v-select>
+                            <span>ประเภทแพ็คเกจ</span>
+                            <v-select
+                              v-model="coworkpackage"
+                              :items="allpack"
+                              label="ประเภทของแพ็คเกจ"
+                              @input="choosepackage(coworkpackage)"
+                              solo
+                            ></v-select>
                           </v-card-text>
+                          <v-card-actions
+                            ><v-spacer></v-spacer
+                            ><v-btn color="primary" @click="confirmsub()"
+                              >บันทึก</v-btn
+                            ></v-card-actions
+                          >
                         </v-container>
                         <v-divider> </v-divider>
                         <v-container>
                           <v-card-title primary-title>
                             ห้องประชุม
                           </v-card-title>
-
-                          <v-row>
-                            <v-col no-gutters>
-                              <v-card-text>
-                                <v-select
-                                  :items="room"
-                                  label="ห้อง"
-                                  class="pa-0"
-                                ></v-select>
-                              </v-card-text>
-                            </v-col>
-                            <v-col no-gutters>
-                              <v-menu
-                                v-model="menuroom"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="auto"
-                                class="pa-0"
-                              >
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-text-field
-                                    v-model="dateroom"
-                                    label="จองวันที่"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                  ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                  v-model="dateroom"
-                                  @input="menuroom = false"
-                                ></v-date-picker>
-                              </v-menu>
-                            </v-col>
-                          </v-row>
                           <v-card-text>
-                            ระยะเวลา
+                            <span>เลือกวันที่และเวลา</span>
+                            <date-picker
+                              v-model="dateroom"
+                              lang="en"
+                              type="datetime"
+                              :time-picker-options="{
+                                start: '00:00',
+                                step: '01:00',
+                                end: '23:00',
+                                format: 'HH:mm'
+                              }"
+                              confirm
+                              range
+                            ></date-picker>
                           </v-card-text>
-                          <v-row>
-                            <v-col no-gutters cols="3">
-                              <v-card-text>
-                                <v-select class="pa-0"></v-select>
-                              </v-card-text>
-                            </v-col>
-                            <v-col cols="2"
-                              ><v-card-text>
-                                ถึง
-                              </v-card-text></v-col
+                          <v-card-text>
+                            <span>เลือกห้องประชุม</span>
+                            <v-select
+                              v-model="room"
+                              :items="allroom"
+                              label="ห้อง"
+                              @input="chooseroom(room)"
+                              solo
+                            ></v-select>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer
+                            ><v-btn color="primary" @click="confirmbook()"
+                              >บันทึก</v-btn
                             >
-                            <v-col no-gutters cols="3">
-                              <v-card-text>
-                                <v-select class="pa-0"></v-select>
-                              </v-card-text>
-                            </v-col>
-                            <v-col> <v-card-text>น.</v-card-text></v-col>
-                          </v-row>
+                          </v-card-actions>
                         </v-container>
                       </v-col>
                     </v-row>
@@ -230,7 +173,10 @@
                         ประวัติการซื้อแพ็คเกจ
                       </v-card-title>
                       <v-card-text>
-                        <v-data-table :headers="headersprofile" />
+                        <v-data-table
+                          :headers="headerssub"
+                          :items="subhistory"
+                        />
                       </v-card-text>
                     </v-row>
                     <v-row>
@@ -238,7 +184,10 @@
                         ประวัติการจองห้องประชุม
                       </v-card-title>
                       <v-card-text>
-                        <v-data-table :headers="headersmeeting" />
+                        <v-data-table
+                          :headers="headersmeeting"
+                          :items="meetinghistory"
+                        />
                       </v-card-text>
                     </v-row>
                   </v-container>
@@ -292,23 +241,25 @@
 
 <script>
 import axios from "axios";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 export default {
+  components: {
+    DatePicker
+  },
   data: function() {
     return {
       emailRules: [
-        v =>
+        (v) =>
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "E-mail must be valid"
       ],
       formHasErrors: false,
-      profiledata: ["1", "2"],
-      room: ["1", "2"],
-      dateprofile1: new Date().toISOString().substr(0, 10),
-      dateprofile2: new Date().toISOString().substr(0, 10),
+      datesub: [new Date(), new Date()],
       menuprofile1: false,
       menuprofile2: false,
-      dateroom: new Date().toISOString().substr(0, 10),
+      dateroom: [new Date(), new Date()],
       menuroom: false,
       modal: false,
       search: "",
@@ -345,39 +296,38 @@ export default {
         { text: "เบอร์โทรศัพท์", value: "phone", filterable: false },
         { text: "การจัดการ", value: "actions", sortable: false }
       ],
-      headersprofile: [
+      headerssub: [
         {
           text: "ประเภทแพ็คเกจ",
           align: "start",
-          value: "profile"
+          value: "package"
         },
         {
           text: "ระยะเวลา",
           value: "time"
-        },
-        {
-          text: "ลบ/ยกเลิกการจอง",
-          value: "reserve"
         }
       ],
       headersmeeting: [
-        { text: "ครั้งที่", align: "start", value: "round" },
+        {
+          text: "ครั้งที่",
+          value: "index"
+        },
         {
           text: "ห้อง",
           value: "room"
         },
-        {
-          text: "จองวันที่",
-          value: "date"
-        },
-        { text: "ระยะเวลา", value: "time" },
-        {
-          text: "สถานะ",
-          value: "status"
-        },
-        { text: "ลบ/ยกเลิกการจอง", value: "reserve" }
+        { text: "วันที่", value: "date" },
+        { text: "ระยะเวลา", value: "time" }
       ],
-      user: []
+      user: [],
+      subhistory: [],
+      meetinghistory: [],
+      coworkpackage: [],
+      room: [],
+      datatosub: {},
+      datatobook: {},
+      allroom: [],
+      allpack: []
     };
   },
   created() {
@@ -404,9 +354,62 @@ export default {
       this.user = activeuser;
     },
 
+    async getsub(id) {
+      let sub = await axios.get(`coworkingspace/subscription/?user=${id}`);
+      sub = sub.data;
+      let subhistory = [];
+
+      let eachsub = {
+        package: "",
+        time: "",
+        reserve: ""
+      };
+
+      for (let i = 0; i < sub.length; i++) {
+        eachsub.package = sub[i].package.name;
+        eachsub.time =
+          new Date(sub[i].date_start) + " - " + new Date(sub[i].date_end);
+        subhistory.push(eachsub);
+      }
+
+      this.subhistory = subhistory;
+    },
+
+    async getmeet(id) {
+      let meet = await axios.get(`meetingroom/booking/?user=${id}`);
+      meet = meet.data;
+      let meethistory = [];
+      let eachmeet = {
+        index: "",
+        room: "",
+        time: ""
+      };
+      for (let i = 0; i < meet.length; i++) {
+        eachmeet = {};
+        eachmeet.index = i + 1;
+        eachmeet.room = meet[i].room.name;
+        eachmeet.date = new Date(meet[i].date_start);
+        eachmeet.time =
+          (new Date(meet[i].date_end).getDay() -
+            new Date(meet[i].date_start).getDay()) *
+            24 +
+          (new Date(meet[i].date_end).getHours() -
+            new Date(meet[i].date_start).getHours()) +
+          " ชม.";
+        meethistory.push(eachmeet);
+      }
+
+      this.meetinghistory = meethistory;
+    },
+
     seeProfile: function(item) {
+      this.coworkpackage = [];
       this.profileIndex = this.user.indexOf(item);
       this.profileItem = Object.assign({}, item);
+      this.getsub(this.profileItem.id);
+      this.getmeet(this.profileItem.id);
+      this.getcoworkpackage();
+      this.getmeetingroom();
       this.dialog = true;
     },
 
@@ -415,6 +418,60 @@ export default {
       item.is_active = false;
       this.profileItem = Object.assign({}, item);
       this.dialogDelete = true;
+    },
+
+    async getcoworkpackage() {
+      let allpackage = await axios.get("coworkingspace/package/");
+      allpackage = allpackage.data;
+      for (let i = 0; i < allpackage.length; i++) {
+        this.allpack.push(allpackage[i].name);
+      }
+    },
+
+    async getmeetingroom() {
+      let allroom = await axios.get("meetingroom/");
+      allroom = allroom.data;
+      for (let i = 0; i < allroom.length; i++) {
+        this.allroom.push(allroom[i].name);
+      }
+    },
+
+    async choosepackage(value) {
+      let allpackage = await axios.get("coworkingspace/package/");
+      allpackage = allpackage.data;
+      for (let i = 0; i < allpackage.length; i++) {
+        if (allpackage[i].name == value) {
+          let id = allpackage[i].id;
+          this.datatosub.package = id;
+        }
+      }
+    },
+
+    async chooseroom(value) {
+      let allroom = await axios.get("meetingroom/");
+      allroom = allroom.data;
+      for (let i = 0; i < allroom.length; i++) {
+        if (allroom[i].name == value) {
+          let id = allroom[i].id;
+          this.datatobook.room = id;
+        }
+      }
+    },
+
+    async confirmsub() {
+      this.datatosub.date_start = this.datesub[0].toISOString().substr(0, 10);
+      this.datatosub.date_end = this.datesub[1].toISOString().substr(0, 10);
+      this.datatosub.user = this.profileItem.id;
+      await axios.post("coworkingspace/subscription/", this.datatosub);
+      this.close();
+    },
+
+    async confirmbook() {
+      this.datatobook.date_start = this.dateroom[0].toISOString();
+      this.datatobook.date_end = this.dateroom[1].toISOString();
+      this.datatobook.user = this.profileItem.id;
+      await axios.post("meetingroom/booking/", this.datatobook);
+      this.close();
     },
 
     async deleteItemConfirm() {
@@ -435,14 +492,6 @@ export default {
     },
 
     async save() {
-      this.formHasErrors = false;
-
-      Object.keys(this.profileItem).forEach(f => {
-        if (!this.profileItem[f]) this.formHasErrors = true;
-
-        this.$refs[f].validate(true);
-      });
-
       this.profileItem.first_name = this.profileItem.name.split(" ")[0];
       this.profileItem.last_name = this.profileItem.name.split(" ")[1];
       this.profileItem.is_active = true;

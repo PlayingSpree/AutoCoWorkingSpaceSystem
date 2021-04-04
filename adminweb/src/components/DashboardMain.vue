@@ -58,6 +58,7 @@ export default {
   },
   created() {
     this.getpackagestat();
+    this.datearr = this.arrDate(this.range[0], this.range[1]);
   },
   data: function() {
     return {
@@ -69,6 +70,7 @@ export default {
     range(val) {
       this.range[0] = val[0];
       this.range[1] = val[1];
+      this.datearr = this.arrDate(this.range[0], this.range[1]);
       this.getpackagestat();
     }
   },
@@ -83,8 +85,6 @@ export default {
       this.chartData = [];
       var packagestat = allstat.data.coworkingspace_sale_by_date;
       var meetingstat = allstat.data.meetingroom_sale_by_date;
-      this.datearr = this.arrDate(this.range[0], this.range[1]);
-
       var packdata = {
         name: "ยอดขายแพ็คเกจ",
         data: {}

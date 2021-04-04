@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <v-content>
-      <v-card width="350" class="mx-auto" elevation="1">
+      <v-card width="350" class="mx-auto" elevation="1" outlined>
         <v-card-text class="mt-5">
           <h2 align="center" class="mb-7">Log In to AdminWebsite</h2>
           <v-form @submit.prevent="submit">
