@@ -132,4 +132,4 @@ class MeetingRoomBookingCreateSerializer(serializers.ModelSerializer):
 class MeetingRoomBookingAdminCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingRoomBooking
-        fields = ['date_start', 'date_end', 'user', 'room', 'payment', 'amount', 'is_canceled']
+        fields = ['date_start', 'date_end', 'user', 'room', 'payment', 'is_canceled']
