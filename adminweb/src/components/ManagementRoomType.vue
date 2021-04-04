@@ -9,39 +9,36 @@
           v-for="item in roomtypedata"
           :key="'type' + item"
           outlined
-          width="240px"
-          height="240px"
+          width="300px"
+          height="300px"
           class="mb-4 mx-2"
         >
           <v-container>
             <v-card-title primary-title>
               {{ item.name }} <v-spacer></v-spacer>
+              <v-btn @click="editItem(item)" icon
+                ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
+              >
+              <v-btn @click="deleteItem(item)" icon
+                ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
+              >
             </v-card-title>
             <v-card-text>
-              <v-container
-                ><v-row><span>รายละเอียด</span></v-row>
-                <v-row>
-                  <span>{{ item.detail ? item.detail : "-" }}</span>
-                </v-row>
-                <v-row
-                  ><span>ราคา: {{ item.price }} ฿/hr</span></v-row
-                ></v-container
-              >
+              <span>รายละเอียด</span>
+              <v-icon style="color: #ffffffb3" small>mdi-information </v-icon>
+              <br />
+              <span style="color: #ffffffb3">
+                {{ item.detail ? item.detail : "-" }}
+              </span>
             </v-card-text>
-            <v-footer class="justify-center">
-              <v-card-actions>
-                <v-btn @click="editItem(item)" icon
-                  ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
-                >
-                <v-btn @click="deleteItem(item)" icon
-                  ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
-                >
-              </v-card-actions>
-            </v-footer>
+            <v-card-text class="card-bottom">
+              <v-icon>mdi-cash</v-icon>
+              <span> ราคา: {{ item.price }} ฿/hr </span>
+            </v-card-text>
           </v-container>
         </v-card>
 
-        <v-card outlined width="240px" height="240px" class="mb-4 mx-2">
+        <v-card outlined width="300px" height="300px" class="mb-4 mx-2">
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn x-large v-bind="attrs" v-on="on" width="100%" height="100%"
@@ -174,3 +171,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.card-bottom {
+  position: absolute;
+  bottom: 0;
+}
+</style>

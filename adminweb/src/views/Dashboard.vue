@@ -43,7 +43,7 @@ export default {
       datepaymethod: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
       dateover: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
       datereport: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
-      dateaccess: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()],
+      dateaccess: [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()]
     };
   },
 

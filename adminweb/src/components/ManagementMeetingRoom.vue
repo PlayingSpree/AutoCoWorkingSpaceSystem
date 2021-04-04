@@ -76,46 +76,32 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-row class="d-flex align-center mt-5">
+                <v-row class="d-flex align-center">
                   <v-col cols="3">
                     <span>ความสว่าง</span>
                   </v-col>
-                  <v-btn class="mx-2" color="white" @click="setroombright(100)"
-                    ><v-icon color="black">{{
-                      iotItem.brightness == 100 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
+                  <v-btn
+                    class="mx-2"
+                    color="blue-grey lighten-5"
+                    @click="setroomlight('down')"
+                    ><v-icon color="black">mdi-arrow-left-bold</v-icon></v-btn
                   >
                   <v-btn
                     class="mx-2"
-                    color="grey lighten-2"
-                    @click="setroombright(80)"
-                    ><v-icon color="black">{{
-                      iotItem.brightness == 80 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
+                    color="blue-grey darken-3"
+                    @click="setroomlight('up')"
+                    ><v-icon>mdi-arrow-right-bold</v-icon></v-btn
                   >
+                </v-row>
+                <v-row class="d-flex align-center">
+                  <v-col cols="3">
+                    <span>เปิด/ปิด</span>
+                  </v-col>
                   <v-btn
                     class="mx-2"
-                    color="grey lighten-1"
-                    @click="setroombright(60)"
-                    ><v-icon color="black">{{
-                      iotItem.brightness == 60 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                  <v-btn
-                    class="mx-2"
-                    color="grey darken-1"
-                    @click="setroombright(40)"
-                    ><v-icon color="black">{{
-                      iotItem.brightness == 40 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
-                  >
-                  <v-btn
-                    class="mx-2"
-                    color="grey darken-2"
-                    @click="setroombright(20)"
-                    ><v-icon color="black">{{
-                      iotItem.brightness == 20 ? "mdi-check" : ""
-                    }}</v-icon></v-btn
+                    :color="iotItem.light_power ? 'success' : 'red darken-4'"
+                    @click="power_light()"
+                    >{{ iotItem.light_power ? "on" : "off" }}</v-btn
                   >
                 </v-row>
               </v-container>
@@ -149,8 +135,9 @@
                   </v-col>
                   <v-btn
                     class="mx-2"
-                    :color="iotItem.air ? 'success' : 'red darken-4'"
-                    >{{ iotItem.air ? "on" : "off" }}</v-btn
+                    :color="iotItem.air_power ? 'success' : 'red darken-4'"
+                    @click="power_air()"
+                    >{{ iotItem.air_power ? "on" : "off" }}</v-btn
                   >
                 </v-row>
               </v-container>
@@ -237,9 +224,11 @@ export default {
         door_ip: "",
         status: false,
         color: 0,
-        brightness: 0,
+        brightness_up: false,
+        brightness_down: false,
+        light_power: false,
         temp: 25,
-        air: false
+        air_power: false
       },
       defaultiot: {
         room_id: "",
@@ -247,9 +236,11 @@ export default {
         door_ip: "",
         status: false,
         color: 0,
-        brightness: 0,
+        brightness_up: false,
+        brightness_down: false,
+        light_power: false,
         temp: 25,
-        air: false
+        air_power: false
       }
     };
   },
@@ -309,9 +300,11 @@ export default {
         this.iotItem.door_ip = this.iotip.door_ip;
         this.iotItem.status = true;
         this.iotItem.color = this.iotdata[1].data.color;
-        this.iotItem.brightness = this.iotdata[1].data.brightness;
+        this.iotItem.brightness_up = false;
+        this.iotItem.brightness_down = false;
+        this.iotItem.light_power = this.iotdata[1].data.power;
         this.iotItem.temp = this.iotdata[0].data.temp;
-        this.iotItem.air = true;
+        this.iotItem.air_power = this.iotdata[0].data.power;
       } else {
         this.iotItem.status = false;
         this.iotItem.iot_ip = this.iotip.iot_ip;
@@ -422,22 +415,22 @@ export default {
       this.showroomnamedata();
     },
 
-    async setroomlightcolor(color) {
-      this.iotItem.color = color;
-      this.iotdata[1].data.color = color;
-      await axios.put(`iot/room/${this.iotItem.room_id}/`, {
-        iot_id: 2,
-        data: this.iotdata[1].data
-      });
-    },
-
-    async setroombright(brightness) {
-      this.iotItem.brightness = brightness;
-      this.iotdata[1].data.brightness = brightness;
-      await axios.put(`iot/room/${this.iotItem.room_id}/`, {
-        iot_id: 2,
-        data: this.iotdata[1].data
-      });
+    async setroomlight(type) {
+      if (type == "up") {
+        this.iotdata[1].data.brightness_up = true;
+        this.iotdata[1].data.power = true;
+        await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+          iot_id: 2,
+          data: this.iotdata[1].data
+        });
+      } else {
+        this.iotdata[1].data.brightness_down = true;
+        this.iotdata[1].data.power = true;
+        await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+          iot_id: 2,
+          data: this.iotdata[1].data
+        });
+      }
     },
 
     async setroomtemp(type) {
@@ -462,6 +455,26 @@ export default {
           data: this.iotdata[0].data
         });
       }
+    },
+
+    async power_air() {
+      this.iotItem.air_power = !this.iotItem.air_power;
+      this.iotdata[0].data.power = this.iotItem.air_power;
+      await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+        iot_id: 1,
+        data: this.iotdata[0].data
+      });
+    },
+
+    async power_light() {
+      this.iotItem.light_power = !this.iotItem.light_power;
+      this.iotdata[1].data.brightness_up = false;
+      this.iotdata[1].data.brightness_down = false;
+      this.iotdata[1].data.power = this.iotItem.light_power;
+      await axios.put(`iot/room/${this.iotItem.room_id}/`, {
+        iot_id: 2,
+        data: this.iotdata[1].data
+      });
     }
   }
 };

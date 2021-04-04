@@ -65,7 +65,7 @@
                                   () =>
                                     !!profileItem.email ||
                                     'This field is required',
-                                  (v) =>
+                                  v =>
                                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
                                       v
                                     ) || 'E-mail must be valid'
@@ -251,7 +251,7 @@ export default {
   data: function() {
     return {
       emailRules: [
-        (v) =>
+        v =>
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
           "E-mail must be valid"
       ],

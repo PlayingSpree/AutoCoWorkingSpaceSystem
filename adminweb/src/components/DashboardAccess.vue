@@ -140,7 +140,7 @@ export default {
     },
 
     allaccesscount() {
-      return this.meetingaccesscount() + this.coaccesscount()
+      return this.meetingaccesscount() + this.coaccesscount();
     }
   }
 };

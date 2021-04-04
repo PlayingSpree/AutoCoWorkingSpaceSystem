@@ -8,47 +8,48 @@
           :key="'package' + item"
           outlined
           width="300px"
-          height="400px"
+          height="450px"
           class="mx-2 mb-4"
         >
-          <v-card-title primary-title>
-            {{ item.name }} <v-spacer></v-spacer>
-            <v-btn @click="editItem(item)" icon
-              ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
-            >
-            <v-btn @click="deleteItem(item)" icon
-              ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
-            >
-          </v-card-title>
-          <v-card-text style="color: #ffffff"> รายละเอียด </v-card-text>
-          <v-card-text style="font-size: 20px">
-            {{ item.detail }}
-          </v-card-text>
-          <v-row>
-            <v-col cols="6">
-              <v-card-text> ราคา </v-card-text>
-              <v-card-text style="color: #ffffffb3; font-size: 20px">
-                {{ item.price }} บาท
-              </v-card-text>
-            </v-col>
-            <v-col cols="6">
-              <v-card-text> ระยะเวลา </v-card-text>
-              <v-card-text style="color: #ffffffb3; font-size: 20px">
-                {{ item.duration }} วัน
-              </v-card-text>
-            </v-col>
-          </v-row>
-          <v-card-text>
-            สถานะ
-            <v-select
-              v-model="item.status"
-              :items="status"
-              @input="setpackagestatus(item.status, item)"
-              solo
-            ></v-select
-          ></v-card-text>
+          <v-container>
+            <v-card-title primary-title>
+              {{ item.name }} <v-spacer></v-spacer>
+              <v-btn @click="editItem(item)" icon
+                ><v-icon style="color: #9CCC65">mdi-pencil</v-icon></v-btn
+              >
+              <v-btn @click="deleteItem(item)" icon
+                ><v-icon style="color: #B71C1C">mdi-delete</v-icon></v-btn
+              >
+            </v-card-title>
+            <v-card-text>
+              <span style="font-size: 15px">รายละเอียด</span>
+              <v-icon style="color: #ffffffb3" small>mdi-information </v-icon>
+              <br />
+              <span style="color: #ffffffb3">{{ item.detail }}</span>
+            </v-card-text>
+            <v-card-text class="card-bottom">
+              <v-icon>mdi-cash</v-icon>
+              <span style="font-size: 15px"> ราคา : {{ item.price }} บาท</span>
+              <br />
+              <v-icon>mdi-clock-time-five </v-icon>
+              <span style="font-size: 15px">
+                ระยะเวลา : {{ item.duration }} วัน</span
+              >
+              <br />
+              <br />
+              <span style="font-size: 15px">
+                สถานะ
+              </span>
+              <v-select
+                v-model="item.status"
+                :items="status"
+                @input="setpackagestatus(item.status, item)"
+                solo
+              ></v-select
+            ></v-card-text>
+          </v-container>
         </v-card>
-        <v-card outlined width="300px" height="400px" class="mx-2">
+        <v-card outlined width="300px" height="450px" class="mx-2">
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn x-large v-bind="attrs" v-on="on" width="100%" height="100%"
@@ -227,3 +228,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.card-bottom {
+  position: absolute;
+  bottom: 0;
+}
+</style>
