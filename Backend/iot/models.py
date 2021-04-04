@@ -18,9 +18,9 @@ class MeetingRoomIoT(models.Model):
 class MeetingRoomAccess(models.Model):
     room = models.ForeignKey(MeetingRoom, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_access = models.DateField(auto_now=True)
+    date_access = models.DateTimeField(auto_now=True)
 
 
 class CoworkingAccess(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_access = models.DateField(auto_now=True)
+    date_access = models.DateTimeField(auto_now=True)
