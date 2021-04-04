@@ -50,7 +50,7 @@ class MeetingRoomBooking(models.Model):
         return str(self.qr_key)
 
     def is_in_reserved_time(self, date=timezone.now()):
-        return not self.is_canceled and self.date_start <= date + timedelta(
+        return not self.is_canceled and self.date_start <= date - timedelta(
             minutes=MEETING_ROOM_MIN_EARLY) and self.date_end >= date
 
     def save(self, *args, **kwargs):

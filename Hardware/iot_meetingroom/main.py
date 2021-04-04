@@ -22,9 +22,26 @@ def update_thing_data(thing_id):
     if thing is None:
         return {'iot_error': 'Thing not found.'}, 404
     if thing.update(request.json):
-        return thing.data
+        return jsonify(thing.data)
     else:
         return {'iot_error': 'Invalid data.'}, 400
+
+@app.route('/on')
+def turn_on():
+    list_of_thing = []
+    for thing in setting.available_things:
+        thing.turn_on()
+        list_of_thing.append(thing.as_dict())
+    return jsonify(list_of_thing)
+
+
+@app.route('/off')
+def turn_off():
+    list_of_thing = []
+    for thing in setting.available_things:
+        thing.turn_off()
+        list_of_thing.append(thing.as_dict())
+    return jsonify(list_of_thing)
 
 
 app.run(host='0.0.0.0', debug=True)

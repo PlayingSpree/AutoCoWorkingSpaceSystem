@@ -21,6 +21,14 @@ class Thing:
         self.data.update(data)
         return True
 
+    def turn_on(self):
+        """ Overide turn on"""
+        return True
+
+    def turn_off(self):
+        """ Overide turn off"""
+        return True
+
     def as_dict(self):
         return {'id': self.id,
                 'name': self.name,
@@ -32,7 +40,11 @@ class Thing:
 
 def validator(data_info, value):
     try:
-        if data_info['type'] == 'integer':
+        if data_info['type'] == 'bool':
+            if not type(value) is bool:
+                value = bool(value)
+            return True
+        elif data_info['type'] == 'integer':
             if not type(value) is int:
                 value = int(value)
         elif data_info['type'] == 'float':
