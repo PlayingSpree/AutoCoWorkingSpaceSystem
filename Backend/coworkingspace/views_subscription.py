@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from coworkingspace.models import CoworkingSpaceSubscription
 from coworkingspace.serializers import CoworkingSpaceSubscriptionCreateSerializer, \
-    CoworkingSpaceSubscriptionReadSerializer
+    CoworkingSpaceSubscriptionReadSerializer, CoworkingSpaceSubscriptionAdminCreateSerializer
 from meetingroom.permissions import get_permissions_multi
 from payment.models import Payment
 
@@ -42,7 +42,7 @@ class CoworkingSpaceSubscriptionViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if request.user.is_staff:
-            serializer = self.get_serializer(data=request.data)
+            serializer = CoworkingSpaceSubscriptionAdminCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)

@@ -5,7 +5,8 @@ from rest_framework.response import Response
 
 from meetingroom.models import MeetingRoomBooking, MeetingRoom
 from meetingroom.permissions import get_permissions_multi
-from meetingroom.serializers import MeetingRoomBookingReadSerializer, MeetingRoomBookingCreateSerializer
+from meetingroom.serializers import MeetingRoomBookingReadSerializer, MeetingRoomBookingCreateSerializer, \
+    MeetingRoomBookingAdminCreateSerializer
 from payment.models import Payment
 
 
@@ -43,7 +44,7 @@ class MeetingRoomBookingViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if request.user.is_staff:
-            serializer = self.get_serializer(data=request.data)
+            serializer = MeetingRoomBookingAdminCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)

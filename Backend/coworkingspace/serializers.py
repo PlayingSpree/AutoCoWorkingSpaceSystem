@@ -44,3 +44,11 @@ class CoworkingSpaceSubscriptionCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('card_token', None)
         return super().create(validated_data)
+
+
+class CoworkingSpaceSubscriptionAdminCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoworkingSpaceSubscription
+        fields = ['user', 'package', 'payment', 'is_canceled', 'date_start', 'date_end']
+        extra_kwargs = {'user': {'required': True},
+                        'package': {'required': True}}
