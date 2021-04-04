@@ -10,7 +10,13 @@ from meetingroom.permissions import get_permissions_multi
 class ProblemTypeViewSet(viewsets.ModelViewSet):
     queryset = ProblemType.objects.all()
     serializer_class = ProblemTypeSerializer
-    permission_classes = [IsAdminUser]
+    permissions = [
+        (['list', 'retrieve'], [IsAuthenticated]),
+        (['create', 'update', 'partial_update', 'destroy'], [IsAdminUser])
+    ]
+
+    def get_permissions(self):
+        return get_permissions_multi(self)
 
 
 class ProblemViewSet(viewsets.ModelViewSet):
