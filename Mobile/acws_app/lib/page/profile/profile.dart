@@ -1,3 +1,4 @@
+import 'package:acws_app/page/profile/problem.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -5,6 +6,7 @@ import '../../app_style.dart';
 import '../../app_transition_route.dart';
 import '../../app_util.dart';
 import 'edit_detail.dart';
+import 'edit_pass.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -44,12 +46,12 @@ class _ProfilePageState extends State<ProfilePage> {
           _response == null
               ? ListTile(leading: Icon(Icons.person, size: 48))
               : ListTile(
-              title: Text(
-                  '${_response['first_name']} ${_response['last_name']}'),
-              leading: Icon(Icons.person, size: 48),
-              isThreeLine: true,
-              subtitle:
-              Text('${_response['email']}\n${_response['phone']}')),
+                  title: Text(
+                      '${_response['first_name']} ${_response['last_name']}'),
+                  leading: Icon(Icons.person, size: 48),
+                  isThreeLine: true,
+                  subtitle:
+                      Text('${_response['email']}\n${_response['phone']}')),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 0, 6),
             child: Text(
@@ -61,24 +63,22 @@ class _ProfilePageState extends State<ProfilePage> {
             title: Text('แก้ไขข้อมูลผู้ใช้'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator
-                  .of(context)
-                  .push(SlideLeftRoute(
+              Navigator.of(context).push(SlideLeftRoute(
                   exitPage: this.widget,
                   enterPage: EditDetail(
                       name:
-                      '${_response['first_name']} ${_response['last_name']}',
+                          '${_response['first_name']} ${_response['last_name']}',
                       phone: _response['phone'],
                       callback: _downloadData)));
-              },
+            },
           ),
           Divider(),
           ListTile(
             title: Text('เปลี่ยนรหัสผ่าน'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.of(context).push(SlideLeftRoute(
-                  exitPage: this.widget, enterPage: EditDetail()));
+              Navigator.of(context).push(
+                  SlideLeftRoute(exitPage: this.widget, enterPage: EditPass()));
             },
           ),
           Divider(),
@@ -88,19 +88,14 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: () {
               Navigator.of(context).push(SlideLeftRoute(
                   exitPage: this.widget,
-                  enterPage: EditDetail(
-                      name:
-                      '${_response['first_name']} ${_response['last_name']}',
-                      phone: _response['phone'])));
+                  enterPage: ReportProblem(user: _response['id'])));
             },
           ),
           Divider(),
           ListTile(
             title: Text(
               'ลงชื่อออก',
-              style: TextStyle(color: Theme
-                  .of(context)
-                  .errorColor),
+              style: TextStyle(color: Theme.of(context).errorColor),
             ),
             onTap: () async {
               final prefs = await SharedPreferences.getInstance();

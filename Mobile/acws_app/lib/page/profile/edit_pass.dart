@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import '../../app_util.dart';
 
 class EditPass extends StatefulWidget {
-  final Function callback;
-
-  EditPass(
-      {Key key, this.callback})
-      : super(key: key);
+  EditPass({Key key}) : super(key: key);
 
   @override
   _EditPassState createState() => _EditPassState();
@@ -15,15 +11,15 @@ class EditPass extends StatefulWidget {
 class _EditPassState extends State<EditPass> {
   final _formKey = GlobalKey<FormState>();
   final _focusNodePhone = FocusNode();
-  final _nameText = TextEditingController();
-  final _phoneText = TextEditingController();
+  final _pass1Text = TextEditingController();
+  final _pass2Text = TextEditingController();
   bool _wait = false;
 
   @override
   void dispose() {
     _focusNodePhone.dispose();
-    _nameText.dispose();
-    _phoneText.dispose();
+    _pass1Text.dispose();
+    _pass2Text.dispose();
     super.dispose();
   }
 
@@ -35,23 +31,14 @@ class _EditPassState extends State<EditPass> {
       });
 
       try {
-        if (_nameText.text.isEmpty) {}
-        var name = _nameText.text.split(' ');
-        var lastName = name.removeLast();
-        if (name.isEmpty) {
-          name.add(lastName);
-          lastName = '';
-        }
-
         await httpRequest(
-                '/auth/user/',
+                '/auth/password/change/',
                 {
-                  'first_name': name.join(),
-                  'last_name': lastName,
-                  'phone': _phoneText.text
+                  'new_password1': _pass1Text.text,
+                  'new_password2': _pass2Text.text,
                 },
                 context,
-                method: 'put')
+                method: 'post')
             .timeout(const Duration(seconds: 6));
       } catch (e) {
         print(e);
@@ -68,7 +55,7 @@ class _EditPassState extends State<EditPass> {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('แก้ไขข้อมูลผู้ใช้สำเร็จ'),
+              title: Text('แก้ไขรหัสผ่านสำเร็จ'),
               actions: <Widget>[
                 TextButton(
                   child: Text('OK'),
@@ -80,7 +67,6 @@ class _EditPassState extends State<EditPass> {
             );
           },
         );
-        if (widget.callback != null) widget.callback();
         Navigator.pop(context);
       }
     }
@@ -90,7 +76,7 @@ class _EditPassState extends State<EditPass> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('แก้ไขข้อมูลผู้ใช้'),
+          title: Text('แก้ไขรหัสผ่าน'),
         ),
         body: Form(
           key: _formKey,
@@ -101,14 +87,24 @@ class _EditPassState extends State<EditPass> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
-                  controller: _nameText,
+                  controller: _pass1Text,
+                  obscureText: true,
+                  keyboardType: TextInputType.visiblePassword,
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.person),
-                    labelText: 'ชื่อ - นามสกุล',
+                    icon: Icon(Icons.lock),
+                    labelText: 'รหัสผ่านใหม่',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: TextInputType.name,
                   validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'กรุนาใส่รหัสผ่าน';
+                    }
+                    if (value.length < 8) {
+                      return 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร';
+                    }
+                    if (RegExp(r"^[0-9]*$").hasMatch(value)) {
+                      return 'รหัสผ่านต้องไม่เป็นตัวเลขอย่างเดียว';
+                    }
                     return null;
                   },
                   textInputAction: TextInputAction.next,
@@ -118,18 +114,20 @@ class _EditPassState extends State<EditPass> {
                 ),
                 SizedBox(height: 12),
                 TextFormField(
-                  controller: _phoneText,
+                  controller: _pass2Text,
                   focusNode: _focusNodePhone,
+                  obscureText: true,
+                  keyboardType: TextInputType.visiblePassword,
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'เบอร์โทรศัพท์',
+                    icon: Icon(Icons.lock),
+                    labelText: 'รหัสผ่านใหม่อีกครั้ง',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: TextInputType.phone,
                   validator: (String value) {
-                    if (value.isNotEmpty &&
-                        !RegExp(r"^[0-9]*$").hasMatch(value)) {
-                      return 'เบอร์โทรศัพท์ไม่ถูกต้อง';
+                    if (value.isEmpty) {
+                      return 'กรุนาใส่รหัสผ่านอีกครั้ง';
+                    } else if (value != _pass1Text.text) {
+                      return 'รหัสผ่านไม่ตรงกัน';
                     }
                     return null;
                   },
@@ -143,7 +141,7 @@ class _EditPassState extends State<EditPass> {
                   child: ElevatedButton(
                       onPressed: _wait ? null : _update,
                       child: Visibility(
-                        child: Text('บันทึกข้อมูลผู้ใช้',
+                        child: Text('บันทึกรหัสผ่านใหม่',
                             style: TextStyle(
                               fontSize: 20.0,
                             )),
