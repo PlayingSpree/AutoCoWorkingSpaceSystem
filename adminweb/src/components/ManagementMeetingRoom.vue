@@ -10,7 +10,7 @@
         outlined
         width="300px"
         height="400px"
-        class="mx-2"
+        class="ma-2"
       >
         <v-card-title>
           {{ item.name }} <v-spacer></v-spacer
@@ -153,7 +153,7 @@
         </v-card>
       </v-dialog>
 
-      <v-card outlined width="300px" height="400px" class="mx-2">
+      <v-card outlined width="300px" height="400px" class="ma-2">
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn x-large v-bind="attrs" v-on="on" width="100%" height="100%"
@@ -172,9 +172,9 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn text @click="close"> Close </v-btn>
+              <v-btn text @click="close"> ปิด </v-btn>
               <v-btn color="primary" text @click="save">
-                Save
+                บันทึก
               </v-btn>
             </v-card-actions>
           </v-card>

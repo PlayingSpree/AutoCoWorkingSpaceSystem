@@ -208,10 +208,10 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">
-                    Close
+                    ปิด
                   </v-btn>
                   <v-btn text @click="save">
-                    Save
+                    บันทึก
                   </v-btn>
                 </v-card-actions>
               </v-container>
@@ -220,15 +220,15 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="headline"
-                >Are you sure you want to delete this item?</v-card-title
+                >คุณต้องการที่จะลบใช่หรือไม่?</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete"
-                  >Cancel</v-btn
+                  >ยกเลิก</v-btn
                 >
                 <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                  >OK</v-btn
+                  >ยืนยัน</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>

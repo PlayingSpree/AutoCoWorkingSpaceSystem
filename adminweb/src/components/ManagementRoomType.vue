@@ -76,9 +76,9 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn text @click="close"> Close </v-btn>
+                <v-btn text @click="close"> ปิด </v-btn>
                 <v-btn color="primary" text @click="save">
-                  Save
+                  บันทึก
                 </v-btn>
               </v-card-actions>
             </v-card>
