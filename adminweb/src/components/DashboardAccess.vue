@@ -36,7 +36,7 @@
             ><v-card outlined>
               <line-chart
                 :data="accessData"
-                :colors="['#FFA726', '#303F9F']"
+                :colors="['#303F9F', '#FFA726']"
               ></line-chart> </v-card
           ></v-col>
         </v-row>
@@ -85,7 +85,7 @@ export default {
       );
       let meetingaccess = allaccess.data.meetingroom_access_by_date;
       let coaccess = allaccess.data.coworkingspace_access_by_date;
-
+      console.log(meetingaccess, coaccess)
       let meetingdata = {
         name: "Meeting room",
         data: {}
@@ -111,8 +111,7 @@ export default {
 
       this.accessData.push(codata);
       this.accessData.push(meetingdata);
-
-      console.log(this.accessData);
+      console.log(this.accessData)
     },
 
     arrDate(startDate, stopDate) {
@@ -126,14 +125,14 @@ export default {
     },
 
     meetingaccesscount() {
-      const sum = Object.values(this.accessData[0].data).reduce(
+      const sum = Object.values(this.accessData[1].data).reduce(
         (a, b) => a + b
       );
       return sum;
     },
 
     coaccesscount() {
-      const sum = Object.values(this.accessData[1].data).reduce(
+      const sum = Object.values(this.accessData[0].data).reduce(
         (a, b) => a + b
       );
       return sum;

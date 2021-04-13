@@ -1,7 +1,7 @@
 <template>
   <v-card class="mt-5">
     <v-card-actions>
-      <p class="my-auto mx-2">ประเภทของข้อมูล</p>
+      <p class="my-auto mx-2">กรองข้อมูลความรุนแรง</p>
       <v-btn @click="emitall" outlined :color="all ? 'red' : 'red lighten-4'"
         >ทั้งหมด</v-btn
       >

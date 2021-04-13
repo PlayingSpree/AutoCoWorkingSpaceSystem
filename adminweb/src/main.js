@@ -10,7 +10,7 @@ import axios from "axios";
 
 require("@/store/subscriber");
 
-axios.defaults.baseURL = "http://127.0.0.1:8000/";
+axios.defaults.baseURL = "http://192.168.137.1:8000/";
 
 Vue.config.productionTip = false;
 Vue.use(Chartkick.use(Chart));

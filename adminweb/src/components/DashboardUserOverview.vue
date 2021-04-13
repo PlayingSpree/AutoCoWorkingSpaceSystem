@@ -46,7 +46,7 @@
                     <v-col cols="4" height="100%">
                       <v-card outlined>
                         <v-card-title style="font-size:1em">
-                          จำนวนลูกค้าทั้งหมด
+                          ลูกค้าทั้งหมด
                         </v-card-title>
                         <v-card-text> {{ allUser() }} คน</v-card-text>
                       </v-card>

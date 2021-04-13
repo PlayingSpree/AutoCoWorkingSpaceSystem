@@ -145,8 +145,8 @@
                                 type="datetime"
                                 :time-picker-options="{
                                   start: '00:00',
-                                  step: '01:00',
-                                  end: '23:00',
+                                  step: '00:30',
+                                  end: '23:30',
                                   format: 'HH:mm'
                                 }"
                                 confirm
@@ -372,13 +372,8 @@ export default {
       sub = sub.data;
       let subhistory = [];
 
-      let eachsub = {
-        package: "",
-        time: "",
-        reserve: ""
-      };
-
       for (let i = 0; i < sub.length; i++) {
+        let eachsub = {}
         eachsub.package = sub[i].package.name;
         eachsub.time =
           new Date(sub[i].date_start) + " - " + new Date(sub[i].date_end);

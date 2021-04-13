@@ -284,15 +284,15 @@ export default {
 
       await axios
         .get(`iot/room/setup/${room_id}/`)
-        .then(response => {
+        .then((response) => {
           this.iotip = response.data;
         })
-        .catch(error => (checkroomstatus = error.response.data));
+        .catch((error) => (checkroomstatus = error.response.data));
 
       await axios
         .get(`iot/room/${room_id}/`)
-        .then(responese => (this.iotdata = responese.data))
-        .catch(error => (checkroomstatus = error.response.data));
+        .then((responese) => (this.iotdata = responese.data))
+        .catch((error) => (checkroomstatus = error.response.data));
 
       this.iotItem.room_id = room_id;
       if (checkroomstatus == null) {
@@ -418,17 +418,15 @@ export default {
     async setroomlight(type) {
       if (type == "up") {
         this.iotdata[1].data.brightness_up = true;
-        this.iotdata[1].data.power = true;
         await axios.put(`iot/room/${this.iotItem.room_id}/`, {
           iot_id: 2,
-          data: this.iotdata[1].data
+          data: { brightness_up: true}
         });
-      } else {
+      } else if (type == "down") {
         this.iotdata[1].data.brightness_down = true;
-        this.iotdata[1].data.power = true;
         await axios.put(`iot/room/${this.iotItem.room_id}/`, {
           iot_id: 2,
-          data: this.iotdata[1].data
+          data: { brightness_down: true}
         });
       }
     },
@@ -468,12 +466,10 @@ export default {
 
     async power_light() {
       this.iotItem.light_power = !this.iotItem.light_power;
-      this.iotdata[1].data.brightness_up = false;
-      this.iotdata[1].data.brightness_down = false;
       this.iotdata[1].data.power = this.iotItem.light_power;
       await axios.put(`iot/room/${this.iotItem.room_id}/`, {
         iot_id: 2,
-        data: this.iotdata[1].data
+        data: {power: this.iotdata[1].data.power}
       });
     }
   }
